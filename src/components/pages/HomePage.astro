@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = ui[locale];
+---
+
+<BaseLayout title={copy.home.title} description={copy.siteDescription} locale={locale}>
+  <div class="home-shell">
+    <section class="introduction" aria-labelledby="page-title">
+      <p class="eyebrow">{copy.home.eyebrow}</p>
+      <h1 id="page-title">{copy.home.title}</h1>
+      <p class="lede">{copy.home.introduction}</p>
+    </section>
+
+    <section class="foundation" aria-labelledby="foundation-title">
+      <h2 id="foundation-title">{copy.home.foundationTitle}</h2>
+      <p>{copy.home.foundationText}</p>
+      <a href={getLocalizedPath(locale, 'projects')}>{copy.home.projectsLink}</a>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .home-shell {
+    display: grid;
+    max-width: var(--size-content);
+    margin-inline: auto;
+    padding: var(--space-section) var(--space-page);
+    gap: var(--space-section);
+  }
+
+  .introduction,
+  .foundation {
+    display: grid;
+    max-width: var(--size-prose);
+    gap: var(--space-4);
+  }
+
+  .eyebrow {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+  }
+
+  .lede {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-lg);
+  }
+
+  .foundation {
+    padding-block-start: var(--space-8);
+    border-block-start: var(--border-width) solid var(--color-border);
+  }
+
+  .foundation a {
+    justify-self: start;
+    font-weight: var(--font-weight-medium);
+  }
+</style>

@@ -1,3 +1,17 @@
+## Project guidelines
+
+- This is a personal website built with Astro.
+- Prefer static HTML and Astro components.
+- Do not add React unless explicitly requested.
+- Use native CSS and CSS custom properties.
+- Keep dependencies minimal.
+- Mobile-first and accessible.
+- Reuse existing components before creating new ones.
+- Do not introduce arbitrary spacing, colors or typography values.
+- Content should be separated from presentation.
+- The website must support English and Spanish.
+- Run `npm run build` before considering a task complete.
+
 ## Development
 
 When starting the dev server, use background mode:

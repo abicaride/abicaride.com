@@ -1,0 +1,12 @@
+---
+import ProjectPage from '../../../components/pages/ProjectPage.astro';
+import { getProjectStaticPaths, type ProjectRouteProps } from '../../../lib/projects';
+
+export function getStaticPaths() {
+  return getProjectStaticPaths('en');
+}
+
+const { project, alternatePath } = Astro.props as ProjectRouteProps;
+---
+
+<ProjectPage locale="en" project={project} alternatePath={alternatePath} />

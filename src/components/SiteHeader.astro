@@ -1,0 +1,110 @@
+---
+import {
+  getLocalizedPath,
+  languageNames,
+  switchLocalePath,
+  ui,
+  type Locale,
+} from '../i18n/config';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+  alternatePath?: string;
+}
+
+const { locale, currentPath, alternatePath } = Astro.props;
+const copy = ui[locale];
+const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
+const languagePath = alternatePath ?? switchLocalePath(currentPath, otherLocale);
+const normalizePath = (path: string) => path.replace(/\/+$/, '') || '/';
+const normalizedCurrentPath = normalizePath(currentPath);
+
+const navigation = [
+  { label: copy.nav.home, href: getLocalizedPath(locale) },
+  { label: copy.nav.projects, href: getLocalizedPath(locale, 'projects') },
+];
+
+const isActive = (href: string) => {
+  const normalizedHref = normalizePath(href);
+
+  return normalizedHref === normalizePath(getLocalizedPath(locale))
+    ? normalizedCurrentPath === normalizedHref
+    : normalizedCurrentPath === normalizedHref || normalizedCurrentPath.startsWith(`${normalizedHref}/`);
+};
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href={getLocalizedPath(locale)}>{copy.siteName}</a>
+
+    <nav aria-label={copy.primaryNavigation}>
+      <ul class="nav-list">
+        {navigation.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav aria-label={copy.languageNavigation}>
+      <ul class="language-list">
+        <li>
+          <a href={currentPath} lang={locale} aria-current="page">{languageNames[locale]}</a>
+        </li>
+        <li>
+          <a href={languagePath} lang={otherLocale} hreflang={otherLocale}>
+            {languageNames[otherLocale]}
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-block-end: var(--border-width) solid var(--color-border);
+  }
+
+  .header-inner {
+    display: flex;
+    min-height: var(--size-header);
+    max-width: var(--size-content);
+    margin-inline: auto;
+    padding: var(--space-3) var(--space-page);
+    align-items: center;
+    gap: var(--space-4) var(--space-8);
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    margin-inline-end: auto;
+    color: var(--color-text);
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+  }
+
+  .nav-list,
+  .language-list {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    gap: var(--space-4);
+    list-style: none;
+  }
+
+  .language-list {
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+
+  a[aria-current='page'] {
+    color: var(--color-text);
+    font-weight: var(--font-weight-medium);
+    text-decoration-thickness: var(--focus-ring-width);
+  }
+</style>

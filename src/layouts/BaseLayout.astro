@@ -1,0 +1,66 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import {
+  defaultLocale,
+  switchLocalePath,
+  ui,
+  type Locale,
+} from '../i18n/config';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  locale: Locale;
+  alternatePath?: string;
+}
+
+const { title, description, locale, alternatePath } = Astro.props;
+const currentPath = Astro.url.pathname;
+const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
+const resolvedAlternatePath = alternatePath ?? switchLocalePath(currentPath, otherLocale);
+const localizedPaths: Record<Locale, string> = {
+  [locale]: currentPath,
+  [otherLocale]: resolvedAlternatePath,
+} as Record<Locale, string>;
+const fullTitle = title === ui[locale].siteName ? title : `${title} | ${ui[locale].siteName}`;
+const canonicalUrl = new URL(currentPath, Astro.site);
+const defaultUrl = new URL(localizedPaths[defaultLocale], Astro.site);
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="en" href={new URL(localizedPaths.en, Astro.site)} />
+    <link rel="alternate" hreflang="es" href={new URL(localizedPaths.es, Astro.site)} />
+    <link rel="alternate" hreflang="x-default" href={defaultUrl} />
+    <title>{fullTitle}</title>
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">{ui[locale].skipToContent}</a>
+    <div class="site-frame">
+      <SiteHeader locale={locale} currentPath={currentPath} alternatePath={resolvedAlternatePath} />
+      <main id="main-content">
+        <slot />
+      </main>
+      <SiteFooter locale={locale} />
+    </div>
+  </body>
+</html>
+
+<style>
+  .site-frame {
+    display: grid;
+    min-height: 100vh;
+    grid-template-rows: auto 1fr auto;
+  }
+</style>
