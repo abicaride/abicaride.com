@@ -23,6 +23,8 @@ const normalizedCurrentPath = normalizePath(currentPath);
 const navigation = [
   { label: copy.nav.home, href: getLocalizedPath(locale) },
   { label: copy.nav.projects, href: getLocalizedPath(locale, 'projects') },
+  { label: copy.nav.about, href: getLocalizedPath(locale, 'about') },
+  { label: copy.nav.contact, href: getLocalizedPath(locale, 'contact') },
 ];
 
 const isActive = (href: string) => {
@@ -68,6 +70,7 @@ const isActive = (href: string) => {
 <style>
   .site-header {
     border-block-end: var(--border-width) solid var(--color-border);
+    background: color-mix(in srgb, var(--color-background) 94%, transparent);
   }
 
   .header-inner {
@@ -75,7 +78,7 @@ const isActive = (href: string) => {
     min-height: var(--size-header);
     max-width: var(--size-content);
     margin-inline: auto;
-    padding: var(--space-3) var(--space-page);
+    padding: var(--space-4) var(--space-page);
     align-items: center;
     gap: var(--space-4) var(--space-8);
     flex-wrap: wrap;
@@ -85,6 +88,7 @@ const isActive = (href: string) => {
     margin-inline-end: auto;
     color: var(--color-text);
     font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-tight);
     text-decoration: none;
   }
 
@@ -93,13 +97,23 @@ const isActive = (href: string) => {
     display: flex;
     margin: 0;
     padding: 0;
-    gap: var(--space-4);
+    gap: var(--space-3) var(--space-5);
+    flex-wrap: wrap;
     list-style: none;
   }
 
   .language-list {
-    gap: var(--space-2);
+    gap: var(--space-3);
     font-size: var(--font-size-sm);
+  }
+
+  nav a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  nav a:hover {
+    color: var(--color-text);
   }
 
   a[aria-current='page'] {

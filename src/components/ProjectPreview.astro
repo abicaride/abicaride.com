@@ -1,0 +1,46 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getLocalizedPath, ui, type Locale } from '../i18n/config';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  locale: Locale;
+  compact?: boolean;
+}
+
+const { project, locale, compact = false } = Astro.props;
+const copy = ui[locale];
+---
+
+<article class:list={['project-preview', { compact }]}>
+  <a class="image-link" href={getLocalizedPath(locale, `projects/${project.data.routeSlug}`)} tabindex="-1" aria-hidden="true">
+    <img src={project.data.image.src} alt="" width="900" height="600" loading="lazy" />
+  </a>
+  <div class="preview-copy">
+    <p class="project-meta">
+      <span>{project.data.category}</span>
+      {project.data.year && <><span aria-hidden="true">·</span><span>{project.data.year}</span></>}
+    </p>
+    <h3><a href={getLocalizedPath(locale, `projects/${project.data.routeSlug}`)}>{project.data.title}</a></h3>
+    <p class="description">{project.data.description}</p>
+    <a class="arrow-link" href={getLocalizedPath(locale, `projects/${project.data.routeSlug}`)}>{copy.projects.readProject}</a>
+  </div>
+</article>
+
+<style>
+  .project-preview { display: grid; gap: var(--space-5); }
+  .image-link { overflow: hidden; border-radius: var(--radius-md); background: var(--color-surface); }
+  img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; transition: transform 300ms ease; }
+  .project-preview:hover img { transform: scale(1.015); }
+  .preview-copy { display: grid; gap: var(--space-3); }
+  .project-meta { display: flex; color: var(--color-accent); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); gap: var(--space-2); }
+  h3 { font-family: var(--font-display); font-size: var(--font-size-xl); font-weight: var(--font-weight-regular); }
+  h3 a { color: var(--color-text); text-decoration: none; }
+  h3 a:hover { color: var(--color-accent); }
+  .description { color: var(--color-text-muted); }
+  .arrow-link { justify-self: start; font-size: var(--font-size-sm); }
+  .compact { padding-block: var(--space-5); border-block-start: var(--border-width) solid var(--color-border); }
+  .compact .image-link { display: none; }
+  .compact h3 { font-size: var(--font-size-lg); }
+  @media (prefers-reduced-motion: reduce) { img { transition: none; } }
+</style>

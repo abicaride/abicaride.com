@@ -12,8 +12,14 @@ const currentYear = new Date().getFullYear();
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <p>© {currentYear} {copy.siteName}. {copy.footer.rights}</p>
-    <p>{copy.footer.note}</p>
+    <div class="footer-copy">
+      <p class="footer-name">{copy.siteName}</p>
+      <p>{copy.footer.note}</p>
+    </div>
+    <div class="footer-meta">
+      <a href="mailto:abicaride@gmail.com">abicaride@gmail.com</a>
+      <p>© {currentYear}. {copy.footer.rights}</p>
+    </div>
   </div>
 </footer>
 
@@ -28,9 +34,25 @@ const currentYear = new Date().getFullYear();
     display: flex;
     max-width: var(--size-content);
     margin-inline: auto;
-    padding: var(--space-6) var(--space-page);
+    padding: var(--space-8) var(--space-page);
     gap: var(--space-2) var(--space-8);
     flex-wrap: wrap;
     justify-content: space-between;
+  }
+
+  .footer-copy,
+  .footer-meta {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .footer-name {
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: var(--font-size-lg);
+  }
+
+  .footer-meta {
+    justify-items: start;
   }
 </style>

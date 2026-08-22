@@ -1,67 +1,102 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectPreview from '../ProjectPreview.astro';
 import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
 
-interface Props {
-  locale: Locale;
-}
-
+interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const copy = ui[locale];
+const selectedProjects = (await getCollection('projects', ({ data }) => data.locale === locale && data.featured && !data.draft))
+  .sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout title={copy.home.title} description={copy.siteDescription} locale={locale}>
   <div class="home-shell">
-    <section class="introduction" aria-labelledby="page-title">
-      <p class="eyebrow">{copy.home.eyebrow}</p>
-      <h1 id="page-title">{copy.home.title}</h1>
-      <p class="lede">{copy.home.introduction}</p>
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow">{copy.home.eyebrow}</p>
+        <h1 id="page-title">{copy.home.title}</h1>
+        <p class="lede">{copy.home.introduction}</p>
+        <div class="hero-links">
+          <a class="arrow-link" href={getLocalizedPath(locale, 'projects')}>{copy.home.projectsLink}</a>
+          <a href={getLocalizedPath(locale, 'contact')}>{copy.home.contactLink}</a>
+        </div>
+      </div>
+      <figure class="hero-image">
+        <img src="/images/abilene-portrait.jpg" alt={locale === 'en' ? 'Abilene standing in front of a waterfall surrounded by trees' : 'Abilene delante de una cascada rodeada de árboles'} width="1200" height="2676" fetchpriority="high" />
+      </figure>
     </section>
 
-    <section class="foundation" aria-labelledby="foundation-title">
-      <h2 id="foundation-title">{copy.home.foundationTitle}</h2>
-      <p>{copy.home.foundationText}</p>
-      <a href={getLocalizedPath(locale, 'projects')}>{copy.home.projectsLink}</a>
+    <section class="perspective" aria-labelledby="foundation-title">
+      <p class="section-number" aria-hidden="true">01</p>
+      <div class="perspective-copy">
+        <h2 id="foundation-title">{copy.home.foundationTitle}</h2>
+        <p>{copy.home.foundationText}</p>
+        <a class="arrow-link" href={getLocalizedPath(locale, 'about')}>{copy.home.aboutLink}</a>
+      </div>
+    </section>
+
+    <section class="selected-work" aria-labelledby="selected-title">
+      <header class="section-header">
+        <div>
+          <p class="eyebrow">{copy.home.selectedEyebrow}</p>
+          <h2 id="selected-title">{copy.home.selectedTitle}</h2>
+        </div>
+        <p>{copy.home.selectedIntroduction}</p>
+      </header>
+      <div class="project-grid">
+        {selectedProjects.map((project) => <ProjectPreview project={project} locale={locale} />)}
+      </div>
+      <a class="arrow-link all-work" href={getLocalizedPath(locale, 'projects')}>{copy.home.allProjectsLink}</a>
+    </section>
+
+    <section class="personal" aria-labelledby="personal-title">
+      <img src="/images/abilene-outdoors.jpg" alt={locale === 'en' ? 'Abilene smiling beside the waterfront' : 'Abilene sonriendo junto al paseo marítimo'} width="1600" height="1200" loading="lazy" />
+      <div class="personal-copy">
+        <p class="eyebrow">{copy.home.personalEyebrow}</p>
+        <h2 id="personal-title">{copy.home.personalTitle}</h2>
+        <p>{copy.home.personalText}</p>
+        <a class="arrow-link" href={getLocalizedPath(locale, 'about')}>{copy.home.aboutLink}</a>
+      </div>
     </section>
   </div>
 </BaseLayout>
 
 <style>
-  .home-shell {
-    display: grid;
-    max-width: var(--size-content);
-    margin-inline: auto;
-    padding: var(--space-section) var(--space-page);
-    gap: var(--space-section);
+  .home-shell { display: grid; max-width: var(--size-content); margin-inline: auto; padding: var(--space-12) var(--space-page) var(--space-20); gap: var(--space-24); }
+  .hero { display: grid; gap: var(--space-8); }
+  .hero-copy { display: grid; align-content: center; gap: var(--space-6); }
+  h1 { max-width: 11ch; font-size: var(--font-size-hero); }
+  .lede { max-width: var(--size-prose); color: var(--color-text-muted); font-size: var(--font-size-lg); }
+  .hero-links { display: flex; align-items: center; gap: var(--space-4) var(--space-8); flex-wrap: wrap; }
+  .hero-image { margin: 0; }
+  .hero-image img { width: 100%; max-height: 44rem; border-radius: var(--radius-lg); object-fit: cover; object-position: center 66%; }
+  .perspective { display: grid; padding-block-start: var(--space-8); border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-6); }
+  .section-number { color: var(--color-accent); font-family: var(--font-mono); font-size: var(--font-size-sm); }
+  .perspective-copy { display: grid; max-width: var(--size-prose); gap: var(--space-4); }
+  .perspective-copy p, .section-header > p, .personal-copy > p:not(.eyebrow) { color: var(--color-text-muted); font-size: var(--font-size-lg); }
+  .perspective-copy a, .personal-copy a { justify-self: start; }
+  .selected-work { display: grid; gap: var(--space-8); }
+  .section-header { display: grid; gap: var(--space-6); }
+  .section-header > div { display: grid; gap: var(--space-3); }
+  .section-header h2 { max-width: 18ch; }
+  .section-header > p { max-width: var(--size-prose); }
+  .project-grid { display: grid; gap: var(--space-12) var(--space-6); }
+  .all-work { justify-self: start; }
+  .personal { display: grid; align-items: center; gap: var(--space-8); padding: var(--space-8); border-radius: var(--radius-lg); background: var(--color-surface); }
+  .personal img { width: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius-md); object-fit: cover; }
+  .personal-copy { display: grid; gap: var(--space-4); }
+  @media (min-width: 45rem) {
+    .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .project-grid :global(article:first-child) { grid-column: 1 / -1; }
+    .personal { grid-template-columns: minmax(16rem, .8fr) minmax(0, 1.2fr); }
   }
-
-  .introduction,
-  .foundation {
-    display: grid;
-    max-width: var(--size-prose);
-    gap: var(--space-4);
-  }
-
-  .eyebrow {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
-  }
-
-  .lede {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-lg);
-  }
-
-  .foundation {
-    padding-block-start: var(--space-8);
-    border-block-start: var(--border-width) solid var(--color-border);
-  }
-
-  .foundation a {
-    justify-self: start;
-    font-weight: var(--font-weight-medium);
+  @media (min-width: 52rem) {
+    .home-shell { padding-block-start: var(--space-16); }
+    .hero { min-height: 42rem; grid-template-columns: minmax(0, 1.2fr) minmax(18rem, .8fr); align-items: stretch; }
+    .hero-image img { height: 100%; }
+    .perspective { grid-template-columns: 1fr 3fr; }
+    .section-header { grid-template-columns: minmax(0, 1.3fr) minmax(18rem, .7fr); align-items: end; }
   }
 </style>

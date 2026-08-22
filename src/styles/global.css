@@ -27,7 +27,14 @@ h3 {
   margin-block: 0;
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
   text-wrap: balance;
+}
+
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-regular);
 }
 
 h1 {
@@ -49,6 +56,10 @@ dl {
   margin-block: 0;
 }
 
+p {
+  text-wrap: pretty;
+}
+
 a {
   color: var(--color-accent);
   text-decoration-thickness: var(--border-width);
@@ -57,6 +68,28 @@ a {
 
 a:hover {
   color: var(--color-accent-strong);
+}
+
+.eyebrow {
+  color: var(--color-accent);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.arrow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.arrow-link::after {
+  content: '↗';
+  color: var(--color-accent);
 }
 
 :focus-visible {

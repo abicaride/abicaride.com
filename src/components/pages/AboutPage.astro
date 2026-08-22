@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
+import { profiles } from '../../data/profile';
+
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const copy = ui[locale];
+const profile = profiles[locale];
+---
+
+<BaseLayout title={copy.about.title} description={copy.about.description} locale={locale}>
+  <article class="about-shell">
+    <header class="about-header">
+      <div class="header-copy">
+        <p class="eyebrow">{copy.about.eyebrow}</p>
+        <h1>{copy.about.heading}</h1>
+        <p class="lede">{copy.about.introduction}</p>
+      </div>
+      <img src="/images/abilene-outdoors.jpg" alt={locale === 'en' ? 'Abilene smiling beside the waterfront' : 'Abilene sonriendo junto al paseo marítimo'} width="1600" height="1200" />
+    </header>
+
+    <section class="story" aria-label={locale === 'en' ? 'My story' : 'Mi historia'}>
+      <p>{copy.about.story}</p>
+      <p>{copy.about.perspective}</p>
+      <aside><h2>{copy.about.valuesTitle}</h2><p>{copy.about.valuesText}</p></aside>
+    </section>
+
+    <section class="profile-section" aria-labelledby="experience-title">
+      <header><p class="section-number" aria-hidden="true">01</p><h2 id="experience-title">{copy.about.experienceTitle}</h2></header>
+      <ol class="timeline">
+        {profile.experience.map((item) => (
+          <li>
+            <div><h3>{item.title}</h3><p class="organization">{item.organization}</p></div>
+            <p class="period">{item.period}</p>
+            {item.description && <p class="description">{item.description}</p>}
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="profile-section" aria-labelledby="education-title">
+      <header><p class="section-number" aria-hidden="true">02</p><h2 id="education-title">{copy.about.educationTitle}</h2></header>
+      <ol class="education">
+        {profile.education.map((item) => <li><div><h3>{item.title}</h3><p>{item.organization}</p></div><p class="period">{item.period}</p></li>)}
+      </ol>
+    </section>
+
+    <div class="profile-pair">
+      <section aria-labelledby="languages-title">
+        <p class="section-number" aria-hidden="true">03</p>
+        <h2 id="languages-title">{copy.about.languagesTitle}</h2>
+        <ul>{profile.languages.map((language) => <li>{language}</li>)}</ul>
+      </section>
+      <section aria-labelledby="tools-title">
+        <p class="section-number" aria-hidden="true">04</p>
+        <h2 id="tools-title">{copy.about.toolsTitle}</h2>
+        <dl>{profile.tools.map((group) => <div><dt>{group.label}</dt><dd>{group.items}</dd></div>)}</dl>
+      </section>
+    </div>
+
+    <a class="contact-cta" href={getLocalizedPath(locale, 'contact')}>
+      <span>{locale === 'en' ? 'Have something worth talking about?' : '¿Tienes algo de lo que merezca la pena hablar?'}</span>
+      <strong>{copy.about.contactLink}<span aria-hidden="true"> ↗</span></strong>
+    </a>
+  </article>
+</BaseLayout>
+
+<style>
+  .about-shell { display: grid; max-width: var(--size-content); margin-inline: auto; padding: var(--space-section) var(--space-page) var(--space-24); gap: var(--space-20); }
+  .about-header { display: grid; gap: var(--space-8); }
+  .header-copy { display: grid; align-content: center; gap: var(--space-5); }
+  .header-copy h1 { max-width: 15ch; font-size: var(--font-size-2xl); }
+  .lede { max-width: var(--size-prose); color: var(--color-text-muted); font-size: var(--font-size-lg); }
+  .about-header img { width: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius-lg); object-fit: cover; }
+  .story { display: grid; max-width: 54rem; gap: var(--space-6); color: var(--color-text-muted); font-family: var(--font-display); font-size: var(--font-size-lg); }
+  .story aside { display: grid; margin-block-start: var(--space-4); padding: var(--space-8); border-radius: var(--radius-lg); background: var(--color-surface); gap: var(--space-3); color: var(--color-text); font-family: var(--font-sans); font-size: var(--font-size-base); }
+  .story aside h2 { font-size: var(--font-size-lg); }
+  .profile-section { display: grid; gap: var(--space-8); }
+  .profile-section > header { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: var(--space-6); }
+  .section-number { color: var(--color-accent); font-family: var(--font-mono); font-size: var(--font-size-sm); }
+  .timeline, .education { display: grid; margin: 0; padding: 0; list-style: none; }
+  .timeline li, .education li { display: grid; padding-block: var(--space-5); border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-3); }
+  h3 { font-size: var(--font-size-md); }
+  .organization, .education li div p { color: var(--color-accent); }
+  .period, .description, .profile-pair li, dd { color: var(--color-text-muted); }
+  .description { max-width: var(--size-prose); }
+  .profile-pair { display: grid; gap: var(--space-12); }
+  .profile-pair section { display: grid; align-content: start; gap: var(--space-4); }
+  .profile-pair ul { display: grid; margin: 0; padding: 0; gap: var(--space-2); list-style: none; }
+  .profile-pair dl { display: grid; gap: var(--space-5); }
+  .profile-pair dl div { display: grid; gap: var(--space-1); }
+  dt { font-weight: var(--font-weight-medium); }
+  dd { margin: 0; }
+  .contact-cta { display: flex; padding: var(--space-8); border-radius: var(--radius-lg); background: var(--color-text); color: var(--color-background); gap: var(--space-4); justify-content: space-between; flex-wrap: wrap; text-decoration: none; }
+  .contact-cta:hover { color: var(--color-surface); }
+  @media (min-width: 48rem) {
+    .about-header { grid-template-columns: minmax(0, 1.2fr) minmax(18rem, .8fr); align-items: center; }
+    .timeline li { grid-template-columns: minmax(0, 1fr) auto; }
+    .timeline .description { grid-column: 1 / -1; }
+    .education li { grid-template-columns: minmax(0, 1fr) auto; }
+    .profile-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

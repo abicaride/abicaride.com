@@ -19,11 +19,11 @@ export async function getProjectStaticPaths(locale: Locale) {
     );
 
     return {
-      params: { slug: project.data.slug },
+      params: { slug: project.data.routeSlug },
       props: {
         project,
         alternatePath: translation
-          ? getLocalizedPath(otherLocale, `projects/${translation.data.slug}`)
+          ? getLocalizedPath(otherLocale, `projects/${translation.data.routeSlug}`)
           : getLocalizedPath(otherLocale, 'projects'),
       } satisfies ProjectRouteProps,
     };
