@@ -1,6 +1,7 @@
 ---
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import AnalyticsConsent from '../components/AnalyticsConsent.astro';
 import {
   defaultLocale,
   switchLocalePath,
@@ -59,6 +60,7 @@ const defaultUrl = new URL(localizedPaths[defaultLocale], Astro.site);
       </main>
       <SiteFooter locale={locale} />
     </div>
+    <AnalyticsConsent locale={locale} />
   </body>
 </html>
 

@@ -1,0 +1,125 @@
+---
+import { getLocalizedPath, ui, type Locale } from '../i18n/config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = ui[locale].consent;
+const privacyPath = getLocalizedPath(locale, locale === 'en' ? 'privacy' : 'privacidad');
+---
+
+<section
+  class="analytics-consent"
+  data-analytics-consent
+  data-measurement-id="G-EE2ZYBVEH6"
+  data-status-granted={copy.currentAccepted}
+  data-status-denied={copy.currentRejected}
+  role="region"
+  aria-labelledby="analytics-consent-title"
+  aria-describedby="analytics-consent-description"
+  hidden
+>
+  <div class="consent-copy">
+    <h2 id="analytics-consent-title" tabindex="-1">{copy.title}</h2>
+    <p id="analytics-consent-description">{copy.description}</p>
+    <a href={privacyPath}>{copy.details}</a>
+    <p class="consent-status" data-consent-status aria-live="polite" hidden></p>
+  </div>
+  <div class="consent-actions">
+    <button type="button" class="button-primary" data-consent-choice="granted">{copy.accept}</button>
+    <button type="button" class="button-secondary" data-consent-choice="denied">{copy.reject}</button>
+  </div>
+</section>
+
+<script src="/scripts/analytics-consent.js" defer></script>
+
+<style>
+  .analytics-consent {
+    position: fixed;
+    z-index: 20;
+    inset-inline: var(--space-page);
+    inset-block-end: var(--space-page);
+    display: grid;
+    max-width: var(--size-content);
+    margin-inline: auto;
+    padding: var(--space-5);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-background);
+    box-shadow: 0 var(--space-2) var(--space-8) color-mix(in srgb, var(--color-text) 16%, transparent);
+    gap: var(--space-5);
+  }
+
+  .analytics-consent[hidden] {
+    display: none;
+  }
+
+  .consent-copy {
+    display: grid;
+    max-width: var(--size-prose);
+    gap: var(--space-2);
+  }
+
+  h2 {
+    font-size: var(--font-size-lg);
+  }
+
+  p {
+    color: var(--color-text-muted);
+  }
+
+  a,
+  .consent-status {
+    font-size: var(--font-size-sm);
+  }
+
+  .consent-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  button {
+    min-height: 2.75rem;
+    padding: var(--space-2) var(--space-5);
+    border: var(--border-width) solid var(--color-text);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    font-weight: var(--font-weight-medium);
+  }
+
+  .button-primary {
+    background: var(--color-text);
+    color: var(--color-background);
+  }
+
+  .button-primary:hover {
+    background: var(--color-accent-strong);
+    border-color: var(--color-accent-strong);
+  }
+
+  .button-secondary {
+    background: transparent;
+    color: var(--color-text);
+  }
+
+  .button-secondary:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  @media (min-width: 45rem) {
+    .analytics-consent {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      padding: var(--space-6);
+    }
+
+    .consent-actions {
+      justify-content: end;
+    }
+  }
+</style>

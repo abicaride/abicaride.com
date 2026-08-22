@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = ui[locale].privacy;
+const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
+const alternatePath = getLocalizedPath(otherLocale, otherLocale === 'en' ? 'privacy' : 'privacidad');
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  locale={locale}
+  alternatePath={alternatePath}
+>
+  <article class="privacy-shell">
+    <header class="privacy-header">
+      <p class="eyebrow">{copy.eyebrow}</p>
+      <h1>{copy.heading}</h1>
+      <p class="lede">{copy.introduction}</p>
+    </header>
+
+    <div class="privacy-content">
+      <section>
+        <h2>{copy.analyticsTitle}</h2>
+        <p>{copy.analyticsText}</p>
+      </section>
+      <section>
+        <h2>{copy.consentTitle}</h2>
+        <p>{copy.consentText}</p>
+      </section>
+      <section>
+        <h2>{copy.storageTitle}</h2>
+        <p>{copy.storageText}</p>
+      </section>
+      <section>
+        <h2>{copy.changeTitle}</h2>
+        <p>{copy.changeText}</p>
+        <a href={Astro.url.pathname} data-cookie-settings>{ui[locale].footer.cookieSettings}</a>
+      </section>
+      <section>
+        <h2>{copy.providerTitle}</h2>
+        <p>{copy.providerText} <a href="mailto:abicaride@gmail.com">abicaride@gmail.com</a>.</p>
+        <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
+          {copy.googlePrivacy}<span aria-hidden="true"> ↗</span>
+        </a>
+      </section>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .privacy-shell {
+    display: grid;
+    max-width: var(--size-content);
+    margin-inline: auto;
+    padding: var(--space-section) var(--space-page) var(--space-24);
+    gap: var(--space-12);
+  }
+
+  .privacy-header {
+    display: grid;
+    max-width: 54rem;
+    gap: var(--space-5);
+  }
+
+  h1 {
+    max-width: 14ch;
+  }
+
+  .lede {
+    max-width: var(--size-prose);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-lg);
+  }
+
+  .privacy-content {
+    display: grid;
+    max-width: var(--size-narrow);
+  }
+
+  .privacy-content section {
+    display: grid;
+    padding-block: var(--space-6);
+    border-block-start: var(--border-width) solid var(--color-border);
+    gap: var(--space-3);
+  }
+
+  .privacy-content h2 {
+    font-size: var(--font-size-lg);
+  }
+
+  .privacy-content p {
+    color: var(--color-text-muted);
+  }
+
+  .privacy-content a {
+    justify-self: start;
+  }
+</style>

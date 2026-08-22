@@ -25,6 +25,41 @@ export const ui = {
     footer: {
       rights: 'All rights reserved.',
       note: 'Content, communication and digital experiences.',
+      privacy: 'Privacy & cookies',
+      cookieSettings: 'Cookie settings',
+    },
+    consent: {
+      title: 'Analytics',
+      description: 'We use Google Analytics to understand how this website is used and improve it.',
+      accept: 'Accept',
+      reject: 'Reject',
+      details: 'Privacy details',
+      currentAccepted: 'Current choice: analytics accepted.',
+      currentRejected: 'Current choice: analytics rejected.',
+    },
+    privacy: {
+      title: 'Privacy & cookies',
+      description: 'How this website handles analytics, consent and locally stored preferences.',
+      eyebrow: 'Your choice comes first',
+      heading: 'Optional analytics, off until you say yes.',
+      introduction:
+        'This website uses Google Analytics 4 only when you explicitly accept analytics. Rejecting it does not affect the website.',
+      analyticsTitle: 'Google Analytics',
+      analyticsText:
+        'If you accept, the Google tag loads and sends standard page-view information and any standard enhanced measurements enabled for this GA4 data stream. This may include the page visited, referrer, browser and device information, and approximate location derived from the IP address. This website defines no custom events and sends no user IDs.',
+      consentTitle: 'Consent settings',
+      consentText:
+        'Before consent—and after rejection—the Google tag is not downloaded, Google Analytics cookies are not created, and this website sends no analytics requests to Google. Analytics storage is granted only after acceptance. Advertising storage, advertising user data and advertising personalization are always denied.',
+      storageTitle: 'What is stored locally',
+      storageText:
+        'Your analytics choice is saved in your browser’s local storage for up to 180 days so the question does not appear on every page. This preference is functional local data, not analytics data. If analytics is accepted, Google Analytics may set cookies such as _ga and _ga_<container-id>.',
+      changeTitle: 'Changing your choice',
+      changeText:
+        'Use “Cookie settings” in the footer at any time. Withdrawing consent clears accessible Google Analytics cookies and reloads the page without the Google tag.',
+      providerTitle: 'Provider and contact',
+      providerText:
+        'Google processes analytics data under its own terms and privacy documentation. Questions about this website’s privacy choices can be sent to',
+      googlePrivacy: 'Read Google’s privacy policy',
     },
     home: {
       eyebrow: 'Content · Communication · UX thinking',
@@ -106,6 +141,41 @@ export const ui = {
     footer: {
       rights: 'Todos los derechos reservados.',
       note: 'Contenido, comunicación y experiencias digitales.',
+      privacy: 'Privacidad y cookies',
+      cookieSettings: 'Configurar cookies',
+    },
+    consent: {
+      title: 'Analítica',
+      description: 'Usamos Google Analytics para entender cómo se utiliza esta web y mejorarla.',
+      accept: 'Aceptar',
+      reject: 'Rechazar',
+      details: 'Información de privacidad',
+      currentAccepted: 'Elección actual: analítica aceptada.',
+      currentRejected: 'Elección actual: analítica rechazada.',
+    },
+    privacy: {
+      title: 'Privacidad y cookies',
+      description: 'Cómo gestiona esta web la analítica, el consentimiento y las preferencias guardadas localmente.',
+      eyebrow: 'Tu elección va primero',
+      heading: 'Analítica opcional, desactivada hasta que tú digas que sí.',
+      introduction:
+        'Esta web utiliza Google Analytics 4 únicamente cuando aceptas expresamente la analítica. Rechazarla no afecta al funcionamiento de la web.',
+      analyticsTitle: 'Google Analytics',
+      analyticsText:
+        'Si aceptas, la etiqueta de Google se carga y envía a Google Analytics información estándar sobre las páginas vistas y las mediciones mejoradas estándar que estén activadas para este flujo de datos de GA4. Puede incluir la página visitada, la procedencia, información del navegador y del dispositivo, y una ubicación aproximada derivada de la dirección IP. Esta web no define eventos personalizados ni envía identificadores de usuario.',
+      consentTitle: 'Configuración del consentimiento',
+      consentText:
+        'Antes del consentimiento —y después de rechazarlo— no se descarga la etiqueta de Google, no se crean cookies de Google Analytics y esta web no envía solicitudes de analítica a Google. El almacenamiento de analítica solo se concede después de aceptar. El almacenamiento publicitario, los datos de usuario para publicidad y la personalización publicitaria están siempre denegados.',
+      storageTitle: 'Qué se guarda localmente',
+      storageText:
+        'Tu elección sobre analítica se guarda en el almacenamiento local del navegador durante un máximo de 180 días para no preguntarte en cada página. Esta preferencia es un dato local funcional, no un dato analítico. Si aceptas la analítica, Google Analytics puede crear cookies como _ga y _ga_<identificador-del-contenedor>.',
+      changeTitle: 'Cambiar tu elección',
+      changeText:
+        'Puedes usar “Configurar cookies” en el pie de página en cualquier momento. Al retirar el consentimiento se eliminan las cookies accesibles de Google Analytics y la página se vuelve a cargar sin la etiqueta de Google.',
+      providerTitle: 'Proveedor y contacto',
+      providerText:
+        'Google trata los datos de analítica de acuerdo con sus propias condiciones y documentación de privacidad. Puedes enviar preguntas sobre las decisiones de privacidad de esta web a',
+      googlePrivacy: 'Leer la política de privacidad de Google',
     },
     home: {
       eyebrow: 'Contenido · Comunicación · Criterio UX',
