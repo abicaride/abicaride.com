@@ -77,7 +77,7 @@ components:
   project_draft:
     label: Draft
     type: boolean
-    default: false
+    default: true
     description: Draft projects are excluded from generated project routes and listings.
 
   project_image:

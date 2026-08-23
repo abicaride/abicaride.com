@@ -9,6 +9,7 @@ const { locale } = Astro.props;
 const copy = ui[locale];
 const currentYear = new Date().getFullYear();
 const privacyPath = getLocalizedPath(locale, locale === 'en' ? 'privacy' : 'privacidad');
+const architecturePath = getLocalizedPath(locale, locale === 'en' ? 'architecture' : 'arquitectura');
 ---
 
 <footer class="site-footer">
@@ -16,6 +17,14 @@ const privacyPath = getLocalizedPath(locale, locale === 'en' ? 'privacy' : 'priv
     <div class="footer-copy">
       <p class="footer-name">{copy.siteName}</p>
       <p>{copy.footer.note}</p>
+      <a
+        class="build-note"
+        href={architecturePath}
+        aria-label={copy.footer.buildDetails}
+        title={copy.footer.buildDetails}
+      >
+        <span aria-hidden="true">{copy.footer.buildNote} →</span>
+      </a>
     </div>
     <div class="footer-meta">
       <a href="mailto:abicaride@gmail.com">abicaride@gmail.com</a>
@@ -55,6 +64,17 @@ const privacyPath = getLocalizedPath(locale, locale === 'en' ? 'privacy' : 'priv
     color: var(--color-text);
     font-family: var(--font-display);
     font-size: var(--font-size-lg);
+  }
+
+  .build-note {
+    width: fit-content;
+    color: var(--color-text-muted);
+    text-decoration-style: dotted;
+  }
+
+  .build-note:hover {
+    color: var(--color-accent-strong);
+    text-decoration-style: solid;
   }
 
   .footer-meta {

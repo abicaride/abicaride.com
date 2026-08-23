@@ -1,0 +1,151 @@
+import type { Locale } from '../i18n/config';
+
+interface ArchitectureStep {
+  icon: string;
+  name: string;
+  description: string;
+}
+
+interface ArchitectureCopy {
+  title: string;
+  description: string;
+  eyebrow: string;
+  heading: string;
+  introduction: string;
+  flowTitle: string;
+  flow: ArchitectureStep[];
+  collaborationTitle: string;
+  collaborationText: string;
+  principlesTitle: string;
+  principles: string[];
+  sourceTitle: string;
+  sourceText: string;
+  sourceLink: string;
+}
+
+export const architectureCopy: Record<Locale, ArchitectureCopy> = {
+  en: {
+    title: 'How this website works',
+    description:
+      'A friendly tour of the design, content, build and deployment workflow behind abicaride.com.',
+    eyebrow: 'Under the hood',
+    heading: 'A small static website with a friendly little toolchain.',
+    introduction:
+      'This website stays simple on purpose. Each tool has one clear job, the content remains portable, and the finished pages reach your browser as fast static HTML.',
+    flowTitle: 'From an idea to your screen',
+    flow: [
+      {
+        icon: '🎨',
+        name: 'Figma',
+        description:
+          'Abi and Albert explore visual ideas and agree on design direction before it becomes code.',
+      },
+      {
+        icon: '✍️',
+        name: 'Pages CMS',
+        description:
+          'Abi edits English and Spanish project content through a friendly form. New projects begin as drafts.',
+      },
+      {
+        icon: '🐙',
+        name: 'GitHub',
+        description:
+          'The code, Markdown content and images live together here, with every change recorded in version history.',
+      },
+      {
+        icon: '🚀',
+        name: 'Astro',
+        description:
+          'Astro combines shared bilingual components, content and optimized images into static pages.',
+      },
+      {
+        icon: '⚙️',
+        name: 'GitHub Actions',
+        description:
+          'Every accepted change to the main branch is built and checked automatically before publication.',
+      },
+      {
+        icon: '🌍',
+        name: 'GitHub Pages',
+        description:
+          'The finished static website is published at abicaride.com, with no application server required.',
+      },
+    ],
+    collaborationTitle: 'Where Codex fits',
+    collaborationText:
+      'Codex helps Albert implement and verify changes, document decisions and keep the architecture tidy. It is a collaborator in the workshop—not something visitors need to download or run.',
+    principlesTitle: 'The rules of the build',
+    principles: [
+      'Static HTML first, with almost no browser JavaScript.',
+      'English and Spanish share the same components instead of duplicating pages.',
+      'Project content stays in portable Markdown files rather than a proprietary database.',
+      'Analytics remains optional and does not load before consent.',
+    ],
+    sourceTitle: 'Curious enough to inspect the wiring?',
+    sourceText:
+      'The repository is public and includes the deeper architecture decisions, diagrams and working agreements behind the website.',
+    sourceLink: 'Explore the technical architecture on GitHub',
+  },
+  es: {
+    title: 'Cómo funciona esta web',
+    description:
+      'Un recorrido sencillo por el diseño, el contenido, la construcción y el despliegue de abicaride.com.',
+    eyebrow: 'Entre bambalinas',
+    heading: 'Una web estática y pequeña, con herramientas muy bien avenidas.',
+    introduction:
+      'Esta web se mantiene sencilla a propósito. Cada herramienta tiene una función clara, el contenido sigue siendo portable y las páginas llegan al navegador como HTML estático y rápido.',
+    flowTitle: 'De una idea a tu pantalla',
+    flow: [
+      {
+        icon: '🎨',
+        name: 'Figma',
+        description:
+          'Abi y Albert exploran ideas visuales y acuerdan la dirección de diseño antes de convertirla en código.',
+      },
+      {
+        icon: '✍️',
+        name: 'Pages CMS',
+        description:
+          'Abi edita el contenido de los proyectos en español e inglés mediante un formulario sencillo. Los proyectos nuevos empiezan como borradores.',
+      },
+      {
+        icon: '🐙',
+        name: 'GitHub',
+        description:
+          'El código, el contenido Markdown y las imágenes viven juntos aquí, con cada cambio guardado en el historial.',
+      },
+      {
+        icon: '🚀',
+        name: 'Astro',
+        description:
+          'Astro combina los componentes bilingües compartidos, el contenido y las imágenes optimizadas en páginas estáticas.',
+      },
+      {
+        icon: '⚙️',
+        name: 'GitHub Actions',
+        description:
+          'Cada cambio aceptado en la rama principal se construye y comprueba automáticamente antes de publicarse.',
+      },
+      {
+        icon: '🌍',
+        name: 'GitHub Pages',
+        description:
+          'La web estática terminada se publica en abicaride.com sin necesitar un servidor de aplicaciones.',
+      },
+    ],
+    collaborationTitle: 'Dónde encaja Codex',
+    collaborationText:
+      'Codex ayuda a Albert a implementar y comprobar cambios, documentar decisiones y mantener ordenada la arquitectura. Colabora en el taller, pero quienes visitan la web no tienen que descargarlo ni ejecutarlo.',
+    principlesTitle: 'Las reglas del juego',
+    principles: [
+      'HTML estático primero, con casi nada de JavaScript en el navegador.',
+      'El inglés y el español comparten componentes en lugar de duplicar páginas.',
+      'El contenido de los proyectos permanece en archivos Markdown portables, no en una base de datos propietaria.',
+      'La analítica es opcional y no se carga antes del consentimiento.',
+    ],
+    sourceTitle: '¿Te apetece mirar el cableado?',
+    sourceText:
+      'El repositorio es público e incluye las decisiones de arquitectura, los diagramas y los acuerdos de trabajo que sostienen la web.',
+    sourceLink: 'Explorar la arquitectura técnica en GitHub',
+  },
+};

@@ -27,6 +27,8 @@ export const ui = {
       note: 'Content, communication and digital experiences.',
       privacy: 'Privacy & cookies',
       cookieSettings: 'Cookie settings',
+      buildNote: 'Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.',
+      buildDetails: 'Made with Astro, Pages CMS and Codex. See how this website is made.',
     },
     consent: {
       title: 'Analytics',
@@ -159,6 +161,8 @@ export const ui = {
       note: 'Contenido, comunicación y experiencias digitales.',
       privacy: 'Privacidad y cookies',
       cookieSettings: 'Configurar cookies',
+      buildNote: 'Hecha con 🚀 Astro, ✍️ Pages CMS, 🤖 Codex y mucho ❤️.',
+      buildDetails: 'Hecha con Astro, Pages CMS y Codex. Descubre cómo está hecha esta web.',
     },
     consent: {
       title: 'Analítica',
