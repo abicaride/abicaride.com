@@ -1,0 +1,312 @@
+media:
+  - name: project_images
+    label: Project images
+    input: src/assets/images/projects
+    output: ../../../assets/images/projects
+    categories: [image]
+    extensions: [jpg, jpeg, png, webp, avif]
+    rename: safe
+
+components:
+  project_title:
+    label: Title
+    type: string
+    required: true
+
+  project_description:
+    label: Description
+    type: text
+    required: true
+    description: Localized summary used on project listings and in page metadata.
+
+  project_route_slug:
+    label: Route slug
+    type: string
+    required: true
+    pattern:
+      regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      message: Use lowercase letters, numbers and single hyphens only.
+    description: Preserve existing localized slugs unless the public URL should intentionally change.
+
+  project_translation_key:
+    label: Translation key
+    type: string
+    required: true
+    description: Must match the corresponding project in the other language.
+
+  project_category:
+    label: Category
+    type: string
+    required: true
+
+  project_year:
+    label: Year
+    type: number
+    description: Optional whole-number year. Astro validates that the value is an integer.
+
+  project_company:
+    label: Company
+    type: string
+
+  project_client:
+    label: Client
+    type: string
+
+  project_role:
+    label: Role
+    type: string
+
+  project_period:
+    label: Period
+    type: string
+    description: Optional human-readable period, for example 2023–2024.
+
+  project_featured:
+    label: Featured
+    type: boolean
+    default: false
+
+  project_order:
+    label: Display order
+    type: number
+    required: true
+    description: Positive whole number. Astro performs the final integer validation.
+    options:
+      min: 1
+
+  project_draft:
+    label: Draft
+    type: boolean
+    default: false
+    description: Draft projects are excluded from generated project routes and listings.
+
+  project_image:
+    label: Hero image
+    type: object
+    required: true
+    fields:
+      - name: src
+        label: Image
+        type: image
+        required: true
+        options:
+          media: project_images
+          categories: [image]
+          extensions: [jpg, jpeg, png, webp, avif]
+      - name: alt
+        label: Alternative text
+        type: text
+        required: true
+        description: Describe the image in the language of this project.
+
+  project_metrics:
+    label: Metrics
+    type: object
+    list:
+      collapsible:
+        collapsed: true
+        summary: "{value} — {label}"
+    fields:
+      - name: value
+        label: Value
+        type: string
+        required: true
+      - name: label
+        label: Label
+        type: string
+        required: true
+      - name: detail
+        label: Detail
+        type: text
+
+  project_gallery:
+    label: Gallery
+    type: object
+    list:
+      collapsible:
+        collapsed: true
+        summary: "{alt}"
+    fields:
+      - name: src
+        label: Image
+        type: image
+        required: true
+        options:
+          media: project_images
+          categories: [image]
+          extensions: [jpg, jpeg, png, webp, avif]
+      - name: alt
+        label: Alternative text
+        type: text
+        required: true
+      - name: caption
+        label: Caption
+        type: text
+
+  project_external_url:
+    label: External URL
+    type: string
+
+  project_external_label:
+    label: External link label
+    type: string
+
+  project_tags:
+    label: Tags
+    type: string
+    list: true
+
+  project_body:
+    label: Narrative
+    type: rich-text
+    required: true
+    description: The primary case-study narrative, stored as Markdown after the frontmatter.
+    options:
+      format: markdown
+      switcher: true
+      media: false
+
+content:
+  - name: projects_en
+    label: Projects — English
+    type: collection
+    path: src/content/projects/en
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      template: "{routeSlug}.md"
+      field: create
+    view:
+      fields: [title, category, featured, order, draft]
+      primary: title
+      sort: [order, title]
+      search: [title, description, category, tags]
+      default:
+        sort: order
+        order: asc
+    fields:
+      - name: title
+        component: project_title
+      - name: description
+        component: project_description
+      - name: locale
+        label: Language
+        type: select
+        required: true
+        readonly: true
+        default: en
+        description: Fixed for the English project collection.
+        options:
+          values:
+            - name: en
+              label: English (en)
+      - name: routeSlug
+        component: project_route_slug
+      - name: translationKey
+        component: project_translation_key
+      - name: category
+        component: project_category
+      - name: year
+        component: project_year
+      - name: company
+        component: project_company
+      - name: client
+        component: project_client
+      - name: role
+        component: project_role
+      - name: period
+        component: project_period
+      - name: featured
+        component: project_featured
+      - name: order
+        component: project_order
+      - name: draft
+        component: project_draft
+      - name: image
+        component: project_image
+      - name: metrics
+        component: project_metrics
+      - name: gallery
+        component: project_gallery
+      - name: externalUrl
+        component: project_external_url
+      - name: externalLabel
+        component: project_external_label
+      - name: tags
+        component: project_tags
+      - name: body
+        component: project_body
+
+  - name: projects_es
+    label: Projects — Spanish
+    type: collection
+    path: src/content/projects/es
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      template: "{routeSlug}.md"
+      field: create
+    view:
+      fields: [title, category, featured, order, draft]
+      primary: title
+      sort: [order, title]
+      search: [title, description, category, tags]
+      default:
+        sort: order
+        order: asc
+    fields:
+      - name: title
+        component: project_title
+      - name: description
+        component: project_description
+      - name: locale
+        label: Language
+        type: select
+        required: true
+        readonly: true
+        default: es
+        description: Fixed for the Spanish project collection.
+        options:
+          values:
+            - name: es
+              label: Spanish (es)
+      - name: routeSlug
+        component: project_route_slug
+      - name: translationKey
+        component: project_translation_key
+      - name: category
+        component: project_category
+      - name: year
+        component: project_year
+      - name: company
+        component: project_company
+      - name: client
+        component: project_client
+      - name: role
+        component: project_role
+      - name: period
+        component: project_period
+      - name: featured
+        component: project_featured
+      - name: order
+        component: project_order
+      - name: draft
+        component: project_draft
+      - name: image
+        component: project_image
+      - name: metrics
+        component: project_metrics
+      - name: gallery
+        component: project_gallery
+      - name: externalUrl
+        component: project_external_url
+      - name: externalLabel
+        component: project_external_label
+      - name: tags
+        component: project_tags
+      - name: body
+        component: project_body
+
+settings:
+  content:
+    merge: true

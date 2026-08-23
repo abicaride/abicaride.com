@@ -8,6 +8,8 @@ the decisions that explain why the architecture exists.
 ## Status vocabulary
 
 - **Implemented** — present in the repository or current operating environment.
+- **External workflow** — adopted tooling that operates outside Astro at build
+  and runtime.
 - **Planned** — intended direction, not yet implemented.
 - **Under consideration** — possible evolution without a committed decision.
 
@@ -42,7 +44,7 @@ exception because it must respond to a visitor's local choice.
 ### Git as the production source of truth
 
 Code, content, configuration and relevant assets live in the GitHub repository.
-Figma expresses design intention, and a future CMS will edit Git-managed files;
+Figma expresses design intention, and Pages CMS edits Git-managed project files;
 neither replaces the repository.
 
 ### Content separated from presentation
@@ -62,9 +64,9 @@ enhancements.
 flowchart TD
     ABI["Abi"] --> FIGMA["Figma"]
     ABI --> EDIT["Codex or developer"]
-    ABI -.-> CMS["Pages CMS (Planned)"]
+    ABI --> CMS["Pages CMS"]
     FIGMA -->|"Approved visual direction"| EDIT
-    CMS -.->|"Edits Git-managed content"| REPO
+    CMS -->|"Edits project content"| REPO
     EDIT -->|"Code and content"| REPO["GitHub repository"]
     CONTENT["Markdown + frontmatter"] --> REPO
     ASSETS["Source images"] --> REPO
@@ -76,9 +78,9 @@ flowchart TD
     SITE -->|"Only after consent"| GA["Google Analytics 4"]
 ```
 
-Solid connections exist today. Dashed Pages CMS connections are planned.
-Cloudflare is operational context documented by the project; its configuration
-is external to this repository.
+The Pages CMS connection is an external editorial workflow, not an Astro runtime
+dependency. Cloudflare is operational context documented by the project; its
+configuration is external to this repository.
 
 ## Technology stack
 
@@ -120,16 +122,15 @@ Astro is the only production dependency in `package.json`.
 - Git and GitHub for source control;
 - Codex or a local editor for implementation work.
 
-### Editorial — Planned
+### Editorial — External workflow
 
-- Pages CMS as the leading Git-based CMS candidate, subject to a proof of
-  concept;
-- a separate Writing collection for articles, notes or insights;
-- an editorial interface for routine content changes.
+- a Projects-only Pages CMS configuration for routine EN/ES project changes;
+- GitHub authentication and repository permissions for each editor;
+- the existing Markdown, frontmatter and source images as the edited data.
 
 ### Under consideration
 
-- whether CMS changes commit directly to `main` or use pull requests;
+- a separate Writing collection for articles, notes or insights;
 - which selected static-page content, if any, should become CMS-editable;
 - preview and editorial validation behaviour.
 
@@ -345,32 +346,35 @@ flowchart LR
     CHECK -->|"No"| STOP["Stop; previous production remains"]
 ```
 
-The pipeline is independent of whether a future commit originates in Pages CMS,
+The pipeline is independent of whether a commit originates in Pages CMS,
 Codex, VS Code or another Git client. GitHub Pages hosts the output; Cloudflare
 manages DNS outside the repository and does not replace the deploy pipeline.
 
-## CMS architecture — Planned
+## CMS architecture — Adopted external workflow
 
-Pages CMS is the leading candidate for a future editorial layer, subject to a
-proof of concept. It is not installed or configured, and this repository has no
-`.pages.yml`.
+Pages CMS is the external editorial layer for projects. Repository-root
+`.pages.yml` maps the existing English and Spanish collections without changing
+the Astro schema. Pages CMS is not installed in the Astro application.
 
 ```mermaid
 flowchart LR
-    ABI["Abi"] -.-> CMS["Pages CMS (Planned)"]
-    CMS -.-> FILES["Markdown, frontmatter and images"]
+    ABI["Abi"] --> CMS["Pages CMS"]
+    CMS --> FILES["Markdown, frontmatter and images"]
     FILES --> REPO["GitHub repository"]
     REPO --> BUILD["Existing Astro build"]
     BUILD --> SITE["abicaride.com"]
 ```
 
-The CMS should remain an interface over Git-managed files, not a new source of
-truth or database. The proof of concept must validate bilingual project pairs,
-nested metrics, galleries, Astro image paths, Markdown editing, commits and the
-existing deployment workflow.
+The CMS remains an interface over Git-managed files, not a new source of truth
+or database. Each editor authenticates with their own GitHub account. The GitHub
+App is repository-scoped rather than branch-scoped; GitHub permissions and branch
+rules control whether an editor can commit to `main`.
 
-It is planned primarily for projects and a future Writing collection. Making
-selected static-page content editable remains under consideration.
+See [the validation report](CMS-POC.md) for the tested matrix and image-path
+findings.
+
+The adopted scope is projects only. A future Writing collection and making
+selected static-page content editable remain separate decisions.
 
 See [ADR 006](decisions/006-pages-cms.md) for alternatives and trade-offs.
 
