@@ -8,9 +8,9 @@ The simple mental model is:
 
 > **The website lives in GitHub.**
 >
-> Figma is where we decide how it should look. A future CMS will be where Abi
-> edits routine content. Codex or a developer helps change what the website can
-> do. Astro builds it. GitHub Actions publishes it.
+> Figma is where we decide how it should look. Pages CMS is where Abi edits
+> routine project content. Codex or a developer helps change what the website
+> can do. Astro builds it. GitHub Actions publishes it.
 
 ## What exists today?
 
@@ -21,11 +21,12 @@ The simple mental model is:
 | GitHub | Implemented | The source files and their history |
 | Astro | Implemented | Turning content and code into the static website |
 | GitHub Actions | Implemented | Publishing changes pushed to `main` |
-| Pages CMS | Planned | A friendlier way for Abi to edit routine content |
+| Pages CMS | Implemented externally | Routine English and Spanish project content |
 | Writing section | Planned | Articles, notes or insights separate from projects |
 
-Pages CMS and Writing are not available yet. Until they are, content changes go
-through Codex or direct editing of the repository.
+Pages CMS edits the existing project Markdown and source images in GitHub.
+Writing and non-project pages are not CMS-managed. See the
+[Pages CMS validation report](CMS-POC.md).
 
 ## The simplest rule
 
@@ -38,9 +39,8 @@ through Codex or direct editing of the repository.
 ```mermaid
 flowchart TD
     Q{"What do you want to change?"}
-    Q -->|"Words, images or project information"| CONTENT{"Is the CMS available?"}
-    CONTENT -->|"Not yet"| DIRECT["Codex or direct editing"]
-    CONTENT -->|"Future"| CMS["Pages CMS (Planned)"]
+    Q -->|"Project words, images or metadata"| CMS["Pages CMS"]
+    Q -->|"Other existing content"| DIRECT["Codex or direct editing"]
     Q -->|"How something should look"| FIGMA["Figma"]
     Q -->|"What the website can do"| DEV["Codex or development"]
     FIGMA -->|"Approved direction"| DEV
@@ -52,24 +52,36 @@ flowchart TD
 
 ## Change a sentence
 
-Today:
+For project content:
 
 ```mermaid
 flowchart LR
-    ABI["Abi"] --> EDIT["Codex or editor"]
-    EDIT --> FILE["Existing content file"]
+    ABI["Abi"] --> CMS["Pages CMS"]
+    CMS --> FILE["Existing project content file"]
     FILE --> GIT["GitHub"]
     GIT --> SITE["Updated website"]
 ```
 
-Once Pages CMS is connected, the intended routine becomes:
+The routine project workflow is:
 
 ```text
 Abi → Pages CMS → save → GitHub → automatic build → website
 ```
 
-The CMS will edit the same files that exist today. It will not create a second
+The CMS edits the same files that exist today. It does not create a second
 content database.
+
+### Access and branch permissions
+
+The Pages CMS GitHub App is installed once for the `abicaride.com` repository;
+there is no separate App installation per branch. Each editor signs into Pages
+CMS with their own GitHub account, and GitHub repository permissions and branch
+protection determine what that person can save.
+
+Abi should use her own GitHub account for editorial work. Albert can edit only
+while his GitHub account retains suitable repository access. Neither editor
+needs ownership transferred. Routine saves to `main` trigger the existing GitHub
+Actions deployment, just like any other commit.
 
 ## Add a case study
 
@@ -77,11 +89,11 @@ Today, a case study is added as an English and Spanish pair of Markdown files,
 plus images in the repository. Codex or a developer can prepare and validate the
 pair.
 
-Future CMS workflow:
+CMS workflow:
 
 ```mermaid
 flowchart LR
-    ABI["Abi"] --> FORM["Project form (Planned)"]
+    ABI["Abi"] --> FORM["Pages CMS project form"]
     FORM --> CONTENT["EN/ES content + images"]
     CONTENT --> GIT["GitHub"]
     GIT --> ASTRO["Astro renders the case study"]

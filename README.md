@@ -15,6 +15,7 @@ proprietary CMS or client-side UI framework.
 - [Architecture](docs/ARCHITECTURE.md) — how the technical system is designed
 - [Workflow](docs/WORKFLOW.md) — where to go when changing content, design or code
 - [Architecture decisions](docs/decisions/) — why the main decisions were made
+- [Pages CMS validation](docs/CMS-POC.md) — tested Projects-only editorial integration
 - [Agent instructions](AGENTS.md) — rules for AI-assisted changes
 
 ## 🚀 Technology
@@ -29,8 +30,9 @@ proprietary CMS or client-side UI framework.
 - ⚙️ GitHub Actions and GitHub Pages
 - ☁️ Cloudflare-managed DNS
 
-Astro is the only production dependency. Pages CMS and a separate Writing
-collection are planned but are not implemented.
+Astro is the only production dependency. Pages CMS is an external editorial
+interface for English and Spanish projects; it adds no Astro runtime dependency.
+A separate Writing collection remains planned and is not implemented.
 
 ## 🛠️ Getting started
 
