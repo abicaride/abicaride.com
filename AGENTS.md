@@ -51,7 +51,9 @@ implementation rules.
 ## Routing and internationalization
 
 - All public content routes are locale-prefixed under `/en/` and `/es/`.
-  The root route redirects to `/en/`.
+  The non-indexable root route is a language gateway: the first supported browser
+  language preference selects Spanish or English, with English as the default,
+  manual language links and a no-JavaScript English fallback.
 - Keep equivalent EN and ES routes paired. A locale route should render the same
   shared component with a different `locale` prop.
 - Put shared UI text in both branches of `ui` in `src/i18n/config.ts`; do not
@@ -81,7 +83,10 @@ implementation rules.
 
 - Static HTML is the default. Do not add hydration directives or browser scripts
   for behaviour that HTML and CSS can provide.
-- The analytics consent implementation is the intentional JavaScript exception.
+- The root language gateway's small inline preference check is an intentional
+  JavaScript exception. It must remain non-indexable, avoid storage or tracking,
+  and retain manual links plus the no-JavaScript fallback.
+- The analytics consent implementation is another intentional JavaScript exception.
   Keep its UI in `AnalyticsConsent.astro` and its browser logic isolated in
   `public/scripts/analytics-consent.js`.
 - Google Analytics must not load or make requests before explicit analytics

@@ -38,8 +38,9 @@ runtime database or application server.
 
 ### Minimal client-side JavaScript
 
-Pages are static HTML and CSS. The consent and analytics script is the deliberate
-exception because it must respond to a visitor's local choice.
+Pages are static HTML and CSS. Two small scripts are deliberate exceptions: the
+root language gateway reads browser language preferences without storage or
+tracking, and the consent/analytics script responds to a visitor's local choice.
 
 ### Git as the production source of truth
 
@@ -264,7 +265,9 @@ implementation.
 
 - supported locales are `en` and `es`;
 - every public content route is explicitly prefixed;
-- `/` returns a temporary `302` redirect to `/en/`;
+- `/` is a non-indexable language gateway that selects the first supported
+  browser language preference and defaults to `/en/`;
+- the gateway retains manual EN/ES links and a no-JavaScript English fallback;
 - equivalent locale routes render the same shared component;
 - localized paths use `getLocalizedPath()`;
 - privacy uses `/en/privacy/` and `/es/privacidad/`;

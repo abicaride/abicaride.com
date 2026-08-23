@@ -133,9 +133,12 @@ complete schema and rationale.
 
 ## 🌍 Localization
 
-Public content uses explicit `/en/` and `/es/` prefixes. The root redirects to
-`/en/`; translated project routes are paired with `translationKey`; and
-`BaseLayout.astro` generates canonical and `hreflang` metadata.
+Public content uses explicit `/en/` and `/es/` prefixes. The non-indexable root
+gateway selects the first supported browser language preference and defaults to
+English, while retaining manual language links and a no-JavaScript English
+fallback. Translated project routes are paired with
+`translationKey`, and `BaseLayout.astro` generates canonical and `hreflang`
+metadata for indexable content pages.
 
 ## 🔒 Privacy
 

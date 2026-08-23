@@ -175,7 +175,7 @@ content:
     subfolders: false
     filename:
       template: "{routeSlug}.md"
-      field: create
+      field: false
     view:
       fields: [title, category, featured, order, draft]
       primary: title
@@ -245,7 +245,7 @@ content:
     subfolders: false
     filename:
       template: "{routeSlug}.md"
-      field: create
+      field: false
     view:
       fields: [title, category, featured, order, draft]
       primary: title

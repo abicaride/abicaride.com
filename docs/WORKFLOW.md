@@ -57,7 +57,7 @@ For project content:
 ```mermaid
 flowchart LR
     ABI["Abi"] --> CMS["Pages CMS"]
-    CMS --> FILE["Existing project content file"]
+    CMS --> FILE["Project content file"]
     FILE --> GIT["GitHub"]
     GIT --> SITE["Updated website"]
 ```
@@ -187,7 +187,7 @@ These are working tendencies, not rigid job descriptions.
 - professional positioning and project selection;
 - case-study content, writing, images and translations;
 - visual references, Figma exploration and design feedback;
-- routine CMS editing once the CMS exists.
+- routine project editing through Pages CMS.
 
 ### Albert
 

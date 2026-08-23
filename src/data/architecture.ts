@@ -14,8 +14,8 @@ interface ArchitectureCopy {
   introduction: string;
   flowTitle: string;
   flow: ArchitectureStep[];
-  collaborationTitle: string;
-  collaborationText: string;
+  maintenanceTitle: string;
+  maintenanceText: string;
   principlesTitle: string;
   principles: string[];
   sourceTitle: string;
@@ -38,7 +38,7 @@ export const architectureCopy: Record<Locale, ArchitectureCopy> = {
         icon: '🎨',
         name: 'Figma',
         description:
-          'Abi and Albert explore visual ideas and agree on design direction before it becomes code.',
+          'Visual ideas and design direction are explored here before they become code.',
       },
       {
         icon: '✍️',
@@ -71,9 +71,9 @@ export const architectureCopy: Record<Locale, ArchitectureCopy> = {
           'The finished static website is published at abicaride.com, with no application server required.',
       },
     ],
-    collaborationTitle: 'Where Codex fits',
-    collaborationText:
-      'Codex helps Albert implement and verify changes, document decisions and keep the architecture tidy. It is a collaborator in the workshop—not something visitors need to download or run.',
+    maintenanceTitle: 'Implementation and maintenance',
+    maintenanceText:
+      'The production site is maintained in the repository. Code review, automated checks and tools such as Codex can assist implementation, while the website itself stays simple and independent of those tools.',
     principlesTitle: 'The rules of the build',
     principles: [
       'Static HTML first, with almost no browser JavaScript.',
@@ -100,7 +100,7 @@ export const architectureCopy: Record<Locale, ArchitectureCopy> = {
         icon: '🎨',
         name: 'Figma',
         description:
-          'Abi y Albert exploran ideas visuales y acuerdan la dirección de diseño antes de convertirla en código.',
+          'Aquí se exploran las ideas visuales y la dirección de diseño antes de convertirlas en código.',
       },
       {
         icon: '✍️',
@@ -133,9 +133,9 @@ export const architectureCopy: Record<Locale, ArchitectureCopy> = {
           'La web estática terminada se publica en abicaride.com sin necesitar un servidor de aplicaciones.',
       },
     ],
-    collaborationTitle: 'Dónde encaja Codex',
-    collaborationText:
-      'Codex ayuda a Albert a implementar y comprobar cambios, documentar decisiones y mantener ordenada la arquitectura. Colabora en el taller, pero quienes visitan la web no tienen que descargarlo ni ejecutarlo.',
+    maintenanceTitle: 'Implementación y mantenimiento',
+    maintenanceText:
+      'La web de producción se mantiene desde el repositorio. La revisión de código, las comprobaciones automáticas y herramientas como Codex pueden ayudar con la implementación, mientras la propia web sigue siendo sencilla e independiente de ellas.',
     principlesTitle: 'Las reglas del juego',
     principles: [
       'HTML estático primero, con casi nada de JavaScript en el navegador.',

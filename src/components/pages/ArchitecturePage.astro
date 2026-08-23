@@ -19,6 +19,7 @@ const architectureDocumentUrl = 'https://github.com/abicaride/abicaride.com/blob
   description={copy.description}
   locale={locale}
   alternatePath={alternatePath}
+  indexable={false}
 >
   <article class="architecture-shell">
     <header class="architecture-header">
@@ -43,9 +44,9 @@ const architectureDocumentUrl = 'https://github.com/abicaride/abicaride.com/blob
     </section>
 
     <div class="details-grid">
-      <section aria-labelledby="collaboration-title">
-        <h2 id="collaboration-title">{copy.collaborationTitle}</h2>
-        <p>{copy.collaborationText}</p>
+      <section aria-labelledby="maintenance-title">
+        <h2 id="maintenance-title">{copy.maintenanceTitle}</h2>
+        <p>{copy.maintenanceText}</p>
       </section>
 
       <section aria-labelledby="principles-title">

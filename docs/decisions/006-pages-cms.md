@@ -11,17 +11,20 @@ hand. The repository already stores portable bilingual Markdown, validated
 frontmatter and local source images. GitHub must remain the source of truth, and
 Astro's schema, image pipeline and deployment workflow must remain authoritative.
 
-A controlled proof of concept on `cms-poc` verified existing EN/ES projects,
-nested metrics and galleries, Markdown, drafts, existing images, new source-image
-uploads, Git commits and successful Astro builds.
+Controlled validations on `cms-poc` and `cms-create-entry-test` verified existing
+and newly created EN/ES projects, fixed locales, generated filenames, nested
+metrics and galleries, Markdown, drafts, existing images, new source-image
+uploads, project and media deletion, Git commits and successful Astro builds.
 
 ## Decision
 
-Adopt hosted Pages CMS as an external editorial interface for the existing
-English and Spanish project collections.
+Adopt hosted Pages CMS as an external editorial interface for the English and
+Spanish project collections.
 
 - `.pages.yml` adapts to `src/content.config.ts`; Astro is not changed to fit the
   CMS.
+- Project filenames are generated from each localized `routeSlug`; the generated
+  filename field stays hidden to avoid duplicate editor input.
 - Pages CMS edits the existing Markdown, frontmatter and
   `src/assets/images/projects/` files through GitHub.
 - Routine CMS saves target `main` and therefore use the existing GitHub Actions
@@ -41,6 +44,7 @@ The proof of concept demonstrated that Pages CMS can sit cleanly over the curren
 architecture:
 
 - English and Spanish remain separate, fixed-locale collections;
+- new projects start as drafts and receive filenames from localized route slugs;
 - Markdown remains human-readable;
 - generic nested metrics and galleries round-trip correctly;
 - existing and newly uploaded images retain paths accepted by Astro's `image()`
