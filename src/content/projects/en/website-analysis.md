@@ -10,7 +10,7 @@ featured: true
 order: 3
 draft: false
 image:
-  src: /images/projects/website-analysis.jpg
+  src: ../../../assets/images/projects/website-analysis.jpg
   alt: Pages from the Juventud por el Clima website analysis document
 externalUrl: https://docs.google.com/document/d/1n5MxktOGF6rMAL7OgiZv_EGwIYdq2A46YkWghlAcLXo/edit?usp=sharing
 externalLabel: Read the analysis

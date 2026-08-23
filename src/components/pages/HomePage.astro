@@ -1,8 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
+import { Picture } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectPreview from '../ProjectPreview.astro';
 import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
+import portraitImage from '../../assets/images/abilene-portrait.jpg';
+import outdoorsImage from '../../assets/images/abilene-outdoors.jpg';
 
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
@@ -24,7 +27,18 @@ const selectedProjects = (await getCollection('projects', ({ data }) => data.loc
         </div>
       </div>
       <figure class="hero-image">
-        <img src="/images/abilene-portrait.jpg" alt={locale === 'en' ? 'Abilene standing in front of a waterfall surrounded by trees' : 'Abilene delante de una cascada rodeada de árboles'} width="1200" height="2676" fetchpriority="high" />
+        <Picture
+          src={portraitImage}
+          formats={['avif', 'webp']}
+          fallbackFormat="jpg"
+          widths={[320, 480, 640, 720, 800, 960, 1200]}
+          sizes="(min-width: 78rem) 468px, (min-width: 52rem) 40vw, calc(100vw - 32px)"
+          quality={75}
+          alt={locale === 'en' ? 'Abilene standing in front of a waterfall surrounded by trees' : 'Abilene delante de una cascada rodeada de árboles'}
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
       </figure>
     </section>
 
@@ -46,13 +60,23 @@ const selectedProjects = (await getCollection('projects', ({ data }) => data.loc
         <p>{copy.home.selectedIntroduction}</p>
       </header>
       <div class="project-grid">
-        {selectedProjects.map((project) => <ProjectPreview project={project} locale={locale} />)}
+        {selectedProjects.map((project, index) => <ProjectPreview project={project} locale={locale} wide={index === 0} />)}
       </div>
       <a class="arrow-link all-work" href={getLocalizedPath(locale, 'projects')}>{copy.home.allProjectsLink}</a>
     </section>
 
     <section class="personal" aria-labelledby="personal-title">
-      <img src="/images/abilene-outdoors.jpg" alt={locale === 'en' ? 'Abilene smiling beside the waterfront' : 'Abilene sonriendo junto al paseo marítimo'} width="1600" height="1200" loading="lazy" />
+      <Picture
+        src={outdoorsImage}
+        formats={['avif', 'webp']}
+        fallbackFormat="jpg"
+        widths={[320, 480, 640, 800, 960, 1200]}
+        sizes="(min-width: 78rem) 432px, (min-width: 45rem) 38vw, calc(100vw - 96px)"
+        quality={75}
+        alt={locale === 'en' ? 'Abilene smiling beside the waterfront' : 'Abilene sonriendo junto al paseo marítimo'}
+        loading="lazy"
+        decoding="async"
+      />
       <div class="personal-copy">
         <p class="eyebrow">{copy.home.personalEyebrow}</p>
         <h2 id="personal-title">{copy.home.personalTitle}</h2>
@@ -71,7 +95,7 @@ const selectedProjects = (await getCollection('projects', ({ data }) => data.loc
   .lede { max-width: var(--size-prose); color: var(--color-text-muted); font-size: var(--font-size-lg); }
   .hero-links { display: flex; align-items: center; gap: var(--space-4) var(--space-8); flex-wrap: wrap; }
   .hero-image { margin: 0; }
-  .hero-image img { width: 100%; max-height: 44rem; border-radius: var(--radius-lg); object-fit: cover; object-position: center 66%; }
+  .hero-image img { width: 100%; height: auto; max-height: 44rem; border-radius: var(--radius-lg); object-fit: cover; object-position: center 66%; }
   .perspective { display: grid; padding-block-start: var(--space-8); border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-6); }
   .section-number { color: var(--color-accent); font-family: var(--font-mono); font-size: var(--font-size-sm); }
   .perspective-copy { display: grid; max-width: var(--size-prose); gap: var(--space-4); }
@@ -85,7 +109,7 @@ const selectedProjects = (await getCollection('projects', ({ data }) => data.loc
   .project-grid { display: grid; gap: var(--space-12) var(--space-6); }
   .all-work { justify-self: start; }
   .personal { display: grid; align-items: center; gap: var(--space-8); padding: var(--space-8); border-radius: var(--radius-lg); background: var(--color-surface); }
-  .personal img { width: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius-md); object-fit: cover; }
+  .personal img { width: 100%; height: auto; aspect-ratio: 4 / 3; border-radius: var(--radius-md); object-fit: cover; }
   .personal-copy { display: grid; gap: var(--space-4); }
   @media (min-width: 45rem) {
     .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

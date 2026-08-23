@@ -11,9 +11,10 @@ interface Props {
   locale: Locale;
   currentPath: string;
   alternatePath?: string;
+  currentLocalePath?: string;
 }
 
-const { locale, currentPath, alternatePath } = Astro.props;
+const { locale, currentPath, alternatePath, currentLocalePath } = Astro.props;
 const copy = ui[locale];
 const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 const languagePath = alternatePath ?? switchLocalePath(currentPath, otherLocale);
@@ -55,7 +56,7 @@ const isActive = (href: string) => {
     <nav aria-label={copy.languageNavigation}>
       <ul class="language-list">
         <li>
-          <a href={currentPath} lang={locale} aria-current="page">{languageNames[locale]}</a>
+          <a href={currentLocalePath ?? currentPath} lang={locale} aria-current="page">{languageNames[locale]}</a>
         </li>
         <li>
           <a href={languagePath} lang={otherLocale} hreflang={otherLocale}>

@@ -1,20 +1,35 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
 import { getLocalizedPath, ui, type Locale } from '../i18n/config';
 
 interface Props {
   project: CollectionEntry<'projects'>;
   locale: Locale;
   compact?: boolean;
+  wide?: boolean;
 }
 
-const { project, locale, compact = false } = Astro.props;
+const { project, locale, compact = false, wide = false } = Astro.props;
 const copy = ui[locale];
+const sizes = wide
+  ? '(min-width: 78rem) 1184px, calc(100vw - 64px)'
+  : '(min-width: 78rem) 580px, (min-width: 45rem) calc(50vw - 44px), calc(100vw - 32px)';
 ---
 
 <article class:list={['project-preview', { compact }]}>
   <a class="image-link" href={getLocalizedPath(locale, `projects/${project.data.routeSlug}`)} tabindex="-1" aria-hidden="true">
-    <img src={project.data.image.src} alt="" width="900" height="600" loading="lazy" />
+    <Picture
+      src={project.data.image.src}
+      formats={['avif', 'webp']}
+      fallbackFormat="jpg"
+      widths={[320, 480, 640, 800, 960, 1200]}
+      sizes={sizes}
+      quality={75}
+      alt=""
+      loading="lazy"
+      decoding="async"
+    />
   </a>
   <div class="preview-copy">
     <p class="project-meta">
@@ -30,7 +45,7 @@ const copy = ui[locale];
 <style>
   .project-preview { display: grid; gap: var(--space-5); }
   .image-link { overflow: hidden; border-radius: var(--radius-md); background: var(--color-surface); }
-  img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; transition: transform 300ms ease; }
+  img { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; transition: transform 300ms ease; }
   .project-preview:hover img { transform: scale(1.015); }
   .preview-copy { display: grid; gap: var(--space-3); }
   .project-meta { display: flex; color: var(--color-accent); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); gap: var(--space-2); }

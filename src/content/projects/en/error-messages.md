@@ -9,7 +9,7 @@ featured: false
 order: 6
 draft: false
 image:
-  src: /images/projects/error-messages.jpg
+  src: ../../../assets/images/projects/error-messages.jpg
   alt: Mobile interfaces with rewritten error messages
 externalUrl: https://www.figma.com/file/OBWDhiclCB2KDEpVDWbvx3/Mensajes-de-Error?node-id=0%3A1
 externalLabel: View in Figma

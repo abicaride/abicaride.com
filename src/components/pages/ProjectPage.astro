@@ -1,5 +1,6 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
 import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
@@ -18,7 +19,20 @@ const { Content } = await render(project);
       <p class="lede">{project.data.description}</p>
       <ul class="tags" aria-label={locale === 'en' ? 'Topics' : 'Temas'}>{project.data.tags.map((tag) => <li>{tag}</li>)}</ul>
     </header>
-    <figure class="project-image"><img src={project.data.image.src} alt={project.data.image.alt} width="1200" height="800" /></figure>
+    <figure class="project-image">
+      <Picture
+        src={project.data.image.src}
+        formats={['avif', 'webp']}
+        fallbackFormat="jpg"
+        widths={[480, 720, 960, 1200]}
+        sizes="(min-width: 78rem) 1184px, calc(100vw - 32px)"
+        quality={75}
+        alt={project.data.image.alt}
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
+    </figure>
     <div class="project-body"><Content /></div>
     {project.data.externalUrl && (
       <aside class="project-link">
@@ -39,7 +53,7 @@ const { Content } = await render(project);
   .tags { display: flex; padding: 0; gap: var(--space-2); flex-wrap: wrap; list-style: none; }
   .tags li { padding: var(--space-1) var(--space-3); border: var(--border-width) solid var(--color-border); border-radius: var(--radius-pill); color: var(--color-text-muted); font-size: var(--font-size-sm); }
   .project-image { margin: var(--space-4) 0; }
-  .project-image img { width: 100%; max-height: 46rem; border-radius: var(--radius-lg); background: var(--color-surface); object-fit: cover; }
+  .project-image img { width: 100%; height: auto; max-height: 46rem; border-radius: var(--radius-lg); background: var(--color-surface); object-fit: cover; }
   .project-body { display: grid; max-width: var(--size-prose); gap: var(--space-4); }
   .project-body :global(h2) { margin-block-start: var(--space-8); }
   .project-body :global(h3) { margin-block-start: var(--space-6); }

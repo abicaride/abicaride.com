@@ -9,7 +9,7 @@ featured: false
 order: 9
 draft: false
 image:
-  src: /images/projects/meta-descriptions.jpg
+  src: ../../../assets/images/projects/meta-descriptions.jpg
   alt: Search result snippets with proposed metadata
 externalUrl: https://www.figma.com/file/3NRXNmmj6XQkwI3YZs3bQM/Etiquetas-meta?node-id=8%3A72
 externalLabel: View in Figma

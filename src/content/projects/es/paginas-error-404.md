@@ -9,7 +9,7 @@ featured: false
 order: 4
 draft: false
 image:
-  src: /images/projects/error-404-pages.jpg
+  src: ../../../assets/images/projects/error-404-pages.jpg
   alt: Cuatro propuestas de interfaz para errores 404
 externalUrl: https://www.figma.com/file/HGDE6D7IFNnLDao8zBPHl7/P%C3%A1ginas-Error-404?node-id=0%3A1
 externalLabel: Ver en Figma

@@ -15,9 +15,18 @@ interface Props {
   description: string;
   locale: Locale;
   alternatePath?: string;
+  currentLocalePath?: string;
+  indexable?: boolean;
 }
 
-const { title, description, locale, alternatePath } = Astro.props;
+const {
+  title,
+  description,
+  locale,
+  alternatePath,
+  currentLocalePath,
+  indexable = true,
+} = Astro.props;
 const currentPath = Astro.url.pathname;
 const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 const resolvedAlternatePath = alternatePath ?? switchLocalePath(currentPath, otherLocale);
@@ -37,6 +46,7 @@ const defaultUrl = new URL(localizedPaths[defaultLocale], Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    {!indexable && <meta name="robots" content="noindex, follow" />}
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -44,17 +54,22 @@ const defaultUrl = new URL(localizedPaths[defaultLocale], Astro.site);
     <meta property="og:locale" content={locale === 'en' ? 'en_US' : 'es_ES'} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
-    <link rel="canonical" href={canonicalUrl} />
-    <link rel="alternate" hreflang="en" href={new URL(localizedPaths.en, Astro.site)} />
-    <link rel="alternate" hreflang="es" href={new URL(localizedPaths.es, Astro.site)} />
-    <link rel="alternate" hreflang="x-default" href={defaultUrl} />
+    {indexable && <link rel="canonical" href={canonicalUrl} />}
+    {indexable && <link rel="alternate" hreflang="en" href={new URL(localizedPaths.en, Astro.site)} />}
+    {indexable && <link rel="alternate" hreflang="es" href={new URL(localizedPaths.es, Astro.site)} />}
+    {indexable && <link rel="alternate" hreflang="x-default" href={defaultUrl} />}
     <title>{fullTitle}</title>
     <slot name="head" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">{ui[locale].skipToContent}</a>
     <div class="site-frame">
-      <SiteHeader locale={locale} currentPath={currentPath} alternatePath={resolvedAlternatePath} />
+      <SiteHeader
+        locale={locale}
+        currentPath={currentPath}
+        alternatePath={resolvedAlternatePath}
+        currentLocalePath={currentLocalePath}
+      />
       <main id="main-content">
         <slot />
       </main>

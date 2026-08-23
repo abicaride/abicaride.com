@@ -37,6 +37,14 @@ export const ui = {
       currentAccepted: 'Current choice: analytics accepted.',
       currentRejected: 'Current choice: analytics rejected.',
     },
+    notFound: {
+      title: 'Page not found',
+      description: 'The requested page could not be found. Continue to the English or Spanish website.',
+      eyebrow: 'Error 404',
+      heading: 'This page seems to have wandered off.',
+      text: 'The address may be incorrect, or the page may have moved. You can continue from the English homepage.',
+      action: 'Continue in English',
+    },
     privacy: {
       title: 'Privacy & cookies',
       description: 'How this website handles analytics, consent and locally stored preferences.',
@@ -152,6 +160,14 @@ export const ui = {
       details: 'Información de privacidad',
       currentAccepted: 'Elección actual: analítica aceptada.',
       currentRejected: 'Elección actual: analítica rechazada.',
+    },
+    notFound: {
+      title: 'Página no encontrada',
+      description: 'No hemos encontrado la página solicitada. Continúa en la versión inglesa o española de la web.',
+      eyebrow: 'Error 404',
+      heading: 'Parece que esta página se ha perdido.',
+      text: 'Puede que la dirección no sea correcta o que la página se haya movido. Puedes continuar desde la página de inicio en español.',
+      action: 'Continuar en español',
     },
     privacy: {
       title: 'Privacidad y cookies',

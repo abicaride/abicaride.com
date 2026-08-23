@@ -10,7 +10,7 @@ featured: true
 order: 2
 draft: false
 image:
-  src: /images/projects/published-letters.jpg
+  src: ../../../assets/images/projects/published-letters.jpg
   alt: Collage de páginas de periódico con cartas de lectores publicadas
 tags: [Escritura editorial, Investigación, Adaptación]
 ---

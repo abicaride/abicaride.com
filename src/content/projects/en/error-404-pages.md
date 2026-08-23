@@ -9,7 +9,7 @@ featured: false
 order: 4
 draft: false
 image:
-  src: /images/projects/error-404-pages.jpg
+  src: ../../../assets/images/projects/error-404-pages.jpg
   alt: Four error 404 interface concepts
 externalUrl: https://www.figma.com/file/HGDE6D7IFNnLDao8zBPHl7/P%C3%A1ginas-Error-404?node-id=0%3A1
 externalLabel: View in Figma

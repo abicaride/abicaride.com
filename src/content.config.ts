@@ -4,7 +4,7 @@ import { z } from 'astro/zod';
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
     locale: z.enum(['en', 'es']),
@@ -16,7 +16,7 @@ const projects = defineCollection({
     order: z.number().int().positive(),
     draft: z.boolean().default(false),
     image: z.object({
-      src: z.string(),
+      src: image(),
       alt: z.string(),
     }),
     externalUrl: z.string().url().optional(),

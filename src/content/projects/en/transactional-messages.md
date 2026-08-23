@@ -9,7 +9,7 @@ featured: false
 order: 7
 draft: false
 image:
-  src: /images/projects/transactional-messages.jpg
+  src: ../../../assets/images/projects/transactional-messages.jpg
   alt: Transactional email and SMS writing examples
 externalUrl: https://www.figma.com/file/JuAky73nw5cwCvjSFyZlHT/Emails-y-sms-transaccionales
 externalLabel: View in Figma

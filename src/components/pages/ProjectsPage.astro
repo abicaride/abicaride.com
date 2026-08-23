@@ -23,7 +23,7 @@ const more = projects.filter((project) => !project.data.featured);
       <>
         <section class="selected" aria-labelledby="selected-heading">
           <h2 id="selected-heading">{copy.projects.selectedTitle}</h2>
-          <div class="selected-grid">{selected.map((project) => <ProjectPreview project={project} locale={locale} />)}</div>
+          <div class="selected-grid">{selected.map((project, index) => <ProjectPreview project={project} locale={locale} wide={index === 0} />)}</div>
         </section>
         <section class="more" aria-labelledby="more-heading">
           <header><p class="eyebrow">{copy.projects.moreEyebrow}</p><h2 id="more-heading">{copy.projects.moreTitle}</h2></header>

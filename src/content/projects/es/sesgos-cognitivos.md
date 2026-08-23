@@ -9,7 +9,7 @@ featured: false
 order: 5
 draft: false
 image:
-  src: /images/projects/cognitive-biases.jpg
+  src: ../../../assets/images/projects/cognitive-biases.jpg
   alt: Pantallas de ecommerce anotadas para explicar sesgos cognitivos
 externalUrl: https://www.figma.com/file/WwLLq7m9lUUkuhi4PPL2yk/Sesgos-cognitivos?node-id=0%3A1
 externalLabel: Ver en Figma

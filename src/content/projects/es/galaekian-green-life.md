@@ -9,7 +9,7 @@ featured: true
 order: 1
 draft: false
 image:
-  src: /images/projects/galaekian-green-life.jpg
+  src: ../../../assets/images/projects/galaekian-green-life.jpg
   alt: El blog Galaekian Green Life mostrado en un portátil y un móvil
 externalUrl: https://galaekiangreenlife.wordpress.com/
 externalLabel: Visitar el blog archivado

@@ -9,7 +9,7 @@ featured: false
 order: 8
 draft: false
 image:
-  src: /images/projects/chatbot-flow.jpg
+  src: ../../../assets/images/projects/chatbot-flow.jpg
   alt: Diagrama del flujo de conversación de un chatbot de streaming
 externalUrl: https://miro.com/app/board/uXjVOCacjHo=/?share_link_id=694185523323
 externalLabel: Ver en Miro

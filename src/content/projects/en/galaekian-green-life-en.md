@@ -9,7 +9,7 @@ featured: true
 order: 1
 draft: false
 image:
-  src: /images/projects/galaekian-green-life.jpg
+  src: ../../../assets/images/projects/galaekian-green-life.jpg
   alt: Galaekian Green Life blog shown on a laptop and phone
 externalUrl: https://galaekiangreenlife.wordpress.com/
 externalLabel: Visit the archived blog
