@@ -1,3 +1,58 @@
 ---
-return Astro.redirect('/en/', 302);
+import '../styles/global.css';
 ---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>Abilene Caride</title>
+    <script is:inline>
+      (() => {
+        const preferredLocale = (navigator.languages ?? [navigator.language])
+          .map((language) => language.toLowerCase().split('-')[0])
+          .find((language) => language === 'en' || language === 'es');
+
+        window.location.replace(preferredLocale === 'es' ? '/es/' : '/en/');
+      })();
+    </script>
+    <noscript><meta http-equiv="refresh" content="0;url=/en/" /></noscript>
+  </head>
+  <body>
+    <main>
+      <h1>Choose a language <span lang="es">· Elige un idioma</span></h1>
+      <nav aria-label="Language selection">
+        <a href="/en/" lang="en">Continue in English</a>
+        <a href="/es/" lang="es">Continuar en español</a>
+      </nav>
+    </main>
+  </body>
+</html>
+
+<style>
+  body {
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+  }
+
+  main {
+    display: grid;
+    max-width: var(--size-narrow);
+    padding: var(--space-page);
+    gap: var(--space-6);
+    text-align: center;
+  }
+
+  nav {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+</style>
