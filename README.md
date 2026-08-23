@@ -186,6 +186,21 @@ loaded.
 Pages otherwise render as static HTML. No hydrated UI framework is installed.
 The consent and analytics script is the intentional browser-side exception.
 
+## 🎨 Design workspace
+
+The collaborative design process is organized across three Figma files:
+
+- [Abi Website Foundations](https://www.figma.com/design/2yrZXRDGo95taZ1J3VOPxx/Abi-Website-Foundations)
+  for visual foundations, reusable components and explorations
+- [Abi Personal Website](https://www.figma.com/design/qzSb1nHDgRm21LNLkCjaFT/Abi-Personal-Website)
+  for production-oriented homepage and case-study designs
+- [Abi Website Moodboard](https://www.figma.com/board/PxH3eYTrRg5f2g8UenwGtP/Abi-Website-Moodboard)
+  for references and shared visual preferences
+
+Explorations and moodboard references are not automatically implementation
+specifications. The design-to-code rules, approval boundary and architectural
+constraints are maintained in [AGENTS.md](./AGENTS.md).
+
 ## 🔒 Analytics and privacy
 
 The site uses the Google tag directly for Google Analytics 4—without Google Tag

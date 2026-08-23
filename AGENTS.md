@@ -95,6 +95,36 @@ with the implementation.
 - Preserve the current visual language unless the task explicitly calls for a
   redesign.
 
+## Figma and design workflow
+
+The shared Figma workspace contains three complementary files:
+
+- [Abi Website Foundations](https://www.figma.com/design/2yrZXRDGo95taZ1J3VOPxx/Abi-Website-Foundations)
+  owns foundations, reusable components and visual explorations.
+- [Abi Personal Website](https://www.figma.com/design/qzSb1nHDgRm21LNLkCjaFT/Abi-Personal-Website)
+  owns production-oriented homepage and case-study designs.
+- [Abi Website Moodboard](https://www.figma.com/board/PxH3eYTrRg5f2g8UenwGtP/Abi-Website-Moodboard)
+  collects references and visual preferences; it is not an implementation
+  specification.
+
+Do not treat exploratory frames or moodboard references as approved designs.
+Implement a Figma direction only when the task explicitly identifies it as
+approved or asks for that specific design to be implemented.
+
+When translating an approved design:
+
+- Preserve the established Astro, localization, accessibility, privacy and
+  performance architecture.
+- Reuse existing components and design tokens before adding new ones.
+- Promote intentional reusable design decisions into `src/styles/tokens.css`
+  or the appropriate Astro component instead of copying arbitrary Figma values.
+- Preserve content/presentation separation and shared EN/ES page composition.
+- Report meaningful discrepancies between Figma and the implementation rather
+  than silently changing the architecture.
+
+Figma is not a build dependency. Do not modify Figma files, permissions or
+workspace structure unless explicitly requested.
+
 ## Images and performance
 
 - Import raster content images from `src/assets/` and use Astro's
