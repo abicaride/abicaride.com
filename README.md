@@ -154,6 +154,8 @@ The collection schema validates:
 - localized title, description, category and tags
 - `locale` and locale-specific `routeSlug`
 - shared `translationKey`
+- optional company, client, role and display period
+- optional structured metrics and image gallery
 - display order, featured and draft state
 - optional year and external source link
 - an Astro-managed image with localized alternative text

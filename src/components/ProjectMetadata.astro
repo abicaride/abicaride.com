@@ -1,0 +1,97 @@
+---
+import { ui, type Locale } from '../i18n/config';
+
+interface Props {
+  locale: Locale;
+  category: string;
+  year?: number;
+  company?: string;
+  client?: string;
+  role?: string;
+  period?: string;
+}
+
+const {
+  locale,
+  category,
+  year,
+  company,
+  client,
+  role,
+  period,
+} = Astro.props;
+const copy = ui[locale].project.metadata;
+const details: Array<{ label: string; value: string }> = [];
+
+if (company) details.push({ label: copy.company, value: company });
+if (client) details.push({ label: copy.client, value: client });
+if (role) details.push({ label: copy.role, value: role });
+if (period) details.push({ label: copy.period, value: period });
+---
+
+<div class="project-metadata">
+  <p class="project-summary">
+    <span>{category}</span>
+    {year && (
+      <>
+        <span aria-hidden="true">·</span>
+        <span>{year}</span>
+      </>
+    )}
+  </p>
+
+  {details.length > 0 && (
+    <dl>
+      {details.map((detail) => (
+        <div>
+          <dt>{detail.label}</dt>
+          <dd>{detail.value}</dd>
+        </div>
+      ))}
+    </dl>
+  )}
+</div>
+
+<style>
+  .project-metadata {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .project-summary {
+    display: flex;
+    color: var(--color-accent);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    gap: var(--space-2);
+  }
+
+  dl {
+    display: grid;
+    margin: 0;
+    padding-block-start: var(--space-4);
+    border-block-start: var(--border-width) solid var(--color-border);
+    gap: var(--space-4) var(--space-8);
+  }
+
+  dl div {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  dt {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  dd {
+    margin: 0;
+    font-weight: var(--font-weight-medium);
+  }
+
+  @media (min-width: 45rem) {
+    dl {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

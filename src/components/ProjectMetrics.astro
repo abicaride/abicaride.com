@@ -1,0 +1,80 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { ui, type Locale } from '../i18n/config';
+
+type Metrics = NonNullable<CollectionEntry<'projects'>['data']['metrics']>;
+
+interface Props {
+  locale: Locale;
+  metrics?: Metrics;
+}
+
+const { locale, metrics = [] } = Astro.props;
+const copy = ui[locale].project;
+---
+
+{metrics.length > 0 && (
+  <section class="project-metrics" aria-labelledby="project-metrics-title">
+    <h2 id="project-metrics-title">{copy.metricsTitle}</h2>
+    <dl>
+      {metrics.map((metric) => (
+        <div>
+          <dt>{metric.label}</dt>
+          <dd class="metric-value">{metric.value}</dd>
+          {metric.detail && <dd class="metric-detail">{metric.detail}</dd>}
+        </div>
+      ))}
+    </dl>
+  </section>
+)}
+
+<style>
+  .project-metrics {
+    display: grid;
+    max-width: var(--size-narrow);
+    gap: var(--space-6);
+  }
+
+  h2 {
+    font-size: var(--font-size-xl);
+  }
+
+  dl {
+    display: grid;
+    margin: 0;
+    gap: var(--space-6) var(--space-8);
+  }
+
+  dl div {
+    display: grid;
+    padding-block-start: var(--space-4);
+    border-block-start: var(--border-width) solid var(--color-border);
+    gap: var(--space-2);
+  }
+
+  dt {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  .metric-value {
+    color: var(--color-accent);
+    font-family: var(--font-display);
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-tight);
+  }
+
+  .metric-detail {
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 45rem) {
+    dl {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -3,6 +3,9 @@ import { render, type CollectionEntry } from 'astro:content';
 import { Picture } from 'astro:assets';
 import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectGallery from '../ProjectGallery.astro';
+import ProjectMetadata from '../ProjectMetadata.astro';
+import ProjectMetrics from '../ProjectMetrics.astro';
 
 interface Props { locale: Locale; project: CollectionEntry<'projects'>; alternatePath?: string; }
 const { locale, project, alternatePath } = Astro.props;
@@ -14,7 +17,15 @@ const { Content } = await render(project);
   <article class="project-shell">
     <a class="back-link" href={getLocalizedPath(locale, 'projects')}><span aria-hidden="true">← </span>{copy.project.back}</a>
     <header class="project-header">
-      <p class="project-meta"><span>{project.data.category}</span>{project.data.year && <><span aria-hidden="true">·</span><span>{project.data.year}</span></>}</p>
+      <ProjectMetadata
+        locale={locale}
+        category={project.data.category}
+        year={project.data.year}
+        company={project.data.company}
+        client={project.data.client}
+        role={project.data.role}
+        period={project.data.period}
+      />
       <h1>{project.data.title}</h1>
       <p class="lede">{project.data.description}</p>
       <ul class="tags" aria-label={locale === 'en' ? 'Topics' : 'Temas'}>{project.data.tags.map((tag) => <li>{tag}</li>)}</ul>
@@ -34,6 +45,8 @@ const { Content } = await render(project);
       />
     </figure>
     <div class="project-body"><Content /></div>
+    <ProjectMetrics locale={locale} metrics={project.data.metrics} />
+    <ProjectGallery locale={locale} gallery={project.data.gallery} />
     {project.data.externalUrl && (
       <aside class="project-link">
         <p>{locale === 'en' ? 'Want to see the source material?' : '¿Quieres ver el material original?'}</p>
@@ -49,7 +62,6 @@ const { Content } = await render(project);
   .project-header { display: grid; max-width: 60rem; gap: var(--space-5); }
   .project-header h1 { font-size: var(--font-size-2xl); overflow-wrap: anywhere; }
   .lede { max-width: var(--size-prose); color: var(--color-text-muted); font-size: var(--font-size-lg); }
-  .project-meta { display: flex; color: var(--color-accent); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); gap: var(--space-2); }
   .tags { display: flex; padding: 0; gap: var(--space-2); flex-wrap: wrap; list-style: none; }
   .tags li { padding: var(--space-1) var(--space-3); border: var(--border-width) solid var(--color-border); border-radius: var(--radius-pill); color: var(--color-text-muted); font-size: var(--font-size-sm); }
   .project-image { margin: var(--space-4) 0; }

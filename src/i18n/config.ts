@@ -132,6 +132,14 @@ export const ui = {
     project: {
       back: 'Back to work',
       visit: 'View the original work',
+      metadata: {
+        company: 'Company',
+        client: 'Client',
+        role: 'Role',
+        period: 'Period',
+      },
+      metricsTitle: 'Key metrics',
+      galleryTitle: 'Project gallery',
     },
   },
   es: {
@@ -256,6 +264,14 @@ export const ui = {
     project: {
       back: 'Volver al trabajo',
       visit: 'Ver el trabajo original',
+      metadata: {
+        company: 'Empresa',
+        client: 'Cliente',
+        role: 'Rol',
+        period: 'Periodo',
+      },
+      metricsTitle: 'Métricas clave',
+      galleryTitle: 'Galería del proyecto',
     },
   },
 } as const;
