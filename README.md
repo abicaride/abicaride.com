@@ -10,6 +10,11 @@ Abilene's work across content, communication, marketing, UX and digital
 experiences. It is intentionally lightweight, portable and independent of a
 proprietary CMS or client-side UI framework.
 
+## How the website works
+
+See [docs/WORKFLOW.md](docs/WORKFLOW.md) for an overview of the Figma, CMS,
+Codex, Astro and deployment workflows.
+
 ## 🚀 Technology
 
 - 🚀 Astro with static output
@@ -76,6 +81,7 @@ The static output is written to `dist/`.
 ```text
 .
 ├── .github/workflows/deploy.yml    GitHub Pages deployment
+├── docs/WORKFLOW.md                Tooling, content and publishing workflows
 ├── public/
 │   ├── favicon.*                   Stable public assets
 │   └── scripts/
