@@ -41,6 +41,13 @@ Do not bypass these boundaries for convenience. If a requested change genuinely
 requires a new architectural pattern, explain the reason and trade-off before or
 with the implementation.
 
+For significant architectural changes, also consult
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and the relevant records in
+[`docs/decisions/`](docs/decisions/). They explain the current system and why its
+main decisions were made. [`docs/WORKFLOW.md`](docs/WORKFLOW.md) describes the
+human content, design and publishing workflow; it does not override this file's
+implementation rules.
+
 ## Routing and internationalization
 
 - All public content routes are locale-prefixed under `/en/` and `/es/`.
