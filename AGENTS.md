@@ -74,6 +74,11 @@ implementation rules.
   hardcoding project cards or project pages.
 - Preserve the content schema and update it deliberately when new project fields
   are required.
+- `src/content.config.ts` is authoritative. When project fields or their structure
+  change, review and update `.pages.yml` in the same change so the CMS mapping
+  remains compatible. Adapt Pages CMS to Astro's validation; do not weaken the
+  schema to fit the CMS. If a future field cannot be represented safely, document
+  the incompatibility before changing the architecture.
 - Reuse an existing component when it already owns the relevant responsibility.
   Create a new component when it represents a reusable concept, not merely to
   shorten a file.

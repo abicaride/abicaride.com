@@ -86,6 +86,7 @@ The static output is written to `dist/`.
 ```text
 .
 ├── .github/workflows/deploy.yml    GitHub Pages deployment
+├── .pages.yml                      Pages CMS editorial configuration
 ├── docs/
 │   ├── ARCHITECTURE.md             Technical system reference
 │   ├── WORKFLOW.md                 Human working guide
