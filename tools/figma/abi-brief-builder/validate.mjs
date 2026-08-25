@@ -328,6 +328,132 @@ for (const expected of [
   assert.ok(directionNames.includes(expected), `Missing direction board: ${expected}`);
 }
 
+const homepageConcepts = createFigma({
+  editorType: "figma",
+  fileName: "Abi Website Foundations",
+  pageName: "03 — Explorations",
+  command: "build-homepage-concepts",
+});
+await execute(homepageConcepts);
+
+assert.equal(homepageConcepts.closed, true);
+assert.equal(homepageConcepts.notifications.at(-1).error, false);
+assert.equal(generatedSections(homepageConcepts).length, 1);
+const homepageSection = generatedSections(homepageConcepts)[0];
+assert.equal(homepageSection.x, 1500);
+assert.equal(homepageSection.y, 200);
+assert.equal(homepageSection.width, 4800);
+assert.equal(homepageSection.height, 3720);
+const homepageFrames = allNodes(homepageSection)
+  .filter((node) => node.type === "FRAME")
+  .map((node) => node.name);
+for (const expected of [
+  "Home A — Editorial Calm",
+  "Home B — Fresh / Image-led",
+  "Home C — Content-led Personality",
+]) {
+  assert.ok(homepageFrames.includes(expected), `Missing homepage concept: ${expected}`);
+}
+const homepageText = allNodes(homepageSection)
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const expected of [
+  "Abi Caride",
+  "Content strategy · Communications · Content",
+  "imaginArt",
+  "technical product content",
+  "email",
+  "event campaigns",
+  "Website analysis",
+  "Error messages",
+  "Get in touch",
+  "WORKING COPY",
+  "Close portrait · curly hair · glasses · burgundy top",
+]) {
+  assert.ok(homepageText.includes(expected), `Missing homepage content: ${expected}`);
+}
+for (const inventedCase of ["Ailanto", "Ethic"]) {
+  assert.ok(!homepageText.includes(inventedCase), `Invented case found: ${inventedCase}`);
+}
+
+await execute(homepageConcepts);
+assert.equal(
+  generatedSections(homepageConcepts).length,
+  1,
+  "A homepage rerun must not duplicate content",
+);
+assert.equal(homepageConcepts.notifications.at(-1).error, true);
+
+const imaginart = createFigma({
+  editorType: "figma",
+  fileName: "Abi Personal Website",
+  pageName: "04 — Case Studies",
+  command: "build-imaginart-wireframe",
+});
+await execute(imaginart);
+
+assert.equal(imaginart.closed, true);
+assert.equal(imaginart.notifications.at(-1).error, false);
+assert.equal(generatedSections(imaginart).length, 1);
+const imaginartSection = generatedSections(imaginart)[0];
+assert.equal(imaginartSection.x, 1500);
+assert.equal(imaginartSection.y, 200);
+assert.equal(imaginartSection.width, 1740);
+assert.equal(imaginartSection.height, 8920);
+const imaginartText = allNodes(imaginartSection)
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const expected of [
+  "imaginArt",
+  "HERO",
+  "Context + role",
+  "Turtle AV",
+  "INPUT",
+  "QUESTIONS",
+  "STRUCTURED PRODUCT CONTENT",
+  "Mundo BrightSign",
+  "~24%",
+  "~34%",
+  "NOT AN A/B TEST",
+  "Madrid Open Days 2026",
+  "~110–125",
+  "~70–80",
+  "Other technical-content evidence",
+  "AV Supports Catalogue",
+  "Lumens",
+  "Outcomes",
+  "Working across teams",
+  "Engineering",
+  "Sales",
+  "Abi",
+  "Management",
+  "What I learned",
+  "Optional external evidence",
+  "docs/content/case-study-imaginart.md",
+]) {
+  assert.ok(
+    imaginartText.toLowerCase().includes(expected.toLowerCase()),
+    `Missing imaginArt content: ${expected}`,
+  );
+}
+const imaginartFrames = allNodes(imaginartSection)
+  .filter((node) => node.type === "FRAME")
+  .map((node) => node.name);
+for (const connector of [
+  "Engineering to Abi",
+  "Sales to Abi",
+  "Abi to Management",
+]) {
+  assert.ok(imaginartFrames.includes(connector), `Missing connector: ${connector}`);
+}
+const emailMetric = allNodes(imaginartSection).find(
+  (node) => node.type === "TEXT" && node.characters === "~24% → ~34%",
+);
+assert.equal(emailMetric.width, 640);
+assert.equal(emailMetric.fontSize, 76);
+
 const wrongFile = createFigma({
   editorType: "figjam",
   fileName: "Unrelated FigJam",

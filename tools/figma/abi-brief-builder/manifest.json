@@ -18,6 +18,14 @@
       "command": "build-foundations"
     },
     {
+      "name": "Foundations: Build desktop homepage concepts",
+      "command": "build-homepage-concepts"
+    },
+    {
+      "name": "Personal Website: Build imaginArt case wireframe",
+      "command": "build-imaginart-wireframe"
+    },
+    {
       "separator": true
     },
     {

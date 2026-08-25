@@ -13,8 +13,16 @@ its build.
 - In **Abi Website Foundations → Explorations**: one bounded section containing
   direction boards for `A — Editorial Calm`, `B — Fresh / Image-led` and
   `C — Content-led Personality`.
+- In **Abi Website Foundations → Explorations**: three comparable desktop
+  homepage concepts using the same information architecture and working
+  content, so the visual direction can be evaluated without a copy or scope
+  change distorting the comparison.
+- In **Abi Personal Website → Case Studies**: an editorial imaginArt case-study
+  wireframe with ten narrative bands and four original explanatory diagrams.
 
-It does not create finished homepage designs or polished marketing copy.
+It does not create finished homepage designs or polished marketing copy. The
+homepage concepts are deliberately substantial enough for visual review while
+remaining labelled as working explorations.
 
 The detailed imaginArt factual and evidence blueprint lives in
 [`docs/content/case-study-imaginart.md`](../../../docs/content/case-study-imaginart.md).
@@ -31,6 +39,8 @@ unless explicitly requested.
 - It validates the open Figma file and editor type before writing.
 - The Foundations command also validates that the current page is
   `Explorations`.
+- The imaginArt command validates the **Abi Personal Website** file and its
+  `Case Studies` page.
 - It requires exactly one selected object as a placement anchor.
 - It creates the new section 400 px to the right of that anchor.
 - Generated root sections are tagged with private plugin data.
@@ -74,6 +84,34 @@ published to the Figma Community.
 5. Review the three direction boards. They intentionally contain empty areas
    for future references and observations.
 
+## Build the desktop homepage concepts
+
+1. Open **Abi Website Foundations → Explorations** in Figma Desktop.
+2. Select the existing V2 exploration-directions section as the placement
+   anchor.
+3. Run
+   **Plugins → Development → Abi Website Brief Builder → Foundations: Build desktop homepage concepts**.
+4. Review all three concepts at the same zoom level. Each uses the same
+   navigation, hero, imaginArt lead work, secondary work, About section and
+   final CTA.
+
+Photo areas are intentional placeholders. The plugin records the preferred
+provisional portrait direction but does not import, copy or commit Abi's
+personal photos.
+
+## Build the imaginArt case-study structure
+
+1. Open **Abi Personal Website → Case Studies** in Figma Desktop.
+2. Select the existing introductory case-study frame as the placement anchor.
+3. Run
+   **Plugins → Development → Abi Website Brief Builder → Personal Website: Build imaginArt case wireframe**.
+4. Review the narrative sequence, evidence caveats and diagrams against
+   [`docs/content/case-study-imaginart.md`](../../../docs/content/case-study-imaginart.md).
+
+The metrics are visibly marked as approximate working evidence. Mundo
+BrightSign is explicitly not presented as an A/B test, and no external artwork
+is copied into the file.
+
 ## Reruns and cleanup
 
 Run **Find generated content** to select the plugin-created section on the
@@ -100,7 +138,7 @@ Run the dependency-free validation harness after changing the layout or content:
 node tools/figma/abi-brief-builder/validate.mjs
 ```
 
-It exercises both editor commands with a mock Figma document, checks placement
+It exercises every build command with a mock Figma document, checks placement
 and required content, verifies duplicate protection and confirms that a wrong
 file remains untouched. Final visual verification must still happen in Figma
 Desktop.
