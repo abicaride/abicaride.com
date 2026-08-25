@@ -791,7 +791,7 @@ assert.equal(imaginartPreproduction.notifications.at(-1).error, false);
 assert.equal(generatedSections(imaginartPreproduction).length, 1);
 const imaginartPreproductionSection = generatedSections(imaginartPreproduction)[0];
 assert.equal(imaginartPreproductionSection.width, 1740);
-assert.equal(imaginartPreproductionSection.height, 8680);
+assert.equal(imaginartPreproductionSection.height, 8640);
 const imaginartPreproductionNodes = allNodes(imaginartPreproductionSection);
 const imaginartPreproductionText = imaginartPreproductionNodes
   .filter((node) => node.type === "TEXT")
@@ -800,18 +800,29 @@ const imaginartPreproductionText = imaginartPreproductionNodes
 for (const expected of [
   "Refreshing a specialist B2B newsletter",
   "MUNDO BRIGHTSIGN",
-  "~24% → ~34%",
-  "NOT an A/B test",
+  "~24%",
+  "~34%",
+  "+10 percentage points approx.",
+  "approximate recalled open rate · not an A/B test",
   "Launching a new brand in Spain",
   "TURTLE AV · IMAGINART",
+  "Technical truth → structure → usable B2B content",
+  "REAL-WORK VISUAL SLOT",
+  "Rights-cleared image pending",
   "Planning and promoting a corporate event",
   "MADRID OPEN DAYS 2026",
   "AV Supports Catalogue",
+  "PRODUCT FAMILIES",
+  "REPEATABLE PRODUCT STRUCTURE",
   "Lumens",
+  "MANUFACTURER DOCUMENTATION",
+  "B2B COMMUNICATION",
   "Bilbao",
-  "~110–125",
-  "usual similar-event range ~70–80",
-  "not audited",
+  "~110",
+  "~125",
+  "approximate recalled attendance ranges",
+  "LET’S TALK",
+  "Privacy · Cookie settings",
   "docs/content/case-study-imaginart.md",
   "Abilene",
 ]) {
@@ -827,15 +838,85 @@ const eventIndex = orderedCaseText.indexOf("planning and promoting a corporate e
 const catalogueIndex = orderedCaseText.indexOf("av supports catalogue");
 const lumensIndex = orderedCaseText.indexOf("lumens");
 assert.ok(newsletterIndex < turtleIndex && turtleIndex < eventIndex && eventIndex < catalogueIndex && catalogueIndex < lumensIndex);
-assert.equal(imaginartPreproductionNodes.filter((node) => node.type === "ELLIPSE").length, 0);
+assert.equal(imaginartPreproductionNodes.filter((node) => node.type === "ELLIPSE").length, 2);
 const caseBody = imaginartPreproductionNodes.find(
-  (node) => node.type === "TEXT" && node.characters.startsWith("NOT AN A/B TEST"),
+  (node) => node.type === "TEXT" && node.characters.startsWith("The transformation is the story"),
 );
 assert.equal(caseBody.fontName.family, "Montserrat");
+assert.equal(caseBody.fontSize, 20);
+assert.equal(caseBody.lineHeight.value, 31);
 const caseHeading = imaginartPreproductionNodes.find(
   (node) => node.type === "TEXT" && node.characters === "Refreshing a specialist B2B newsletter",
 );
 assert.equal(caseHeading.fontName.family, "Inter");
+const publicCase = imaginartPreproductionNodes.find(
+  (node) => node.type === "FRAME" && node.name === "imaginArt — editorial case study",
+);
+assert.equal(publicCase.width, 1440);
+assert.equal(publicCase.height, 8080);
+const publicCaseNodes = allNodes(publicCase);
+const publicCaseText = publicCaseNodes
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const forbidden of [
+  "LEAD PROFESSIONAL CASE · PRE-PRODUCTION",
+  "Evidence before polish",
+  "INTERNAL PRE-PRODUCTION",
+  "Visual exploration is closed",
+  "docs/content/",
+  "Next:",
+]) {
+  assert.ok(
+    !publicCaseText.includes(forbidden),
+    `Internal imaginArt copy leaked into the public case: ${forbidden}`,
+  );
+}
+assert.equal(publicCaseText.match(/~24%/g)?.length, 1);
+assert.equal(publicCaseText.match(/~34%/g)?.length, 1);
+assert.equal(publicCaseText.match(/~110/g)?.length, 1);
+assert.equal(publicCaseText.match(/~125/g)?.length, 1);
+assert.ok(!publicCaseText.includes("Outcomes and evidence note"));
+const collaborationAbilene = publicCaseNodes.find(
+  (node) => node.type === "FRAME" && node.name === "Diagram — ABILENE",
+);
+const collaborationEngineering = publicCaseNodes.find(
+  (node) => node.type === "FRAME" && node.name === "Diagram — ENGINEERING",
+);
+const collaborationManagement = publicCaseNodes.find(
+  (node) => node.type === "FRAME" && node.name === "Diagram — MANAGEMENT",
+);
+assert.ok(collaborationEngineering.x < collaborationAbilene.x);
+assert.ok(collaborationAbilene.x < collaborationManagement.x);
+assert.equal(collaborationAbilene.width, 320);
+const storyIcons = publicCaseNodes.filter((node) => node.name?.startsWith("Icon —"));
+assert.equal(storyIcons.length, 6);
+for (const icon of storyIcons) {
+  assert.equal(icon.width, 32);
+  assert.equal(icon.height, 32);
+}
+const contextBand = publicCaseNodes.find(
+  (node) => node.type === "FRAME" && node.name === "02 Context and collaboration",
+);
+const catalogueBand = publicCaseNodes.find(
+  (node) => node.type === "FRAME" && node.name === "06 Structuring a technical product catalogue",
+);
+assert.equal(contextBand.fills[0].color.r, 0xec / 0xff);
+assert.equal(contextBand.fills[0].color.g, 0xe8 / 0xff);
+assert.equal(contextBand.fills[0].color.b, 0xde / 0xff);
+assert.equal(catalogueBand.fills[0].color.r, 0xde / 0xff);
+assert.equal(catalogueBand.fills[0].color.g, 0xd9 / 0xff);
+assert.equal(catalogueBand.fills[0].color.b, 0xce / 0xff);
+const caseFooter = publicCaseNodes.find(
+  (node) => node.type === "FRAME" && node.name === "Contact footer — burgundy terminal section",
+);
+assert.equal(caseFooter.fills[0].color.r, 0x74 / 0xff);
+assert.equal(caseFooter.fills[0].color.g, 0x1a / 0xff);
+assert.equal(caseFooter.fills[0].color.b, 0x2a / 0xff);
+assert.ok(
+  pluginSource.includes('stroke-width="${options.strokeWidth || 2.25}"'),
+  "The coherent case-study icon family must retain the stronger 2.25px default stroke",
+);
 await execute(imaginartPreproduction);
 assert.equal(
   generatedSections(imaginartPreproduction).length,

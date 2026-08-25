@@ -292,13 +292,19 @@ design principle, not a production measurement.
 
 Use:
 
-- warm-neutral section contrast;
+- perceptible warm-neutral section contrast using `#F7F3EA` (canvas),
+  `#ECE8DE` (surface) and `#DED9CE` (surface strong) purposefully rather than
+  alternating them mechanically;
 - dark typography and green accents;
 - burgundy for at most a few selected metrics/details beyond the homepage footer;
-- one simple, professional, consistently stroked line-icon family;
+- one simple, professional line-icon family at approximately 28–32px with an
+  approximately 2–2.25px stroke;
 - original diagrams, process maps and abstracted hierarchies;
 - large metric moments, whitespace and thin separators;
-- concise paragraphs and captions.
+- normal desktop body copy at approximately 20px Montserrat with 1.5–1.6 line
+  height; captions and metadata remain smaller;
+- concise paragraphs and captions, with a different visual grammar for each
+  major story.
 
 Do not reproduce company PDFs, newsletters, catalogue pages, imaginArt artwork
 or layouts. Use original diagrams to demonstrate Abilene's thinking and
@@ -317,18 +323,43 @@ Bilbao remains supporting evidence of repeatable event-communication work.
 
 ### Diagram strategy
 
-- Newsletter: abstract earlier/revised hierarchy with `~24% → ~34%` labelled as
-  an approximate open rate and clearly **not an A/B test**.
-- Brand launch: technical information → content strategy/architecture → clear
-  product communication.
-- Event: mailing, web, LinkedIn and Canva assets → registration → event, with
-  `~110–125` attendees versus a usual `~70–80` range, all approximate.
-- Catalogue: product families → standardized product structure →
-  customer-facing fields, showing taxonomy and content-systems thinking.
+- Collaboration: Engineering and Sales provide technical/customer inputs to a
+  visually central Abilene; Abilene structures, frames, writes and executes;
+  Management provides business/final validation. This is an explanatory flow,
+  not a claimed project-management waterfall.
+- Newsletter: make the two approximate observed values a large honest dumbbell
+  comparison (`~24%` and `~34%`, approximately +10 percentage points), with an
+  abstract earlier/revised email hierarchy nearby. It is explicitly **not an
+  A/B test** and must not look like a longitudinal trend chart.
+- Brand launch: technical input → Abilene's selection/prioritization/structure →
+  usable product content. Keep “Technical truth → structure → usable B2B
+  content” as the takeaway and reserve one clearly labelled, rights-cleared
+  real-work visual slot rather than inventing a client artifact.
+- Event: show mailing, web, LinkedIn and Canva/support feeding registration and
+  the event. Attendance is shown as approximate ranges (`~70–80` usual and
+  `~110–125` corporate event), not precision bars.
+- Catalogue: visualize product families branching into categories and converging
+  on one repeatable product-sheet structure, demonstrating taxonomy and
+  content-systems thinking.
 - Lumens: manufacturer documentation → select/prioritize/adapt/structure →
-  clear B2B communication; not mere translation.
-- Collaboration: Engineering, Sales, Management and Abilene as a network, not
-  an unsupported rigid waterfall.
+  audience questions in clear B2B communication; this is technical adaptation,
+  not mere translation, and its vertical transformation must remain visually
+  distinct from the catalogue system.
+
+The newsletter and event results stay inside their respective stories. Do not
+repeat them in a generic outcomes/evidence section.
+
+### Public-frame boundary and closing
+
+The intended public case frame must not display internal workflow language such
+as “pre-production”, “Evidence before polish”, “Visual exploration is closed”,
+repository paths or next-step instructions. Those notes may live outside the
+production frame as internal Figma annotations.
+
+Close the case with the same approved homepage contact/footer system: burgundy
+terminal background, warm-cream typography, generous spacing, clear email
+action, identity and future utility/legal controls. Do not place cards inside
+the footer.
 
 Do not invent CTR, conversion, revenue, SEO growth, engagement or a precise
 attendance uplift.

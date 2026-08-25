@@ -73,6 +73,12 @@ const FINAL_COLOR = {
   white: "#FFFFFF",
 };
 
+const CASE_COLOR = {
+  canvas: "#F7F3EA",
+  surface: "#ECE8DE",
+  surfaceStrong: "#DED9CE",
+};
+
 const COLOR = {
   ink: "#252421",
   muted: "#66625B",
@@ -521,7 +527,7 @@ function createLineIcon(parent, options) {
   const size = options.size || 36;
   const color = options.color || FINAL_COLOR.greenDeep;
   const icon = figma.createNodeFromSvg(
-    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke="${color}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${path}</g></svg>`,
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke="${color}" stroke-width="${options.strokeWidth || 2.25}" stroke-linecap="round" stroke-linejoin="round">${path}</g></svg>`,
   );
   parent.appendChild(icon);
   icon.name = `Icon — ${options.icon}`;
@@ -3304,7 +3310,7 @@ function createFinalCaseHeading(band, number, title, metadata, subtitle) {
   if (subtitle) {
     addFinalBody(band, {
       characters: subtitle,
-      fontSize: 19,
+      fontSize: 20,
       lineHeight: 31,
       color: FINAL_COLOR.inkMuted,
       width: 1020,
@@ -3330,6 +3336,132 @@ function createFinalColumn(parent, options) {
     x: options.x,
     y: options.y + 75,
   });
+}
+
+function addCaseBody(parent, options) {
+  return addFinalBody(parent, {
+    fontSize: 20,
+    lineHeight: 31,
+    ...options,
+  });
+}
+
+function createCaseDiagramNode(parent, options) {
+  const node = createCanvasFrame(parent, {
+    name: options.name || `Diagram — ${options.title}`,
+    x: options.x,
+    y: options.y,
+    width: options.width,
+    height: options.height,
+    fill: options.fill || CASE_COLOR.canvas,
+    stroke: options.stroke || FINAL_COLOR.border,
+    strokeWeight: options.strokeWeight || 1,
+    radius: options.radius || 6,
+  });
+  addFinalLabel(node, options.title, 22, 20, options.width - 44);
+  if (options.body) {
+    addFinalBody(node, {
+      characters: options.body,
+      fontSize: options.bodySize || 17,
+      lineHeight: options.lineHeight || 27,
+      color: options.bodyColor || FINAL_COLOR.ink,
+      width: options.width - 44,
+      x: 22,
+      y: options.bodyY || 58,
+    });
+  }
+  return node;
+}
+
+function createCaseArrow(parent, options) {
+  return addFinalHeading(parent, {
+    characters: options.direction || "→",
+    font: FONT.montserratMedium,
+    fontSize: options.size || 30,
+    lineHeight: options.lineHeight || 36,
+    color: options.color || FINAL_COLOR.greenDeep,
+    width: options.width || 48,
+    x: options.x,
+    y: options.y,
+  });
+}
+
+function createFinalContactFooter(parent, y) {
+  const footer = createCanvasFrame(parent, {
+    name: "Contact footer — burgundy terminal section",
+    x: 0,
+    y,
+    width: 1440,
+    height: 850,
+    fill: FINAL_COLOR.burgundy,
+  });
+  addFinalBody(footer, {
+    characters: "LET’S TALK",
+    font: FONT.montserratMedium,
+    fontSize: 14,
+    lineHeight: 22,
+    color: FINAL_COLOR.canvas,
+    width: 240,
+    x: 80,
+    y: 82,
+  });
+  addFinalHeading(footer, {
+    characters: "Have a project, an idea,\nor just want to say hello?",
+    fontSize: 54,
+    lineHeight: 66,
+    color: FINAL_COLOR.canvas,
+    width: 950,
+    x: 80,
+    y: 142,
+  });
+  addFinalBody(footer, {
+    characters: "abicaride@gmail.com  →",
+    font: FONT.montserratMedium,
+    fontSize: 22,
+    lineHeight: 32,
+    color: FINAL_COLOR.canvas,
+    width: 520,
+    x: 80,
+    y: 356,
+  });
+  createRule(footer, { x: 80, y: 535, width: 1280, color: FINAL_COLOR.burgundyTint });
+  addFinalBody(footer, {
+    characters: "Abilene Caride\nContent strategy · Communications · Business",
+    fontSize: 14,
+    lineHeight: 24,
+    color: FINAL_COLOR.surface,
+    width: 390,
+    x: 80,
+    y: 610,
+  });
+  addFinalBody(footer, {
+    characters: "Privacy · Cookie settings",
+    fontSize: 14,
+    lineHeight: 24,
+    color: FINAL_COLOR.surface,
+    width: 260,
+    x: 520,
+    y: 610,
+  });
+  addFinalBody(footer, {
+    characters: "Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →",
+    fontSize: 14,
+    lineHeight: 24,
+    color: FINAL_COLOR.surface,
+    width: 350,
+    x: 800,
+    y: 610,
+  });
+  addFinalBody(footer, {
+    characters: "© 2026 Abilene Caride",
+    fontSize: 14,
+    lineHeight: 24,
+    color: FINAL_COLOR.surface,
+    width: 220,
+    x: 1160,
+    y: 610,
+  });
+  return footer;
 }
 
 function createTokenSwatch(parent, token, index, originY = 0) {
@@ -3838,80 +3970,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
   });
   backToTop.name = "Back to top / Volver arriba — fixed scrolled state";
 
-  const footer = createCanvasFrame(page, {
-    name: "Contact footer — burgundy terminal section",
-    x: 0,
-    y: 2910,
-    width: 1440,
-    height: 850,
-    fill: FINAL_COLOR.burgundy,
-  });
-  addFinalBody(footer, {
-    characters: "LET’S TALK",
-    font: FONT.montserratMedium,
-    fontSize: 14,
-    lineHeight: 22,
-    color: FINAL_COLOR.canvas,
-    width: 240,
-    x: 80,
-    y: 82,
-  });
-  addFinalHeading(footer, {
-    characters: "Have a project, an idea,\nor just want to say hello?",
-    fontSize: 54,
-    lineHeight: 66,
-    color: FINAL_COLOR.canvas,
-    width: 950,
-    x: 80,
-    y: 142,
-  });
-  addFinalBody(footer, {
-    characters: "abicaride@gmail.com  →",
-    font: FONT.montserratMedium,
-    fontSize: 22,
-    lineHeight: 32,
-    color: FINAL_COLOR.canvas,
-    width: 520,
-    x: 80,
-    y: 356,
-  });
-  createRule(footer, { x: 80, y: 535, width: 1280, color: FINAL_COLOR.burgundyTint });
-  addFinalBody(footer, {
-    characters: "Abilene Caride\nContent strategy · Communications · Business",
-    fontSize: 14,
-    lineHeight: 24,
-    color: FINAL_COLOR.surface,
-    width: 390,
-    x: 80,
-    y: 610,
-  });
-  addFinalBody(footer, {
-    characters: "Privacy · Cookie settings",
-    fontSize: 14,
-    lineHeight: 24,
-    color: FINAL_COLOR.surface,
-    width: 260,
-    x: 520,
-    y: 610,
-  });
-  addFinalBody(footer, {
-    characters: "Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →",
-    fontSize: 14,
-    lineHeight: 24,
-    color: FINAL_COLOR.surface,
-    width: 350,
-    x: 800,
-    y: 610,
-  });
-  addFinalBody(footer, {
-    characters: "© 2026 Abilene Caride",
-    fontSize: 14,
-    lineHeight: 24,
-    color: FINAL_COLOR.surface,
-    width: 220,
-    x: 1160,
-    y: 610,
-  });
+  createFinalContactFooter(page, 2910);
 
   const note = createCanvasFrame(page, {
     name: "Pre-production note",
@@ -4051,7 +4110,7 @@ async function buildFinalDirection() {
   );
 }
 
-async function buildImaginartPreproduction() {
+async function buildImaginartPreproductionLegacy() {
   if (figma.editorType !== "figma") {
     throw new Error("The final imaginArt direction can only be created in Figma Design.");
   }
@@ -4213,6 +4272,576 @@ async function buildImaginartPreproduction() {
   figma.currentPage.selection = [section];
   figma.viewport.scrollAndZoomIntoView([section]);
   closeWithMessage("Rebuilt the refined imaginArt pre-production direction with neutral bands, line icons and diagram-led storytelling.");
+}
+
+function createFinalImaginartHero(page) {
+  const hero = createCaseBand(page, {
+    name: "01 Hero",
+    y: 0,
+    height: 560,
+    fill: CASE_COLOR.canvas,
+  });
+  addFinalLabel(hero, "CASE STUDY", 80, 70, 300);
+  addFinalHeading(hero, {
+    characters: "Making specialist B2B communication clearer",
+    fontSize: 68,
+    lineHeight: 80,
+    width: 980,
+    x: 80,
+    y: 140,
+  });
+  addCaseBody(hero, {
+    characters: "imaginArt · B2B content & communications\nCommunications Specialist · 2023–Present",
+    width: 700,
+    x: 80,
+    y: 350,
+  });
+  createRule(hero, { x: 80, y: 515, width: 1280, color: FINAL_COLOR.border });
+}
+
+function createFinalImaginartCollaboration(page) {
+  const context = createCaseBand(page, {
+    name: "02 Context and collaboration",
+    y: 560,
+    height: 820,
+    fill: CASE_COLOR.surface,
+  });
+  createFinalCaseHeading(
+    context,
+    "02",
+    "Working between expertise and action",
+    "CONTEXT + COLLABORATION",
+    "Technical knowledge and customer reality flowed through Abilene's content role before business and final validation.",
+  );
+  createLineIcon(context, { icon: "network", x: 1288, y: 64, size: 32 });
+  createCaseDiagramNode(context, {
+    title: "ENGINEERING",
+    body: "Technical truth\nProduct knowledge",
+    x: 80,
+    y: 330,
+    width: 300,
+    height: 150,
+  });
+  createCaseDiagramNode(context, {
+    title: "SALES",
+    body: "Customer reality\nTarget needs",
+    x: 80,
+    y: 560,
+    width: 300,
+    height: 150,
+  });
+  createCaseDiagramNode(context, {
+    title: "ABILENE",
+    body: "Content structure\nFraming\nCopy\nChannel execution",
+    x: 570,
+    y: 410,
+    width: 320,
+    height: 230,
+    fill: CASE_COLOR.surfaceStrong,
+    stroke: FINAL_COLOR.greenDeep,
+    strokeWeight: 2,
+    bodySize: 18,
+    lineHeight: 29,
+  });
+  createCaseDiagramNode(context, {
+    title: "MANAGEMENT",
+    body: "Business validation\nFinal validation",
+    x: 1060,
+    y: 440,
+    width: 300,
+    height: 170,
+  });
+  createRule(context, { x: 380, y: 405, width: 95, height: 3, color: FINAL_COLOR.green });
+  createRule(context, { x: 473, y: 405, width: 3, height: 230, color: FINAL_COLOR.green });
+  createRule(context, { x: 380, y: 632, width: 95, height: 3, color: FINAL_COLOR.green });
+  createRule(context, { x: 475, y: 518, width: 95, height: 3, color: FINAL_COLOR.green });
+  createCaseArrow(context, { x: 520, y: 493, size: 32 });
+  createRule(context, { x: 890, y: 523, width: 170, height: 3, color: FINAL_COLOR.green });
+  createCaseArrow(context, { x: 1015, y: 498, size: 32 });
+  addFinalBody(context, {
+    characters: "A simplified view of inputs and validation—not a rigid project-management waterfall.",
+    fontSize: 15,
+    lineHeight: 24,
+    color: FINAL_COLOR.inkMuted,
+    width: 760,
+    x: 570,
+    y: 720,
+  });
+}
+
+function createFinalImaginartNewsletter(page) {
+  const email = createCaseBand(page, {
+    name: "03 Refreshing a specialist B2B newsletter",
+    y: 1380,
+    height: 1180,
+    fill: CASE_COLOR.canvas,
+  });
+  createFinalCaseHeading(
+    email,
+    "STORY 01",
+    "Refreshing a specialist B2B newsletter",
+    "MUNDO BRIGHTSIGN",
+    "The result followed a broader editorial revision—not one isolated change.",
+  );
+  createLineIcon(email, { icon: "email", x: 1288, y: 64, size: 32 });
+  addFinalLabel(email, "EARLIER", 150, 330, 180);
+  addFinalLabel(email, "REVISED", 1100, 330, 180);
+  addFinalHeading(email, {
+    characters: "~24%",
+    fontSize: 54,
+    lineHeight: 66,
+    width: 210,
+    x: 120,
+    y: 390,
+  });
+  createEllipse(email, {
+    name: "Earlier open-rate point",
+    x: 365,
+    y: 421,
+    width: 20,
+    height: 20,
+    fill: FINAL_COLOR.inkMuted,
+  });
+  createRule(email, { x: 385, y: 429, width: 650, height: 4, color: FINAL_COLOR.border });
+  createEllipse(email, {
+    name: "Revised open-rate point",
+    x: 1035,
+    y: 421,
+    width: 20,
+    height: 20,
+    fill: FINAL_COLOR.greenDeep,
+  });
+  addFinalHeading(email, {
+    characters: "~34%",
+    fontSize: 54,
+    lineHeight: 66,
+    color: FINAL_COLOR.greenDeep,
+    width: 210,
+    x: 1090,
+    y: 390,
+  });
+  addFinalBody(email, {
+    characters: "+10 percentage points approx.",
+    font: FONT.montserratMedium,
+    fontSize: 17,
+    lineHeight: 27,
+    color: FINAL_COLOR.greenDeep,
+    width: 380,
+    x: 515,
+    y: 475,
+  });
+  addFinalBody(email, {
+    characters: "approximate recalled open rate · not an A/B test",
+    fontSize: 15,
+    lineHeight: 24,
+    color: FINAL_COLOR.inkMuted,
+    width: 620,
+    x: 410,
+    y: 525,
+  });
+  createCaseDiagramNode(email, {
+    title: "EARLIER EMAIL HIERARCHY",
+    body: "Subject\nIntroduction\nContent\nAdditional content\nCTA",
+    x: 140,
+    y: 660,
+    width: 500,
+    height: 360,
+    fill: CASE_COLOR.surface,
+    bodySize: 17,
+    lineHeight: 29,
+  });
+  createCaseDiagramNode(email, {
+    title: "REVISED EMAIL HIERARCHY",
+    body: "Emoji + revised subject\nCloser professional tone\nCTA above the fold\nContent\nAdditional content",
+    x: 800,
+    y: 660,
+    width: 500,
+    height: 360,
+    fill: CASE_COLOR.surfaceStrong,
+    stroke: FINAL_COLOR.green,
+    bodySize: 17,
+    lineHeight: 29,
+  });
+}
+
+function createFinalImaginartTurtle(page) {
+  const turtle = createCaseBand(page, {
+    name: "04 Launching a new brand in Spain",
+    y: 2560,
+    height: 1240,
+    fill: CASE_COLOR.surface,
+  });
+  createFinalCaseHeading(
+    turtle,
+    "STORY 02",
+    "Launching a new brand in Spain",
+    "TURTLE AV · IMAGINART",
+    "Abilene structured the page herself, turning technical product input into usable B2B communication.",
+  );
+  createLineIcon(turtle, { icon: "transform", x: 1288, y: 64, size: 32 });
+  createCaseDiagramNode(turtle, {
+    title: "TECHNICAL INPUT",
+    body: "4K · Dante · HDR\nLatency\nCompatibility",
+    x: 80,
+    y: 340,
+    width: 250,
+    height: 300,
+    bodySize: 18,
+    lineHeight: 31,
+  });
+  createCaseArrow(turtle, { x: 345, y: 455, size: 34 });
+  createCaseDiagramNode(turtle, {
+    title: "ABILENE",
+    body: "Select\nPrioritize\nStructure\nTranslate",
+    x: 395,
+    y: 340,
+    width: 280,
+    height: 300,
+    fill: CASE_COLOR.surfaceStrong,
+    stroke: FINAL_COLOR.greenDeep,
+    strokeWeight: 2,
+    bodySize: 18,
+    lineHeight: 31,
+  });
+  createCaseArrow(turtle, { x: 690, y: 455, size: 34 });
+  createCaseDiagramNode(turtle, {
+    title: "USABLE PRODUCT CONTENT",
+    body: "Benefits\nApplications\nNavigation\nCTA",
+    x: 740,
+    y: 340,
+    width: 270,
+    height: 300,
+    bodySize: 18,
+    lineHeight: 31,
+  });
+  const artifact = createCanvasFrame(turtle, {
+    name: "Rights-cleared real-work visual placeholder",
+    x: 1050,
+    y: 310,
+    width: 310,
+    height: 440,
+    fill: CASE_COLOR.canvas,
+    stroke: FINAL_COLOR.green,
+    strokeWeight: 2,
+    radius: 6,
+  });
+  addFinalLabel(artifact, "REAL-WORK VISUAL SLOT", 24, 28, 260);
+  addFinalHeading(artifact, {
+    characters: "Rights-cleared image pending",
+    fontSize: 28,
+    lineHeight: 37,
+    width: 250,
+    x: 24,
+    y: 90,
+  });
+  addFinalBody(artifact, {
+    characters: "Reserved for an approved page, product or process artifact. No fabricated client work.",
+    fontSize: 16,
+    lineHeight: 27,
+    color: FINAL_COLOR.inkMuted,
+    width: 250,
+    x: 24,
+    y: 205,
+  });
+  addFinalHeading(turtle, {
+    characters: "Technical truth → structure → usable B2B content",
+    fontSize: 36,
+    lineHeight: 47,
+    color: FINAL_COLOR.greenDeep,
+    width: 1100,
+    x: 140,
+    y: 850,
+  });
+  addCaseBody(turtle, {
+    characters: "The transformation is the story: preserving specialist accuracy while giving customers a clearer route through benefits, applications and action.",
+    width: 1000,
+    x: 220,
+    y: 950,
+  });
+}
+
+function createFinalImaginartEvent(page) {
+  const event = createCaseBand(page, {
+    name: "05 Planning and promoting a corporate event",
+    y: 3800,
+    height: 1260,
+    fill: CASE_COLOR.canvas,
+  });
+  createFinalCaseHeading(
+    event,
+    "STORY 03",
+    "Planning and promoting a corporate event",
+    "IMAGINART · MADRID OPEN DAYS 2026",
+    "One communication objective carried across the campaign system.",
+  );
+  createLineIcon(event, { icon: "event", x: 1288, y: 64, size: 32 });
+  createCaseDiagramNode(event, {
+    title: "MAILING",
+    x: 550,
+    y: 270,
+    width: 340,
+    height: 90,
+    fill: CASE_COLOR.surface,
+  });
+  createCaseDiagramNode(event, {
+    title: "WEB",
+    x: 120,
+    y: 405,
+    width: 260,
+    height: 90,
+    fill: CASE_COLOR.surface,
+  });
+  createCaseDiagramNode(event, {
+    title: "REGISTRATION",
+    body: "Form + practical details",
+    x: 550,
+    y: 400,
+    width: 340,
+    height: 120,
+    fill: CASE_COLOR.surfaceStrong,
+    stroke: FINAL_COLOR.greenDeep,
+    strokeWeight: 2,
+    bodySize: 16,
+    lineHeight: 25,
+  });
+  createCaseDiagramNode(event, {
+    title: "LINKEDIN",
+    x: 1060,
+    y: 405,
+    width: 260,
+    height: 90,
+    fill: CASE_COLOR.surface,
+  });
+  createCaseDiagramNode(event, {
+    title: "CANVA / SUPPORT",
+    x: 550,
+    y: 565,
+    width: 340,
+    height: 90,
+    fill: CASE_COLOR.surface,
+  });
+  createCaseDiagramNode(event, {
+    title: "EVENT",
+    x: 550,
+    y: 700,
+    width: 340,
+    height: 90,
+    fill: CASE_COLOR.surfaceStrong,
+    stroke: FINAL_COLOR.green,
+  });
+  createRule(event, { x: 718, y: 360, width: 3, height: 40, color: FINAL_COLOR.green });
+  createRule(event, { x: 380, y: 448, width: 170, height: 3, color: FINAL_COLOR.green });
+  createRule(event, { x: 890, y: 448, width: 170, height: 3, color: FINAL_COLOR.green });
+  createRule(event, { x: 718, y: 520, width: 3, height: 45, color: FINAL_COLOR.green });
+  createRule(event, { x: 718, y: 655, width: 3, height: 45, color: FINAL_COLOR.green });
+  createCaseArrow(event, { direction: "↓", x: 700, y: 660, size: 28 });
+  addFinalLabel(event, "USUAL SIMILAR EVENTS", 180, 865, 340);
+  addFinalBody(event, { characters: "~70", fontSize: 17, lineHeight: 27, width: 70, x: 520, y: 905 });
+  createRule(event, { x: 600, y: 916, width: 240, height: 4, color: FINAL_COLOR.inkMuted });
+  createRule(event, { x: 598, y: 904, width: 3, height: 28, color: FINAL_COLOR.inkMuted });
+  createRule(event, { x: 840, y: 904, width: 3, height: 28, color: FINAL_COLOR.inkMuted });
+  addFinalBody(event, { characters: "~80", fontSize: 17, lineHeight: 27, width: 70, x: 865, y: 905 });
+  addFinalLabel(event, "CORPORATE EVENT", 180, 985, 340);
+  addFinalBody(event, { characters: "~110", fontSize: 17, lineHeight: 27, width: 80, x: 500, y: 1025 });
+  createRule(event, { x: 600, y: 1036, width: 470, height: 4, color: FINAL_COLOR.greenDeep });
+  createRule(event, { x: 598, y: 1024, width: 3, height: 28, color: FINAL_COLOR.greenDeep });
+  createRule(event, { x: 1070, y: 1024, width: 3, height: 28, color: FINAL_COLOR.greenDeep });
+  addFinalBody(event, { characters: "~125", fontSize: 17, lineHeight: 27, width: 80, x: 1095, y: 1025 });
+  addFinalBody(event, {
+    characters: "approximate recalled attendance ranges · Bilbao supports repeatable event-communication evidence",
+    fontSize: 15,
+    lineHeight: 24,
+    color: FINAL_COLOR.inkMuted,
+    width: 900,
+    x: 360,
+    y: 1145,
+  });
+}
+
+function createFinalImaginartCatalogue(page) {
+  const catalogue = createCaseBand(page, {
+    name: "06 Structuring a technical product catalogue",
+    y: 5060,
+    height: 1120,
+    fill: CASE_COLOR.surfaceStrong,
+  });
+  createFinalCaseHeading(
+    catalogue,
+    "STORY 04",
+    "Structuring a technical product catalogue",
+    "AV SUPPORTS CATALOGUE",
+    "A content system for a large technical product set—not isolated descriptions.",
+  );
+  createLineIcon(catalogue, { icon: "catalogue", x: 1288, y: 64, size: 32 });
+  createCaseDiagramNode(catalogue, {
+    title: "PRODUCT FAMILIES",
+    body: "Index · taxonomy · categorization",
+    x: 500,
+    y: 280,
+    width: 440,
+    height: 130,
+    fill: CASE_COLOR.canvas,
+    bodySize: 17,
+    lineHeight: 27,
+  });
+  createRule(catalogue, { x: 718, y: 410, width: 3, height: 80, color: FINAL_COLOR.green });
+  createRule(catalogue, { x: 280, y: 488, width: 880, height: 3, color: FINAL_COLOR.green });
+  for (const [title, nodeX] of [["WALL", 155], ["MOBILE", 595], ["CEILING", 1035]]) {
+    createRule(catalogue, { x: nodeX + 125, y: 488, width: 3, height: 42, color: FINAL_COLOR.green });
+    createCaseDiagramNode(catalogue, {
+      title,
+      x: nodeX,
+      y: 530,
+      width: 250,
+      height: 95,
+      fill: CASE_COLOR.canvas,
+    });
+  }
+  createRule(catalogue, { x: 718, y: 625, width: 3, height: 65, color: FINAL_COLOR.green });
+  createCaseArrow(catalogue, { direction: "↓", x: 700, y: 650, size: 28 });
+  createCaseDiagramNode(catalogue, {
+    title: "REPEATABLE PRODUCT STRUCTURE",
+    body: "Description · compatible size · weight · VESA\nMovement · use case · CTA\n\nTechnical-to-commercial copy · consistent sheets · layout · imagery · sales enablement",
+    x: 250,
+    y: 710,
+    width: 940,
+    height: 300,
+    fill: CASE_COLOR.canvas,
+    stroke: FINAL_COLOR.green,
+    strokeWeight: 2,
+    bodySize: 18,
+    lineHeight: 30,
+  });
+}
+
+function createFinalImaginartLumens(page) {
+  const lumens = createCaseBand(page, {
+    name: "07 Adapting technical information for a B2B audience",
+    y: 6180,
+    height: 1050,
+    fill: CASE_COLOR.canvas,
+  });
+  createFinalCaseHeading(
+    lumens,
+    "STORY 05",
+    "Adapting technical information for a B2B audience",
+    "LUMENS",
+    "Technical content adaptation—not merely translation.",
+  );
+  createLineIcon(lumens, { icon: "technical", x: 1288, y: 64, size: 32 });
+  createCaseDiagramNode(lumens, {
+    title: "MANUFACTURER DOCUMENTATION",
+    body: "Source specifications · features · applications",
+    x: 240,
+    y: 280,
+    width: 960,
+    height: 130,
+    fill: CASE_COLOR.surface,
+    bodySize: 17,
+    lineHeight: 27,
+  });
+  createCaseArrow(lumens, { direction: "↓", x: 700, y: 420, size: 30 });
+  createCaseDiagramNode(lumens, {
+    title: "ABILENE",
+    body: "Select · prioritize · adapt · structure",
+    x: 400,
+    y: 500,
+    width: 640,
+    height: 150,
+    fill: CASE_COLOR.surfaceStrong,
+    stroke: FINAL_COLOR.greenDeep,
+    strokeWeight: 2,
+    bodySize: 18,
+    lineHeight: 30,
+  });
+  createCaseArrow(lumens, { direction: "↓", x: 700, y: 665, size: 30 });
+  createCaseDiagramNode(lumens, {
+    title: "B2B COMMUNICATION",
+    body: "What does it do?        Who is it for?\nWhy does it matter?      How can it be used?",
+    x: 180,
+    y: 745,
+    width: 1080,
+    height: 210,
+    fill: CASE_COLOR.surface,
+    stroke: FINAL_COLOR.green,
+    bodySize: 18,
+    lineHeight: 32,
+  });
+  addFinalBody(lumens, {
+    characters: "The manufacturer documentation remains the technical source; Abilene's contribution is audience-aware selection, framing and communication.",
+    fontSize: 15,
+    lineHeight: 24,
+    color: FINAL_COLOR.inkMuted,
+    width: 980,
+    x: 230,
+    y: 980,
+  });
+}
+
+async function buildImaginartPreproduction() {
+  if (figma.editorType !== "figma") {
+    throw new Error("The final imaginArt direction can only be created in Figma Design.");
+  }
+  requireExpectedFile(EXPECTED_FILES.personal);
+  if (!normalizeName(figma.currentPage.name).includes("case studies")) {
+    throw new Error(
+      `Open the Case Studies page before running this command. Current page: “${figma.currentPage.name}”.`,
+    );
+  }
+  const placement = replacementPlacement(
+    GENERATED_KIND.imaginartPreproduction,
+    GENERATED_KIND.imaginartReframed,
+  );
+  await loadSynthesisFonts();
+  const section = createSection(
+    "imaginArt — Final Direction — Visual refinement",
+    placement.point,
+    1740,
+    8640,
+    CASE_COLOR.surface,
+    GENERATED_KIND.imaginartPreproduction,
+  );
+  const page = createCanvasFrame(section, {
+    name: "imaginArt — editorial case study",
+    x: 150,
+    y: 360,
+    width: 1440,
+    height: 8080,
+    fill: CASE_COLOR.canvas,
+  });
+  populateSectionSafely(section, () => {
+    addFinalHeading(section, {
+      characters: "imaginArt — final visual refinement",
+      fontSize: 42,
+      lineHeight: 52,
+      width: 1180,
+      x: 150,
+      y: 90,
+    });
+    addFinalBody(section, {
+      characters: "Internal annotation · The public frame below is the approved case direction. Evidence and copyright constraints remain in docs/content/case-study-imaginart.md. The Turtle real-work image slot remains unresolved until a rights-cleared asset is explicitly approved.",
+      fontSize: 18,
+      lineHeight: 29,
+      color: FINAL_COLOR.inkMuted,
+      width: 1320,
+      x: 150,
+      y: 160,
+    });
+    createFinalImaginartHero(page);
+    createFinalImaginartCollaboration(page);
+    createFinalImaginartNewsletter(page);
+    createFinalImaginartTurtle(page);
+    createFinalImaginartEvent(page);
+    createFinalImaginartCatalogue(page);
+    createFinalImaginartLumens(page);
+    createFinalContactFooter(page, 7230);
+  });
+  placement.existing?.remove();
+  figma.currentPage.selection = [section];
+  figma.viewport.scrollAndZoomIntoView([section]);
+  closeWithMessage(
+    "Rebuilt the final imaginArt refinement with stronger neutral contrast, varied diagrams, integrated evidence and the approved contact footer.",
+  );
 }
 
 async function buildMoodboard() {

@@ -226,10 +226,18 @@ case-study exploration is preserved for comparison.
 4. Verify the story order and caveats against
    [`docs/content/case-study-imaginart.md`](../../../docs/content/case-study-imaginart.md).
 
-The final frame replaces colored blocks and decorative shapes with neutral
-tonal bands, type hierarchy, thin rules, original diagrams and a coherent
-line-icon family. It does not alter or remove the earlier wireframe or Direction
-D exploration; rerunning replaces only its own tagged final output.
+The final frame uses approximately 20px Montserrat body copy, stronger warm
+neutral separation, 32px/2.25px line icons and deliberately different visual
+grammar for each story. Verify the directional collaboration flow, newsletter
+dumbbell comparison, Turtle transformation and rights-cleared image slot, event
+ecosystem and attendance ranges, catalogue taxonomy system, vertical Lumens
+adaptation and the shared burgundy contact footer.
+
+Internal evidence, copyright and workflow notes remain outside the public page
+frame. The two approximate results stay inside their relevant stories rather
+than reappearing in a generic outcomes section. Rerunning replaces only the
+plugin-tagged final output; it does not alter the earlier wireframe, reframed
+exploration or Direction D history.
 
 ## Reruns and cleanup
 
