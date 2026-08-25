@@ -637,7 +637,7 @@ assert.equal(finalDirection.notifications.at(-1).error, false);
 assert.equal(generatedSections(finalDirection).length, 1);
 const finalDirectionSection = generatedSections(finalDirection)[0];
 assert.equal(finalDirectionSection.width, 1800);
-assert.equal(finalDirectionSection.height, 5240);
+assert.equal(finalDirectionSection.height, 5360);
 const finalDirectionNodes = allNodes(finalDirectionSection);
 const finalDirectionText = finalDirectionNodes
   .filter((node) => node.type === "TEXT")
@@ -651,8 +651,17 @@ for (const expected of [
   "Get in touch",
   "View my work",
   "Making specialist B2B communication clearer",
-  "Website Analysis",
+  "Cognitive biases in ecommerce",
   "Error Messages",
+  "Back to top / Volver arriba",
+  "LET’S TALK",
+  "Privacy · Cookie settings",
+  "Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
+  "Content strategy · Communications · Business",
+  "PALETTE HIERARCHY · DURABLE RULE",
+  "NEUTRALS · dominant backgrounds",
+  "DEEP GREEN · primary identity · navigation · links · primary CTA",
+  "BURGUNDY · footer · terminal/contact emphasis · very occasional supporting detail",
   "ABILENEHERO.PNG LINKED",
   "No decorative ellipses",
   "no colored section blocks",
@@ -675,14 +684,30 @@ const heroScrim = finalDirectionNodes.find(
   (node) => node.name === "Hero — warm readability gradient",
 );
 assert.equal(heroScrim.fills[0].type, "GRADIENT_LINEAR");
-const websiteAnalysis = finalDirectionNodes.find(
-  (node) => node.name === "Secondary work — Website Analysis",
+const cognitiveBiases = finalDirectionNodes.find(
+  (node) => node.name === "Secondary work — Cognitive biases in ecommerce",
 );
 const errorMessages = finalDirectionNodes.find(
   (node) => node.name === "Secondary work — Error Messages",
 );
-assert.equal(websiteAnalysis.y, errorMessages.y);
-assert.equal(websiteAnalysis.width, errorMessages.width);
+assert.equal(cognitiveBiases.y, errorMessages.y);
+assert.equal(cognitiveBiases.width, errorMessages.width);
+assert.ok(!finalDirectionText.includes("Website Analysis"), "Website Analysis must not remain in the approved homepage pair");
+const cognitiveTitle = finalDirectionNodes.find(
+  (node) => node.type === "TEXT" && node.characters === "Cognitive biases in ecommerce",
+);
+const cognitiveMeta = finalDirectionNodes.find(
+  (node) => node.type === "TEXT" && node.characters === "Behavioural design · UX audit · Figma",
+);
+const errorMeta = finalDirectionNodes.find(
+  (node) => node.type === "TEXT" && node.characters === "UX writing · clarity · recovery",
+);
+assert.equal(cognitiveMeta.y, 170);
+assert.equal(errorMeta.y, 170);
+assert.ok(
+  cognitiveMeta.y >= cognitiveTitle.y + cognitiveTitle.height,
+  "The two-line Cognitive Biases title must not overlap its metadata",
+);
 const finalBody = finalDirectionNodes.find(
   (node) => node.type === "TEXT" && node.characters.startsWith("One lead case showing"),
 );
@@ -732,9 +757,23 @@ const secondaryHeroCta = finalDirectionNodes.find(
 assert.equal(primaryHeroCta.width, 220);
 assert.equal(primaryHeroCta.height, 64);
 assert.equal(primaryHeroCta.x, 80);
+assert.equal(primaryHeroCta.fills[0].color.r, 0x10 / 0xff);
+assert.equal(primaryHeroCta.fills[0].color.g, 0x3a / 0xff);
+assert.equal(primaryHeroCta.fills[0].color.b, 0x20 / 0xff);
 assert.equal(secondaryHeroCta.width, 240);
 assert.equal(secondaryHeroCta.height, 64);
 assert.equal(secondaryHeroCta.x, 320);
+const contactFooter = finalDirectionNodes.find(
+  (node) => node.type === "FRAME" && node.name === "Contact footer — burgundy terminal section",
+);
+assert.equal(contactFooter.fills[0].color.r, 0x74 / 0xff);
+assert.equal(contactFooter.fills[0].color.g, 0x1a / 0xff);
+assert.equal(contactFooter.fills[0].color.b, 0x2a / 0xff);
+const backToTop = finalDirectionNodes.find(
+  (node) => node.type === "FRAME" && node.name === "Back to top / Volver arriba — fixed scrolled state",
+);
+assert.equal(backToTop.width, 56);
+assert.equal(backToTop.height, 56);
 await execute(finalDirection);
 assert.equal(generatedSections(finalDirection).length, 1, "A final direction rerun must not duplicate content");
 assert.equal(finalDirection.notifications.at(-1).error, false);

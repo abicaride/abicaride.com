@@ -132,7 +132,23 @@ Do not copy the serif typography visible in the generated hero reference.
 
 The website must not maintain a separate arbitrary portfolio palette. Its
 identity comes from warm creams, warm neutral greys, forest and leaf greens,
-plus a restrained burgundy derived from Abilene's clothing.
+plus a purposeful burgundy derived from Abilene's clothing. Abilene's latest
+homepage review places burgundy in the terminal footer rather than the hero CTA,
+giving it a visible role without turning it into a second brand system.
+
+### Durable palette hierarchy
+
+Treat this hierarchy as the general rule for every production screen:
+
+- **Neutrals** — dominant backgrounds.
+- **Deep green** — primary identity, navigation, links and primary CTA.
+- **Burgundy** — footer, terminal/contact emphasis and very occasional
+  supporting detail.
+
+This semantic hierarchy takes precedence over approximate color-percentage
+guidance. Burgundy may occupy a large terminal footer, but it must not spread
+into repeated section backgrounds or replace deep green in primary navigation
+and actions.
 
 | Token | Value | Intended role |
 | --- | --- | --- |
@@ -141,11 +157,11 @@ plus a restrained burgundy derived from Abilene's clothing.
 | `--color-surface-strong` | `#E2DFD6` | Stronger neutral separation, sparingly |
 | `--color-ink` | `#20241F` | Main text |
 | `--color-ink-muted` | `#62665E` | Supporting text |
-| `--color-green-deep` | `#103A20` | Primary identity, CTA, important links/icons |
+| `--color-green-deep` | `#103A20` | Primary identity, typography, hero CTA, important links/icons |
 | `--color-green` | `#34552E` | Diagrams, links and selected details |
 | `--color-green-soft` | `#6F8A4F` | Larger graphic accents; contrast-check text use |
 | `--color-green-tint` | `#DCE2D2` | Rare pale accent, not a section system |
-| `--color-burgundy` | `#741A2A` | Restrained tertiary metric/detail accent |
+| `--color-burgundy` | `#741A2A` | Terminal contact footer and selected meaningful highlights |
 | `--color-burgundy-tint` | `#EADBDD` | Optional pale warm accent |
 | `--color-border` | `#D3D0C7` | Thin rules and subtle boundaries |
 
@@ -156,9 +172,11 @@ Approximate visual distribution, as guidance rather than arithmetic:
 - 5–10% natural green accents;
 - 2–5% burgundy accents.
 
-Burgundy is a photographic and tertiary accent, not general red UI. Never use
-it for the primary CTA, primary identity, a full section background or a second
-competing brand system. Do not introduce bright red, coral or orange-red.
+Burgundy closes the page through the contact footer and may support a few
+selected metrics, focus/hover moments or tiny details. Deep green owns the
+filled primary hero CTA again. Burgundy is not general body text, a repeated
+section background, decorative blob language or a second competing brand
+system. Do not introduce bright red, coral or orange-red.
 
 ## Background and graphic strategy
 
@@ -189,12 +207,77 @@ The approved conceptual order is:
 1. navigation;
 2. hero: name, positioning, CTAs and portrait/environment in one vertical zone;
 3. selected work: imaginArt as the lead professional case;
-4. secondary work: Website Analysis and Error Messages;
+4. secondary work: Cognitive biases in ecommerce and Error Messages;
 5. short About / positioning;
-6. contact / final CTA.
+6. contact-oriented footer and utility metadata.
 
-Website Analysis and Error Messages must sit side by side with equal hierarchy.
-Neither may appear nested inside the other.
+Cognitive biases in ecommerce and Error Messages must sit side by side with
+equal hierarchy. Neither may appear nested inside the other. The existing EN/ES
+content entries are reused through translation key `cognitive-biases`; no
+duplicate project is created. Website Analysis may remain elsewhere in the
+archive.
+
+The hero action hierarchy is deliberate:
+
+- **Get in touch / Hablemos** — deep-green filled primary action with warm-cream
+  text, sufficient padding and a strong visible hover/focus treatment;
+- **View my work / Ver mi trabajo** — neutral or transparent secondary action
+  with deep-green border and text.
+
+The primary action must carry more visual weight; the two actions must not look
+equally loud.
+
+## Back-to-top interaction
+
+The homepage includes one functional back-to-top control. It is fixed near the
+bottom-right of the viewport, hidden while the hero is meaningfully visible and
+shown once the hero has left the viewport. It returns the reader to the top and
+uses a simple upward arrow rather than decorative floating geometry.
+
+Accessible names are `Back to top` in English and `Volver arriba` in Spanish.
+The approved treatment is a compact warm-cream surface with a deep-green arrow
+and subtle border; it must remain quieter than the primary CTA.
+
+Future Astro implementation should use a tiny native-JavaScript enhancement,
+preferably `IntersectionObserver` against the hero. It must expose visible
+keyboard focus, respect `prefers-reduced-motion`, and keep enough clearance from
+the analytics/cookie consent interface. No framework or new dependency is
+needed.
+
+## Contact footer
+
+V2 preserves and visually evolves the existing `SiteFooter.astro` responsibility
+rather than introducing a parallel footer. The final burgundy region
+is the deliberate full stop of the page and has two layers:
+
+1. a spacious contact close led by the email address;
+2. utility metadata preserving Abilene Caride, privacy, cookie settings,
+   copyright, and the architecture/build note where product strategy retains
+   it.
+
+Working contact copy, pending final public-copy approval:
+
+- EN: `LET'S TALK` — `Have a project, an idea, or just want to say hello?` —
+  `abicaride@gmail.com →`;
+- ES: `HABLEMOS` — `¿Tienes un proyecto, una idea o simplemente quieres
+  saludar?` — `abicaride@gmail.com →`.
+
+Use warm-cream typography, strong hierarchy and generous whitespace. Preserve
+the original playful architecture-link copy exactly in production:
+`Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.` and
+`Hecha con 🚀 Astro, ✍️ Pages CMS, 🤖 Codex y mucho ❤️.` Do not use a card grid
+or decorative ellipses. Legal, privacy and consent controls must not be removed
+for visual minimalism.
+
+## Responsive intent
+
+- Hero CTAs may stack on narrow screens; the deep-green primary remains dominant.
+- Cognitive Biases and Error Messages stack vertically while retaining equal
+  hierarchy and the same editorial treatment.
+- The back-to-top control uses a smaller footprint, remains bottom-right and
+  never obscures content or cookie consent.
+- In the footer, the contact CTA comes first and comfortably spaced utility
+  links follow; do not force the desktop utility layout into tiny columns.
 
 ## imaginArt visual direction
 
@@ -211,7 +294,7 @@ Use:
 
 - warm-neutral section contrast;
 - dark typography and green accents;
-- burgundy for at most a few selected metrics/details;
+- burgundy for at most a few selected metrics/details beyond the homepage footer;
 - one simple, professional, consistently stroked line-icon family;
 - original diagrams, process maps and abstracted hierarchies;
 - large metric moments, whitespace and thin separators;

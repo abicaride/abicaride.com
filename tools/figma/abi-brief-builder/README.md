@@ -160,7 +160,7 @@ system of rounded cards.
 4. Run **Plugins → Development → Abi Website Brief Builder → Foundations:
    Rebuild approved V2 foundations**.
 5. Confirm that the reference is labelled as design-only and that the cream,
-   neutral, green and restrained burgundy token swatches are visible.
+   neutral, green and purposeful burgundy token swatches are visible.
 
 Rerunning replaces only the plugin-tagged approved Foundations section. It does
 not modify historical explorations or unrelated Foundations material.
@@ -176,11 +176,19 @@ not modify historical explorations or unrelated Foundations material.
    final pre-production direction**.
 5. Confirm that `AbileneHero.png` fills the hero, Abilene remains on the right,
    and the editable navigation, copy and CTA pair remain readable on the left.
+6. Confirm that the primary hero CTA is deep green; Cognitive Biases and Error
+   Messages have equal secondary hierarchy; the burgundy contact footer
+   retains privacy/cookie/build utility information; and the representative
+   back-to-top control is documented as an interaction rather than decoration.
+   The architecture link keeps the playful production copy, including its
+   Astro, Pages CMS, Codex and love emojis.
 
 This command does not modify or delete A/B/C/D. Its output deliberately contains
 no decorative ellipse nodes, no large colored section blocks and is labelled as
 the sole direction to advance. Rerunning replaces only the plugin-tagged final
-direction.
+direction. The generated English desktop frame also records the Spanish footer
+working copy and mobile behavior as production annotations; it does not create
+a separate speculative mobile concept.
 
 ## Build the imaginArt case-study structure
 

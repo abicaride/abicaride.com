@@ -219,11 +219,11 @@ const FINAL_PALETTE_TOKENS = [
   ["--color-surface-strong", FINAL_COLOR.surfaceStrong, "Stronger neutral separation"],
   ["--color-ink", FINAL_COLOR.ink, "Main text"],
   ["--color-ink-muted", FINAL_COLOR.inkMuted, "Supporting text"],
-  ["--color-green-deep", FINAL_COLOR.greenDeep, "Primary identity and CTA"],
+  ["--color-green-deep", FINAL_COLOR.greenDeep, "Identity, navigation, links and primary CTA"],
   ["--color-green", FINAL_COLOR.green, "Diagrams and links"],
   ["--color-green-soft", FINAL_COLOR.greenSoft, "Large graphic accents"],
   ["--color-green-tint", FINAL_COLOR.greenTint, "Rare pale accent"],
-  ["--color-burgundy", FINAL_COLOR.burgundy, "Restrained tertiary accent"],
+  ["--color-burgundy", FINAL_COLOR.burgundy, "Footer, contact emphasis and rare detail"],
   ["--color-burgundy-tint", FINAL_COLOR.burgundyTint, "Optional pale accent"],
   ["--color-border", FINAL_COLOR.border, "Rules and boundaries"],
 ];
@@ -3548,7 +3548,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     x,
     y,
     width: 1440,
-    height: 3980,
+    height: 4260,
     fill: FINAL_COLOR.canvas,
   });
 
@@ -3636,7 +3636,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     height: 64,
     fill: FINAL_COLOR.greenDeep,
     stroke: FINAL_COLOR.greenDeep,
-    color: FINAL_COLOR.white,
+    color: FINAL_COLOR.canvas,
     fontSize: 18,
     lineHeight: 28,
   });
@@ -3738,7 +3738,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
   });
   addFinalLabel(secondary, "02 · SECONDARY WORK", 80, 72, 430);
   const secondaryItems = [
-    ["Secondary work — Website Analysis", "Website Analysis", "Content review · structure · recommendations", 80],
+    ["Secondary work — Cognitive biases in ecommerce", "Cognitive biases in ecommerce", "Behavioural design · UX audit · Figma", 80],
     ["Secondary work — Error Messages", "Error Messages", "UX writing · clarity · recovery", 740],
   ];
   secondaryItems.forEach(([name, title, meta, itemX]) => {
@@ -3765,7 +3765,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
       color: FINAL_COLOR.inkMuted,
       width: 520,
       x: 0,
-      y: 118,
+      y: 170,
     });
     addFinalBody(item, {
       characters: "View project  ↗",
@@ -3775,7 +3775,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
       color: FINAL_COLOR.greenDeep,
       width: 250,
       x: 0,
-      y: 240,
+      y: 270,
     });
   });
 
@@ -3814,51 +3814,111 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     y: 330,
   });
 
-  const cta = createCanvasFrame(page, {
-    name: "Contact — strong neutral transition",
+  addFinalBody(about, {
+    characters: "SCROLLED STATE · fixed 24px from viewport bottom/right · hidden while hero is visible",
+    font: FONT.montserratMedium,
+    fontSize: 12,
+    lineHeight: 20,
+    color: FINAL_COLOR.inkMuted,
+    width: 470,
+    x: 790,
+    y: 548,
+  });
+  const backToTop = createPill(about, {
+    label: "↑",
+    x: 1304,
+    y: 525,
+    width: 56,
+    height: 56,
+    fill: FINAL_COLOR.canvas,
+    stroke: FINAL_COLOR.border,
+    color: FINAL_COLOR.greenDeep,
+    fontSize: 24,
+    lineHeight: 28,
+  });
+  backToTop.name = "Back to top / Volver arriba — fixed scrolled state";
+
+  const footer = createCanvasFrame(page, {
+    name: "Contact footer — burgundy terminal section",
     x: 0,
     y: 2910,
     width: 1440,
-    height: 620,
-    fill: FINAL_COLOR.surfaceStrong,
+    height: 850,
+    fill: FINAL_COLOR.burgundy,
   });
-  addFinalLabel(cta, "CONTACT", 80, 82, 200);
-  addFinalHeading(cta, {
-    characters: "Have something complex that needs clarity?",
-    fontSize: 52,
-    lineHeight: 64,
-    width: 830,
-    x: 80,
-    y: 140,
-  });
-  createPill(cta, {
-    label: "Get in touch  →",
-    x: 1080,
-    y: 175,
+  addFinalBody(footer, {
+    characters: "LET’S TALK",
+    font: FONT.montserratMedium,
+    fontSize: 14,
+    lineHeight: 22,
+    color: FINAL_COLOR.canvas,
     width: 240,
-    height: 58,
-    fill: FINAL_COLOR.greenDeep,
-    stroke: FINAL_COLOR.greenDeep,
-    color: FINAL_COLOR.white,
-    fontSize: 17,
-    lineHeight: 26,
-  });
-  addFinalBody(cta, {
-    characters: "Abilene Caride · Content strategy · Communications · Content",
-    fontSize: 15,
-    lineHeight: 24,
-    color: FINAL_COLOR.inkMuted,
-    width: 700,
     x: 80,
-    y: 510,
+    y: 82,
+  });
+  addFinalHeading(footer, {
+    characters: "Have a project, an idea,\nor just want to say hello?",
+    fontSize: 54,
+    lineHeight: 66,
+    color: FINAL_COLOR.canvas,
+    width: 950,
+    x: 80,
+    y: 142,
+  });
+  addFinalBody(footer, {
+    characters: "abicaride@gmail.com  →",
+    font: FONT.montserratMedium,
+    fontSize: 22,
+    lineHeight: 32,
+    color: FINAL_COLOR.canvas,
+    width: 520,
+    x: 80,
+    y: 356,
+  });
+  createRule(footer, { x: 80, y: 535, width: 1280, color: FINAL_COLOR.burgundyTint });
+  addFinalBody(footer, {
+    characters: "Abilene Caride\nContent strategy · Communications · Business",
+    fontSize: 14,
+    lineHeight: 24,
+    color: FINAL_COLOR.surface,
+    width: 390,
+    x: 80,
+    y: 610,
+  });
+  addFinalBody(footer, {
+    characters: "Privacy · Cookie settings",
+    fontSize: 14,
+    lineHeight: 24,
+    color: FINAL_COLOR.surface,
+    width: 260,
+    x: 520,
+    y: 610,
+  });
+  addFinalBody(footer, {
+    characters: "Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →",
+    fontSize: 14,
+    lineHeight: 24,
+    color: FINAL_COLOR.surface,
+    width: 350,
+    x: 800,
+    y: 610,
+  });
+  addFinalBody(footer, {
+    characters: "© 2026 Abilene Caride",
+    fontSize: 14,
+    lineHeight: 24,
+    color: FINAL_COLOR.surface,
+    width: 220,
+    x: 1160,
+    y: 610,
   });
 
   const note = createCanvasFrame(page, {
     name: "Pre-production note",
     x: 0,
-    y: 3530,
+    y: 3760,
     width: 1440,
-    height: 450,
+    height: 500,
     fill: FINAL_COLOR.canvas,
   });
   createRule(note, { x: 80, y: 60, width: 1280, color: FINAL_COLOR.border });
@@ -3870,6 +3930,24 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     width: 1120,
     x: 80,
     y: 110,
+  });
+  addFinalBody(note, {
+    characters: "Interaction: Back to top / Volver arriba is fixed bottom-right, hidden while the hero is meaningfully visible and revealed afterwards. Future Astro enhancement: IntersectionObserver, tiny native JS, visible keyboard focus, reduced-motion-aware scrolling and cookie-consent clearance.",
+    fontSize: 15,
+    lineHeight: 25,
+    color: FINAL_COLOR.inkMuted,
+    width: 1180,
+    x: 80,
+    y: 215,
+  });
+  addFinalBody(note, {
+    characters: "Mobile: hero CTAs may stack; secondary projects stack with equal hierarchy; contact CTA precedes comfortably spaced utility links; the smaller back-to-top control keeps bottom-right position without obscuring content or consent UI. Spanish contact working copy: HABLEMOS · ¿Tienes un proyecto, una idea o simplemente quieres saludar?",
+    fontSize: 15,
+    lineHeight: 25,
+    color: FINAL_COLOR.inkMuted,
+    width: 1180,
+    x: 80,
+    y: 315,
   });
 
   return page;
@@ -3895,7 +3973,7 @@ async function buildFinalDirection() {
     "Final Direction — Clean Organic Editorial — Pre-production",
     placement.point,
     1800,
-    5240,
+    5360,
     FINAL_COLOR.surface,
     GENERATED_KIND.finalDirection,
   );
@@ -3931,10 +4009,10 @@ async function buildFinalDirection() {
       x: 690,
       y: 330,
       width: 420,
-      label: "COLOR + RHYTHM",
-      body: "Warm cream and neutral greys dominate · forest green leads · natural green supports · burgundy is a restrained tertiary accent",
-      bodySize: 17,
-      lineHeight: 28,
+      label: "PALETTE HIERARCHY · DURABLE RULE",
+      body: "NEUTRALS · dominant backgrounds\nDEEP GREEN · primary identity · navigation · links · primary CTA\nBURGUNDY · footer · terminal/contact emphasis · very occasional supporting detail",
+      bodySize: 15,
+      lineHeight: 24,
     });
     createFinalColumn(section, {
       x: 1200,
