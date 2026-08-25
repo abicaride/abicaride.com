@@ -46,6 +46,10 @@
       "command": "build-imaginart-preproduction"
     },
     {
+      "name": "Personal Website: Rebuild final About pre-production",
+      "command": "build-about-preproduction"
+    },
+    {
       "separator": true
     },
     {

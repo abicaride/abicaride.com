@@ -38,6 +38,11 @@ its build.
   pre-production imaginArt section using the approved newsletter → Turtle AV →
   Madrid → AV Supports Catalogue → Lumens story order, with neutral bands,
   original diagrams and one coherent line-icon family.
+- In **Abi Personal Website → About + Archive**: one replaceable final About
+  direction with a 1440px desktop frame and a 390px mobile frame. It combines
+  the approved narrative, career path, working principles, compact experience
+  and education, personal notes, languages and the shared contact footer
+  without turning the page into a CV or tools inventory.
 
 It does not create finished homepage designs or polished marketing copy. The
 homepage concepts are deliberately substantial enough for visual review while
@@ -64,6 +69,21 @@ The approved Foundations command looks for an image layer named
 Foundations page before running the command. The flattened image is placed only
 as a labelled design reference and is never treated as a production component.
 
+The final About command looks for an image layer named `AbileneAbout` on the
+open About/Archive page. That layer must contain Abilene's approved full-body
+red-top/grey-skirt portrait. The plugin links its existing image fill in `FIT`
+mode so the full-body composition is preserved; it never generates, retouches
+or copies the personal photo into the repository. If the layer is absent, the
+command creates a neutral, clearly reported image slot instead of substituting
+another portrait.
+
+The generated About record uses Abilene's confirmed wording for Caprichos de
+Casa Import (e-commerce manager plus administration, sales and business
+operations), `Postgraduate in UX Writing`, and
+`Proficiency English Certificate - Cambridge C2 (2024)`. These corrections are
+kept in the reproducible builder even while the public Astro profile remains
+unchanged during the design-only phase.
+
 ## Safety model
 
 - The plugin has no network access.
@@ -72,6 +92,10 @@ as a labelled design reference and is never treated as a production component.
   `Explorations`.
 - The imaginArt command validates the **Abi Personal Website** file and its
   `Case Studies` page.
+- The About command validates the **Abi Personal Website** file and its existing
+  `Archive`/`About` page. Because the Starter file is limited to three pages,
+  the first successful run renames `03 — Archive` to `03 — About + Archive`
+  while preserving its existing archive material.
 - Exploration commands require exactly one selected object as a placement
   anchor. Final pre-production commands prefer their tagged Direction D source
   section automatically and use the current selection only as a fallback.
@@ -239,11 +263,36 @@ than reappearing in a generic outcomes section. Rerunning replaces only the
 plugin-tagged final output; it does not alter the earlier wireframe, reframed
 exploration or Direction D history.
 
+## Rebuild the final About pre-production direction
+
+1. Open **Abi Personal Website → Archive** (or **About + Archive** after the
+   first run) in Figma Desktop.
+2. Import the approved full-body About portrait onto that page and name its
+   image layer `AbileneAbout`. Keep the personal source file in Figma only.
+3. On the first run, select the existing Archive introduction as the placement
+   anchor.
+4. Run **Plugins → Development → Abi Website Brief Builder → Personal Website:
+   Rebuild final About pre-production**.
+5. Review the single desktop direction and its paired mobile composition.
+
+The experience list uses the confirmed `2023–present` imaginArt period. The
+older `2021–present` production profile value remains unchanged during this
+design-only task and must be corrected when the About direction is implemented.
+The design also avoids strengthening the existing sign-language proficiency
+wording until Abilene verifies it. All first-person narrative copy remains
+working copy for Abilene's voice review.
+
+The About command omits a tools section, uses Inter headings and approximately
+20px Montserrat desktop body copy, keeps Clear/Honest/Practical visually strong,
+and reuses the exact burgundy footer system. Mobile stacks the portrait and
+story, career path, principles, timeline and supporting sections into one
+reading flow. Back-to-top remains an interaction specification, not decoration.
+
 ## Reruns and cleanup
 
 Run **Find generated content** to select plugin-created sections on the current
 page. Historical exploration commands still require manual deletion before a
-rerun. Approved Foundations, final homepage and final imaginArt commands rebuild
+rerun. Approved Foundations, final homepage, final imaginArt and final About commands rebuild
 their own tagged output in place without duplicating it.
 
 Figma's ordinary Undo command can also reverse a plugin run immediately.

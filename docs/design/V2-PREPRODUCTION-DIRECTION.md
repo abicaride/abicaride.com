@@ -364,6 +364,54 @@ the footer.
 Do not invent CTR, conversion, revenue, SEO growth, engagement or a precise
 attendance uplift.
 
+## About page direction
+
+The final About direction is one editorial, personal composition—not a new
+exploration series and not a web-formatted CV. Its central idea is that helping
+people is Abilene's motive and communication/writing is the professional tool:
+helping people understand what they need and find a useful way forward.
+
+The approved full-body portrait with red top, grey skirt and softly blurred
+organic background is the authoritative About photograph. It remains a
+Figma-only personal asset named `AbileneAbout`; do not generate, retouch or
+substitute another likeness. Use the full-body composition with meaningful
+visual presence rather than a circular crop, corporate headshot or card.
+
+The narrative sequence is:
+
+1. help-led portrait hero;
+2. Administration → Communication → UX Writing → Content strategy ·
+   Communications · Business;
+3. Clear / Honest / Practical as three equally strong working principles;
+4. a compact experience and education record that supports the story;
+5. Galicia, sustainability, a simple/down-to-earth but active mind, and
+   Barcelona as personal context;
+6. compact primary and secondary languages;
+7. the shared burgundy contact/footer close.
+
+Tools are intentionally omitted from the design so how Abilene thinks remains
+more prominent than software familiarity. Experience is concise and does not
+repeat full CV responsibilities. Abilene confirmed the imaginArt period as
+`2023–present`; the older `2021–present` production profile value must be
+corrected during implementation. She also confirmed the Caprichos de Casa
+Import scope as e-commerce manager plus administration, sales and business
+operations; the qualification is `Postgraduate in UX Writing`, not a course;
+and the certificate wording is
+`Proficiency English Certificate - Cambridge C2 (2024)`. Older production
+profile wording must be reconciled during implementation. Sign-language
+wording is not strengthened beyond the existing source pending final
+verification.
+
+Use the same Inter-heading/Montserrat-body system, approximately 20px desktop
+body copy, stronger warm-neutral surfaces, green identity/iconography and exact
+burgundy footer treatment as the approved Homepage and imaginArt direction.
+Desktop uses a two-column photo/content hero, horizontal career path and
+vertically divided principles. Mobile stacks the story and portrait, converts
+the path to a vertical progression, and keeps every supporting section and the
+footer in a single readable flow. The back-to-top behavior remains shared and
+functional. First-person narrative and personal statements remain working copy
+until Abilene reviews the public voice.
+
 ## Production sequence and stop condition
 
 The visual exploration phase is closed. Do not create another visual direction.

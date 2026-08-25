@@ -7,7 +7,7 @@
  */
 
 const PLUGIN_DATA_KEY = "abi-website-brief-builder";
-const PLUGIN_VERSION = "6";
+const PLUGIN_VERSION = "7";
 const INSERTION_GAP = 400;
 
 const EXPECTED_FILES = {
@@ -26,9 +26,11 @@ const GENERATED_KIND = {
   finalDirection: "v2-final-direction-preproduction",
   imaginartPreproduction: "imaginart-final-preproduction-editorial",
   approvedFoundations: "v2-approved-production-foundations",
+  aboutPreproduction: "about-final-preproduction-editorial",
 };
 
 const FINAL_HERO_PHOTO = "AbileneHero";
+const FINAL_ABOUT_PHOTO = "AbileneAbout";
 const FINAL_HERO_REFERENCE = "hero-approved-reference.jpg";
 const FINAL_HERO_REFERENCE_PATH =
   "docs/design/references/hero-approved-reference.jpg";
@@ -519,6 +521,26 @@ const LINE_ICON_PATHS = {
     '<circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="m10.8 7.2-4.6 8.6M13.2 7.2l4.6 8.6M7.5 18h9"/>',
   trend:
     '<path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/>',
+  administration:
+    '<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V4h6v3M4 12h16M10 15h4"/>',
+  communication:
+    '<path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9h8M8 12h5"/>',
+  writing:
+    '<path d="m5 19 3.5-.8L19 7.7 16.3 5 5.8 15.5 5 19Z"/><path d="m14.8 6.5 2.7 2.7M5 21h14"/>',
+  compass:
+    '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/>',
+  clear:
+    '<path d="M4 7h16M4 12h11M4 17h8"/><path d="m17 15 3 3-3 3"/>',
+  honest:
+    '<path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-5"/>',
+  practical:
+    '<path d="M14.5 5.5a4 4 0 0 0-5 5L4 16l4 4 5.5-5.5a4 4 0 0 0 5-5l-3 3-3-3 2-4Z"/>',
+  leaf:
+    '<path d="M20 4C11 4 5 8 5 15c0 3 2 5 5 5 7 0 10-7 10-16Z"/><path d="M5 20c2-5 6-8 11-11"/>',
+  home:
+    '<path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/>',
+  spark:
+    '<path d="M12 2l1.5 6.5L20 10l-6.5 1.5L12 18l-1.5-6.5L4 10l6.5-1.5L12 2Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/>',
 };
 
 function createLineIcon(parent, options) {
@@ -581,9 +603,9 @@ function preferGeneratedAnchor(kind) {
   return requireSingleAnchor();
 }
 
-function applyImageFill(frame, imageHash) {
+function applyImageFill(frame, imageHash, scaleMode = "FILL") {
   if (!imageHash) return false;
-  frame.fills = [{ type: "IMAGE", imageHash, scaleMode: "FILL" }];
+  frame.fills = [{ type: "IMAGE", imageHash, scaleMode }];
   return true;
 }
 
@@ -4844,6 +4866,543 @@ async function buildImaginartPreproduction() {
   );
 }
 
+function createAboutHeader(parent, dark = false) {
+  const color = dark ? FINAL_COLOR.canvas : FINAL_COLOR.greenDeep;
+  addFinalHeading(parent, {
+    characters: "Abilene Caride",
+    fontSize: 32,
+    lineHeight: 38,
+    color,
+    width: 280,
+    x: 80,
+    y: 42,
+  });
+  for (const [label, itemX] of [
+    ["Work", 960],
+    ["About", 1080],
+    ["Contact", 1205],
+    ["ES", 1330],
+  ]) {
+    addFinalBody(parent, {
+      characters: label,
+      font: FONT.montserratMedium,
+      fontSize: 15,
+      lineHeight: 24,
+      color,
+      width: 90,
+      x: itemX,
+      y: 48,
+    });
+  }
+}
+
+function createAboutBackToTop(parent, x, y) {
+  const control = createPill(parent, {
+    label: "↑",
+    x,
+    y,
+    width: 56,
+    height: 56,
+    fill: FINAL_COLOR.canvas,
+    stroke: FINAL_COLOR.border,
+    color: FINAL_COLOR.greenDeep,
+    fontSize: 24,
+    lineHeight: 28,
+  });
+  control.name = "Back to top / Volver arriba — fixed scrolled state";
+  return control;
+}
+
+function createAboutDesktop(parent, x, y, photoHash) {
+  const page = createCanvasFrame(parent, {
+    name: "About — Final pre-production",
+    x,
+    y,
+    width: 1440,
+    height: 7230,
+    fill: FINAL_COLOR.canvas,
+  });
+
+  const hero = createCaseBand(page, {
+    name: "01 About hero",
+    y: 0,
+    height: 1120,
+    fill: FINAL_COLOR.canvas,
+  });
+  createAboutHeader(hero);
+  addFinalLabel(hero, "ABOUT", 80, 190, 240);
+  addFinalHeading(hero, {
+    characters: "I help people find the way to do what they want.",
+    fontSize: 58,
+    lineHeight: 69,
+    width: 640,
+    x: 80,
+    y: 240,
+  });
+  addFinalBody(hero, {
+    characters: "Helping is the thread running through my work. I want people to understand what they need, find their way forward and feel that communication is working with them rather than against them.\n\nProfessionally, I do that through words.",
+    fontSize: 20,
+    lineHeight: 33,
+    width: 620,
+    x: 80,
+    y: 480,
+  });
+  addFinalBody(hero, {
+    characters: "I wear a lot of hats, but I don’t do things halfway. Whether I’m structuring technical information, writing a campaign or thinking through a user experience, I care about making it useful and getting it right.",
+    fontSize: 20,
+    lineHeight: 33,
+    width: 620,
+    x: 80,
+    y: 760,
+  });
+  const photo = createCanvasFrame(hero, {
+    name: `About portrait — full body — ${FINAL_ABOUT_PHOTO}`,
+    x: 790,
+    y: 120,
+    width: 650,
+    height: 1000,
+    fill: FINAL_COLOR.surfaceStrong,
+    clipsContent: true,
+  });
+  applyImageFill(photo, photoHash, "FIT");
+
+  const path = createCaseBand(page, {
+    name: "02 How I got here",
+    y: 1120,
+    height: 880,
+    fill: CASE_COLOR.surface,
+  });
+  addFinalLabel(path, "HOW I GOT HERE", 80, 72, 280);
+  addFinalHeading(path, {
+    characters: "Words became the way I could be more useful.",
+    fontSize: 48,
+    lineHeight: 59,
+    width: 760,
+    x: 80,
+    y: 125,
+  });
+  addFinalBody(path, {
+    characters: "In my first jobs I realised how much the right words could change whether someone understood, trusted or acted. That made me want to learn how to reach people better, communicate better and ultimately be more useful.",
+    fontSize: 20,
+    lineHeight: 33,
+    width: 510,
+    x: 850,
+    y: 135,
+  });
+  const pathItems = [
+    ["administration", "Administration", "Business foundations"],
+    ["communication", "Communication", "Reaching people"],
+    ["writing", "UX Writing", "Removing friction"],
+    ["compass", "Today", "Content strategy · Communications · Business"],
+  ];
+  pathItems.forEach(([icon, title, meta], index) => {
+    const itemX = 80 + index * 335;
+    createLineIcon(path, { icon, x: itemX, y: 455, size: 48 });
+    addFinalHeading(path, {
+      characters: title,
+      fontSize: 26,
+      lineHeight: 34,
+      width: 260,
+      x: itemX,
+      y: 535,
+    });
+    addFinalBody(path, {
+      characters: meta,
+      fontSize: 16,
+      lineHeight: 25,
+      color: FINAL_COLOR.inkMuted,
+      width: 245,
+      x: itemX,
+      y: 585,
+    });
+    if (index < pathItems.length - 1) {
+      createCaseArrow(path, { x: itemX + 270, y: 466, size: 32 });
+    }
+  });
+
+  const principles = createCaseBand(page, {
+    name: "03 How I work",
+    y: 2000,
+    height: 800,
+    fill: CASE_COLOR.canvas,
+  });
+  addFinalLabel(principles, "HOW I WORK", 80, 72, 260);
+  addFinalHeading(principles, {
+    characters: "Clear. Honest. Practical.",
+    fontSize: 52,
+    lineHeight: 64,
+    width: 900,
+    x: 80,
+    y: 125,
+  });
+  const principleItems = [
+    ["clear", "Clear", "I make complex information understandable."],
+    ["honest", "Honest", "I don’t think communication needs to sound complicated to be professional."],
+    ["practical", "Practical", "Good content should help the audience and make sense for the business behind it."],
+  ];
+  principleItems.forEach(([icon, title, body], index) => {
+    const itemX = 80 + index * 440;
+    if (index > 0) {
+      createRule(principles, { x: itemX - 40, y: 340, width: 2, height: 300, color: FINAL_COLOR.border });
+    }
+    createLineIcon(principles, { icon, x: itemX, y: 330, size: 56 });
+    addFinalHeading(principles, {
+      characters: title,
+      fontSize: 34,
+      lineHeight: 43,
+      width: 330,
+      x: itemX,
+      y: 425,
+    });
+    addFinalBody(principles, {
+      characters: body,
+      fontSize: 20,
+      lineHeight: 33,
+      width: 330,
+      x: itemX,
+      y: 500,
+    });
+  });
+
+  const experience = createCaseBand(page, {
+    name: "04 Experience — compact editorial timeline",
+    y: 2800,
+    height: 1240,
+    fill: CASE_COLOR.surfaceStrong,
+  });
+  addFinalLabel(experience, "EXPERIENCE", 80, 72, 260);
+  addFinalHeading(experience, {
+    characters: "A broad profile, built deliberately.",
+    fontSize: 48,
+    lineHeight: 59,
+    width: 760,
+    x: 80,
+    y: 125,
+  });
+  addFinalBody(experience, {
+    characters: "The through-line is useful communication—not a list of every task.",
+    fontSize: 20,
+    lineHeight: 33,
+    color: FINAL_COLOR.inkMuted,
+    width: 520,
+    x: 820,
+    y: 145,
+  });
+  const roles = [
+    ["2023–present", "imaginArt", "Content, communications and marketing"],
+    ["2020–2021", "Federación Pantalla", "Communication and audiovisual sector"],
+    ["2019–2021", "Ailanto", "Ecommerce and digital communication"],
+    ["2017–2019", "Ethic Investors", "Content and digital marketing"],
+    ["2011–2019", "Caprichos de Casa Import", "E-commerce manager · Administration, sales and business operations"],
+  ];
+  roles.forEach(([period, company, role], index) => {
+    const rowY = 330 + index * 165;
+    createRule(experience, { x: 80, y: rowY, width: 1280, color: FINAL_COLOR.border });
+    addFinalLabel(experience, period, 80, rowY + 35, 220);
+    addFinalHeading(experience, {
+      characters: company,
+      fontSize: index === 0 ? 30 : 26,
+      lineHeight: 38,
+      width: 420,
+      x: 330,
+      y: rowY + 28,
+    });
+    addFinalBody(experience, {
+      characters: role,
+      fontSize: 18,
+      lineHeight: 29,
+      color: FINAL_COLOR.inkMuted,
+      width: 520,
+      x: 820,
+      y: rowY + 34,
+    });
+  });
+
+  const education = createCaseBand(page, {
+    name: "05 Education — compact supporting context",
+    y: 4040,
+    height: 720,
+    fill: CASE_COLOR.canvas,
+  });
+  addFinalLabel(education, "EDUCATION", 80, 72, 260);
+  addFinalHeading(education, {
+    characters: "Learning that explains the path.",
+    fontSize: 46,
+    lineHeight: 57,
+    width: 720,
+    x: 80,
+    y: 125,
+  });
+  const studies = [
+    ["Degree in Communication", "2014–2021"],
+    ["Postgraduate in UX Writing", "2021–2022"],
+    ["Proficiency English Certificate - Cambridge C2 (2024)", ""],
+    ["Administration and Finance", "2009–2011"],
+  ];
+  studies.forEach(([study, period], index) => {
+    const column = index % 2;
+    const row = Math.floor(index / 2);
+    const itemX = 80 + column * 660;
+    const itemY = 330 + row * 150;
+    createRule(education, { x: itemX, y: itemY, width: 580, color: FINAL_COLOR.border });
+    addFinalHeading(education, {
+      characters: study,
+      fontSize: 24,
+      lineHeight: 32,
+      width: 440,
+      x: itemX,
+      y: itemY + 28,
+    });
+    addFinalLabel(education, period, itemX + 455, itemY + 34, 125);
+  });
+
+  const personal = createCaseBand(page, {
+    name: "06 A little more about me",
+    y: 4760,
+    height: 960,
+    fill: CASE_COLOR.surface,
+  });
+  addFinalLabel(personal, "A LITTLE MORE ABOUT ME", 80, 72, 340);
+  addFinalHeading(personal, {
+    characters: "Where the work comes from.",
+    fontSize: 48,
+    lineHeight: 59,
+    width: 760,
+    x: 80,
+    y: 125,
+  });
+  const personalItems = [
+    ["compass", "Galicia", "Galicia taught me hard work — and gave me wings to see the world."],
+    ["leaf", "Sustainability", "Sustainability is one of the pivots of my life."],
+    ["spark", "Personality", "I’m simple, but my mind rarely stops."],
+    ["home", "Location", "Based in Barcelona. Galician at heart."],
+  ];
+  personalItems.forEach(([icon, title, body], index) => {
+    const column = index % 2;
+    const row = Math.floor(index / 2);
+    const itemX = 80 + column * 660;
+    const itemY = 330 + row * 260;
+    createLineIcon(personal, { icon, x: itemX, y: itemY, size: 42 });
+    addFinalHeading(personal, {
+      characters: title,
+      fontSize: 28,
+      lineHeight: 36,
+      width: 460,
+      x: itemX + 75,
+      y: itemY,
+    });
+    addFinalBody(personal, {
+      characters: body,
+      fontSize: 20,
+      lineHeight: 33,
+      width: 500,
+      x: itemX + 75,
+      y: itemY + 65,
+    });
+  });
+
+  const languages = createCaseBand(page, {
+    name: "07 Languages — compact",
+    y: 5720,
+    height: 660,
+    fill: CASE_COLOR.canvas,
+  });
+  addFinalLabel(languages, "LANGUAGES", 80, 72, 260);
+  addFinalHeading(languages, {
+    characters: "Different ways of listening.",
+    fontSize: 46,
+    lineHeight: 57,
+    width: 700,
+    x: 80,
+    y: 125,
+  });
+  addFinalBody(languages, {
+    characters: "Spanish · native     Galician · native     English · C2     Catalan · B1",
+    font: FONT.montserratMedium,
+    fontSize: 20,
+    lineHeight: 34,
+    width: 1180,
+    x: 80,
+    y: 330,
+  });
+  createRule(languages, { x: 80, y: 420, width: 1280, color: FINAL_COLOR.border });
+  addFinalBody(languages, {
+    characters: "Also part of the picture: sign language · Portuguese · Korean",
+    fontSize: 18,
+    lineHeight: 30,
+    color: FINAL_COLOR.inkMuted,
+    width: 920,
+    x: 80,
+    y: 465,
+  });
+
+  createFinalContactFooter(page, 6380);
+  createAboutBackToTop(page, 1304, 6210);
+
+  return page;
+}
+
+function createAboutMobileFooter(parent, y) {
+  const footer = createCanvasFrame(parent, {
+    name: "Contact footer — mobile burgundy terminal section",
+    x: 0,
+    y,
+    width: 390,
+    height: 1100,
+    fill: FINAL_COLOR.burgundy,
+  });
+  addFinalBody(footer, { characters: "LET’S TALK", font: FONT.montserratMedium, fontSize: 13, lineHeight: 21, color: FINAL_COLOR.canvas, width: 310, x: 28, y: 65 });
+  addFinalHeading(footer, { characters: "Have a project, an idea,\nor just want to say hello?", fontSize: 38, lineHeight: 48, color: FINAL_COLOR.canvas, width: 330, x: 28, y: 120 });
+  addFinalBody(footer, { characters: "abicaride@gmail.com  →", font: FONT.montserratMedium, fontSize: 19, lineHeight: 30, color: FINAL_COLOR.canvas, width: 330, x: 28, y: 330 });
+  createRule(footer, { x: 28, y: 480, width: 334, color: FINAL_COLOR.burgundyTint });
+  addFinalBody(footer, { characters: "Abilene Caride\nContent strategy · Communications · Business", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 320, x: 28, y: 540 });
+  addFinalBody(footer, { characters: "Privacy · Cookie settings", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 300, x: 28, y: 650 });
+  addFinalBody(footer, { characters: "Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 320, x: 28, y: 720 });
+  addFinalBody(footer, { characters: "© 2026 Abilene Caride", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 250, x: 28, y: 850 });
+  return footer;
+}
+
+function createAboutMobile(parent, x, y, photoHash) {
+  const page = createCanvasFrame(parent, {
+    name: "About — Final pre-production — Mobile",
+    x,
+    y,
+    width: 390,
+    height: 8300,
+    fill: FINAL_COLOR.canvas,
+  });
+  addFinalHeading(page, { characters: "Abilene Caride", fontSize: 25, lineHeight: 31, width: 240, x: 28, y: 30 });
+  addFinalBody(page, { characters: "Menu", font: FONT.montserratMedium, fontSize: 14, lineHeight: 22, color: FINAL_COLOR.greenDeep, width: 70, x: 310, y: 35 });
+  addFinalLabel(page, "ABOUT", 28, 125, 180);
+  addFinalHeading(page, { characters: "I help people find the way to do what they want.", fontSize: 43, lineHeight: 52, width: 334, x: 28, y: 170 });
+  addFinalBody(page, { characters: "Helping is the thread running through my work. I want people to understand what they need and find their way forward.\n\nProfessionally, I do that through words.", fontSize: 18, lineHeight: 30, width: 334, x: 28, y: 410 });
+  addFinalBody(page, { characters: "I wear a lot of hats, but I don’t do things halfway. I care about making communication useful and getting it right.", fontSize: 18, lineHeight: 30, width: 334, x: 28, y: 690 });
+  const photo = createCanvasFrame(page, { name: `About portrait — mobile — ${FINAL_ABOUT_PHOTO}`, x: 0, y: 930, width: 390, height: 570, fill: FINAL_COLOR.surfaceStrong, clipsContent: true });
+  applyImageFill(photo, photoHash, "FIT");
+
+  const path = createCanvasFrame(page, { name: "Mobile — How I got here", x: 0, y: 1500, width: 390, height: 1000, fill: CASE_COLOR.surface });
+  addFinalLabel(path, "HOW I GOT HERE", 28, 55, 250);
+  addFinalHeading(path, { characters: "Words became the way I could be more useful.", fontSize: 34, lineHeight: 43, width: 334, x: 28, y: 100 });
+  const pathItems = [
+    ["administration", "Administration", "Business foundations"],
+    ["communication", "Communication", "Reaching people"],
+    ["writing", "UX Writing", "Removing friction"],
+    ["compass", "Today", "Content strategy · Communications · Business"],
+  ];
+  pathItems.forEach(([icon, title, meta], index) => {
+    const itemY = 320 + index * 155;
+    createLineIcon(path, { icon, x: 28, y: itemY, size: 38 });
+    addFinalHeading(path, { characters: title, fontSize: 23, lineHeight: 30, width: 260, x: 90, y: itemY - 2 });
+    addFinalBody(path, { characters: meta, fontSize: 14, lineHeight: 23, color: FINAL_COLOR.inkMuted, width: 260, x: 90, y: itemY + 38 });
+    if (index < pathItems.length - 1) createRule(path, { x: 46, y: itemY + 92, width: 2, height: 42, color: FINAL_COLOR.green });
+  });
+
+  const principles = createCanvasFrame(page, { name: "Mobile — How I work", x: 0, y: 2500, width: 390, height: 1100, fill: CASE_COLOR.canvas });
+  addFinalLabel(principles, "HOW I WORK", 28, 55, 220);
+  addFinalHeading(principles, { characters: "Clear. Honest. Practical.", fontSize: 36, lineHeight: 45, width: 334, x: 28, y: 100 });
+  const principleItems = [
+    ["clear", "Clear", "I make complex information understandable."],
+    ["honest", "Honest", "Communication doesn’t need to sound complicated to be professional."],
+    ["practical", "Practical", "Good content should help the audience and the business behind it."],
+  ];
+  principleItems.forEach(([icon, title, body], index) => {
+    const itemY = 265 + index * 245;
+    createLineIcon(principles, { icon, x: 28, y: itemY, size: 42 });
+    addFinalHeading(principles, { characters: title, fontSize: 27, lineHeight: 35, width: 250, x: 95, y: itemY });
+    addFinalBody(principles, { characters: body, fontSize: 18, lineHeight: 30, width: 320, x: 28, y: itemY + 75 });
+    if (index < 2) createRule(principles, { x: 28, y: itemY + 195, width: 334, color: FINAL_COLOR.border });
+  });
+
+  const experience = createCanvasFrame(page, { name: "Mobile — Experience", x: 0, y: 3600, width: 390, height: 1300, fill: CASE_COLOR.surfaceStrong });
+  addFinalLabel(experience, "EXPERIENCE", 28, 55, 220);
+  addFinalHeading(experience, { characters: "A broad profile, built deliberately.", fontSize: 34, lineHeight: 43, width: 334, x: 28, y: 100 });
+  const roles = [
+    ["2023–present", "imaginArt", "Content, communications and marketing"],
+    ["2020–2021", "Federación Pantalla", "Communication"],
+    ["2019–2021", "Ailanto", "Ecommerce and digital communication"],
+    ["2017–2019", "Ethic Investors", "Content and digital marketing"],
+    ["2011–2019", "Caprichos de Casa Import", "E-commerce manager · Administration, sales and business operations"],
+  ];
+  roles.forEach(([period, company, role], index) => {
+    const rowY = 300 + index * 180;
+    createRule(experience, { x: 28, y: rowY, width: 334, color: FINAL_COLOR.border });
+    addFinalLabel(experience, period, 28, rowY + 24, 160);
+    addFinalHeading(experience, { characters: company, fontSize: 22, lineHeight: 29, width: 330, x: 28, y: rowY + 62 });
+    addFinalBody(experience, { characters: role, fontSize: 14, lineHeight: 23, color: FINAL_COLOR.inkMuted, width: 330, x: 28, y: rowY + 105 });
+  });
+
+  const education = createCanvasFrame(page, { name: "Mobile — Education", x: 0, y: 4900, width: 390, height: 700, fill: CASE_COLOR.canvas });
+  addFinalLabel(education, "EDUCATION", 28, 55, 220);
+  addFinalHeading(education, { characters: "Learning that explains the path.", fontSize: 33, lineHeight: 42, width: 334, x: 28, y: 100 });
+  addFinalBody(education, { characters: "Degree in Communication\nPostgraduate in UX Writing\nProficiency English Certificate - Cambridge C2 (2024)\nAdministration and Finance", fontSize: 18, lineHeight: 52, width: 334, x: 28, y: 270 });
+
+  const personal = createCanvasFrame(page, { name: "Mobile — A little more about me", x: 0, y: 5600, width: 390, height: 1000, fill: CASE_COLOR.surface });
+  addFinalLabel(personal, "A LITTLE MORE ABOUT ME", 28, 55, 300);
+  addFinalHeading(personal, { characters: "Where the work comes from.", fontSize: 34, lineHeight: 43, width: 334, x: 28, y: 100 });
+  const personalItems = [
+    ["compass", "Galicia taught me hard work — and gave me wings to see the world."],
+    ["leaf", "Sustainability is one of the pivots of my life."],
+    ["spark", "I’m simple, but my mind rarely stops."],
+    ["home", "Based in Barcelona. Galician at heart."],
+  ];
+  personalItems.forEach(([icon, body], index) => {
+    const itemY = 275 + index * 170;
+    createLineIcon(personal, { icon, x: 28, y: itemY, size: 38 });
+    addFinalBody(personal, { characters: body, fontSize: 18, lineHeight: 30, width: 275, x: 90, y: itemY - 2 });
+  });
+
+  const languages = createCanvasFrame(page, { name: "Mobile — Languages", x: 0, y: 6600, width: 390, height: 600, fill: CASE_COLOR.canvas });
+  addFinalLabel(languages, "LANGUAGES", 28, 55, 220);
+  addFinalHeading(languages, { characters: "Different ways of listening.", fontSize: 33, lineHeight: 42, width: 334, x: 28, y: 100 });
+  addFinalBody(languages, { characters: "Spanish · native\nGalician · native\nEnglish · C2\nCatalan · B1", font: FONT.montserratMedium, fontSize: 18, lineHeight: 40, width: 334, x: 28, y: 250 });
+  addFinalBody(languages, { characters: "Sign language · Portuguese · Korean", fontSize: 14, lineHeight: 23, color: FINAL_COLOR.inkMuted, width: 334, x: 28, y: 455 });
+
+  createAboutMobileFooter(page, 7200);
+  const control = createAboutBackToTop(page, 306, 7040);
+  control.resize(48, 48);
+  return page;
+}
+
+async function buildAboutPreproduction() {
+  if (figma.editorType !== "figma") {
+    throw new Error("The final About direction can only be created in Figma Design.");
+  }
+  requireExpectedFile(EXPECTED_FILES.personal);
+  const pageName = normalizeName(figma.currentPage.name);
+  if (!pageName.includes("archive") && !pageName.includes("about")) {
+    throw new Error(`Open the Archive/About page before running this command. Current page: “${figma.currentPage.name}”.`);
+  }
+  const placement = replacementPlacement(GENERATED_KIND.aboutPreproduction);
+  await loadSynthesisFonts();
+  const photoHash = findImageHashByName(FINAL_ABOUT_PHOTO);
+  const section = createSection(
+    "About — Final pre-production",
+    placement.point,
+    2350,
+    8800,
+    CASE_COLOR.surface,
+    GENERATED_KIND.aboutPreproduction,
+  );
+  populateSectionSafely(section, () => {
+    addFinalHeading(section, { characters: "About — Final pre-production", fontSize: 42, lineHeight: 52, width: 1100, x: 150, y: 70 });
+    addFinalBody(section, { characters: "One approved direction · Desktop and mobile composition · Working public copy remains subject to Abilene’s voice review.", fontSize: 18, lineHeight: 29, color: FINAL_COLOR.inkMuted, width: 1250, x: 150, y: 130 });
+    addFinalBody(section, { characters: photoHash ? "APPROVED FULL-BODY PORTRAIT LINKED FROM ABILENEABOUT" : "PHOTO PENDING · Import the approved full-body red-top / grey-skirt portrait on this page, name the image layer AbileneAbout, then rebuild. No substitute or generated likeness is used.", font: FONT.montserratMedium, fontSize: 14, lineHeight: 23, color: photoHash ? FINAL_COLOR.greenDeep : FINAL_COLOR.burgundy, width: 1500, x: 150, y: 195 });
+    createAboutDesktop(section, 150, 330, photoHash);
+    createAboutMobile(section, 1790, 330, photoHash);
+    addFinalBody(section, { characters: "PRODUCTION NOTES · Back to top appears after the hero leaves view, remains keyboard accessible, respects reduced motion and clears consent UI. The tools inventory is intentionally omitted. ‘Sign language · bilingual’ is not strengthened in this direction; final wording needs verification. imaginArt · 2023–present is confirmed by Abilene; update the older production profile value during implementation.", fontSize: 15, lineHeight: 25, color: FINAL_COLOR.inkMuted, width: 1420, x: 150, y: 7670 });
+  });
+  placement.existing?.remove();
+  if (
+    normalizeName(figma.currentPage.name).includes("archive") &&
+    !normalizeName(figma.currentPage.name).includes("about")
+  ) {
+    figma.currentPage.name = "03 — About + Archive";
+  }
+  figma.currentPage.selection = [section];
+  figma.viewport.scrollAndZoomIntoView([section]);
+  closeWithMessage(photoHash ? "Rebuilt the final About desktop and mobile direction with the approved portrait." : "Rebuilt the final About direction with a safe portrait slot. Import the approved photo as AbileneAbout and rerun to link it.");
+}
+
 async function buildMoodboard() {
   if (figma.editorType !== "figjam") {
     throw new Error(
@@ -5133,6 +5692,9 @@ async function run() {
         break;
       case "build-imaginart-preproduction":
         await buildImaginartPreproduction();
+        break;
+      case "build-about-preproduction":
+        await buildAboutPreproduction();
         break;
       case "find-generated":
         findGenerated();

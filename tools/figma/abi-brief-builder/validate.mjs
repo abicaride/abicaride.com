@@ -925,6 +925,86 @@ assert.equal(
 );
 assert.equal(imaginartPreproduction.notifications.at(-1).error, false);
 
+const aboutPreproduction = createFigma({
+  editorType: "figma",
+  fileName: "Abi Personal Website",
+  pageName: "03 — Archive",
+  command: "build-about-preproduction",
+});
+const approvedAboutPhoto = new MockNode("RECTANGLE", aboutPreproduction.currentPage);
+approvedAboutPhoto.name = "AbileneAbout";
+approvedAboutPhoto.fills = [{ type: "IMAGE", imageHash: "approved-about-photo-hash", scaleMode: "FILL" }];
+approvedAboutPhoto.x = -900;
+aboutPreproduction.currentPage.children.push(approvedAboutPhoto);
+await execute(aboutPreproduction);
+
+assert.equal(aboutPreproduction.closed, true);
+assert.equal(aboutPreproduction.notifications.at(-1).error, false);
+assert.equal(aboutPreproduction.currentPage.name, "03 — About + Archive");
+assert.equal(generatedSections(aboutPreproduction).length, 1);
+const aboutSection = generatedSections(aboutPreproduction)[0];
+assert.equal(aboutSection.width, 2350);
+assert.equal(aboutSection.height, 8800);
+const aboutNodes = allNodes(aboutSection);
+const aboutText = aboutNodes
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const expected of [
+  "About — Final pre-production",
+  "I help people find the way to do what they want.",
+  "Professionally, I do that through words.",
+  "Administration",
+  "Communication",
+  "UX Writing",
+  "Content strategy · Communications · Business",
+  "Clear. Honest. Practical.",
+  "2023–present",
+  "Federación Pantalla",
+  "Ailanto",
+  "Ethic Investors",
+  "Caprichos de Casa Import",
+  "E-commerce manager · Administration, sales and business operations",
+  "Degree in Communication",
+  "Postgraduate in UX Writing",
+  "Proficiency English Certificate - Cambridge C2 (2024)",
+  "Administration and Finance",
+  "Galicia taught me hard work",
+  "Sustainability is one of the pivots of my life.",
+  "Based in Barcelona. Galician at heart.",
+  "Spanish · native",
+  "Sign language · Portuguese · Korean",
+  "LET’S TALK",
+  "Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
+  "Back to top",
+]) {
+  assert.ok(aboutText.toLowerCase().includes(expected.toLowerCase()), `Missing final About content: ${expected}`);
+}
+assert.ok(!aboutText.includes("Postgraduate course in UX Writing"));
+assert.ok(!aboutText.includes("Cambridge English C2"));
+const aboutDesktop = aboutNodes.find((node) => node.type === "FRAME" && node.name === "About — Final pre-production");
+const aboutMobile = aboutNodes.find((node) => node.type === "FRAME" && node.name === "About — Final pre-production — Mobile");
+assert.equal(aboutDesktop.width, 1440);
+assert.equal(aboutDesktop.height, 7230);
+assert.equal(aboutMobile.width, 390);
+assert.equal(aboutMobile.height, 8300);
+const aboutPhoto = aboutNodes.find((node) => node.name === "About portrait — full body — AbileneAbout");
+assert.equal(aboutPhoto.fills[0].type, "IMAGE");
+assert.equal(aboutPhoto.fills[0].imageHash, "approved-about-photo-hash");
+assert.equal(aboutPhoto.fills[0].scaleMode, "FIT");
+assert.equal(aboutNodes.filter((node) => node.type === "ELLIPSE").length, 0);
+const aboutBody = aboutNodes.find((node) => node.type === "TEXT" && node.characters.startsWith("Helping is the thread"));
+assert.equal(aboutBody.fontName.family, "Montserrat");
+assert.equal(aboutBody.fontSize, 20);
+const aboutPrincipleHeading = aboutNodes.find((node) => node.type === "TEXT" && node.characters === "Clear. Honest. Practical.");
+assert.equal(aboutPrincipleHeading.fontName.family, "Inter");
+assert.ok(!aboutText.includes("2021–present"));
+assert.ok(!aboutText.includes("Current role"));
+assert.ok(!aboutText.includes("Selected tools"));
+await execute(aboutPreproduction);
+assert.equal(generatedSections(aboutPreproduction).length, 1, "A final About rerun must not duplicate content");
+assert.equal(aboutPreproduction.notifications.at(-1).error, false);
+
 const wrongFile = createFigma({
   editorType: "figjam",
   fileName: "Unrelated FigJam",
