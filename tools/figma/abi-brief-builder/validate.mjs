@@ -150,6 +150,10 @@ class MockPage extends MockNode {
     this.name = name;
     this.selection = [];
   }
+
+  findAll(predicate) {
+    return allNodes(this).slice(1).filter(predicate);
+  }
 }
 
 function createFigma({ editorType, fileName, pageName, command }) {
@@ -554,6 +558,137 @@ assert.equal(
   "A reframed imaginArt rerun must not duplicate content",
 );
 assert.equal(imaginartReframed.notifications.at(-1).error, true);
+
+const finalDirection = createFigma({
+  editorType: "figma",
+  fileName: "Abi Website Foundations",
+  pageName: "03 — Explorations",
+  command: "build-final-direction",
+});
+const approvedPhoto = new MockNode("RECTANGLE", finalDirection.currentPage);
+approvedPhoto.name = "WhatsApp Image 2026-08-25 at 18.49.46.jpeg";
+approvedPhoto.fills = [{ type: "IMAGE", imageHash: "approved-photo-hash", scaleMode: "FILL" }];
+approvedPhoto.x = -900;
+finalDirection.currentPage.children.push(approvedPhoto);
+await execute(finalDirection);
+
+assert.equal(finalDirection.closed, true);
+assert.equal(finalDirection.notifications.at(-1).error, false);
+assert.equal(generatedSections(finalDirection).length, 1);
+const finalDirectionSection = generatedSections(finalDirection)[0];
+assert.equal(finalDirectionSection.width, 1800);
+assert.equal(finalDirectionSection.height, 5200);
+const finalDirectionNodes = allNodes(finalDirectionSection);
+const finalDirectionText = finalDirectionNodes
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const expected of [
+  "Final Direction — Pre-production",
+  "Abilene Caride",
+  "Content strategy · Communications · Content",
+  "I help companies connect with their audiences through clear, honest communication.",
+  "Get in touch",
+  "View my work",
+  "Making specialist B2B communication clearer",
+  "Website Analysis",
+  "Error Messages",
+  "REAL HERO PHOTO LINKED",
+  "No decorative ellipses",
+]) {
+  assert.ok(finalDirectionText.toLowerCase().includes(expected.toLowerCase()), `Missing final direction content: ${expected}`);
+}
+assert.ok(!finalDirectionText.includes("Abi Caride"), "Final public direction must use Abilene Caride");
+assert.equal(finalDirectionNodes.filter((node) => node.type === "ELLIPSE").length, 0);
+const heroPhoto = finalDirectionNodes.find(
+  (node) => node.name === "Hero photograph — WhatsApp Image 2026-08-25 at 18.49.46",
+);
+assert.equal(heroPhoto.fills[0].type, "IMAGE");
+assert.equal(heroPhoto.fills[0].imageHash, "approved-photo-hash");
+const websiteAnalysis = finalDirectionNodes.find(
+  (node) => node.name === "Secondary work — Website Analysis",
+);
+const errorMessages = finalDirectionNodes.find(
+  (node) => node.name === "Secondary work — Error Messages",
+);
+assert.equal(websiteAnalysis.y, errorMessages.y);
+assert.equal(websiteAnalysis.width, errorMessages.width);
+const finalBody = finalDirectionNodes.find(
+  (node) => node.type === "TEXT" && node.characters.startsWith("A professional story about translating"),
+);
+assert.equal(finalBody.fontName.family, "Montserrat");
+const finalHeading = finalDirectionNodes.find(
+  (node) => node.type === "TEXT" && node.characters.startsWith("I help companies connect"),
+);
+assert.equal(finalHeading.fontName.family, "Inter");
+await execute(finalDirection);
+assert.equal(generatedSections(finalDirection).length, 1, "A final direction rerun must not duplicate content");
+assert.equal(finalDirection.notifications.at(-1).error, true);
+
+const imaginartPreproduction = createFigma({
+  editorType: "figma",
+  fileName: "Abi Personal Website",
+  pageName: "02 — Case Studies",
+  command: "build-imaginart-preproduction",
+});
+await execute(imaginartPreproduction);
+
+assert.equal(imaginartPreproduction.closed, true);
+assert.equal(imaginartPreproduction.notifications.at(-1).error, false);
+assert.equal(generatedSections(imaginartPreproduction).length, 1);
+const imaginartPreproductionSection = generatedSections(imaginartPreproduction)[0];
+assert.equal(imaginartPreproductionSection.width, 1740);
+assert.equal(imaginartPreproductionSection.height, 9420);
+const imaginartPreproductionNodes = allNodes(imaginartPreproductionSection);
+const imaginartPreproductionText = imaginartPreproductionNodes
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const expected of [
+  "Refreshing a specialist B2B newsletter",
+  "MUNDO BRIGHTSIGN · PRIMARY STORY 1",
+  "~24% → ~34%",
+  "NOT an A/B test",
+  "Launching a new brand in Spain",
+  "TURTLE AV · IMAGINART · PRIMARY STORY 2",
+  "Planning and promoting a corporate event",
+  "MADRID OPEN DAYS 2026 · PRIMARY STORY 3",
+  "AV Supports Catalogue",
+  "Lumens",
+  "Bilbao",
+  "~110–125",
+  "usual range of ~70–80",
+  "not audited",
+  "docs/content/case-study-imaginart.md",
+  "Abilene",
+]) {
+  assert.ok(
+    imaginartPreproductionText.toLowerCase().includes(expected.toLowerCase()),
+    `Missing final imaginArt content: ${expected}`,
+  );
+}
+const newsletterIndex = imaginartPreproductionText.indexOf("Refreshing a specialist B2B newsletter");
+const turtleIndex = imaginartPreproductionText.indexOf("Launching a new brand in Spain");
+const eventIndex = imaginartPreproductionText.indexOf("Planning and promoting a corporate event");
+const catalogueIndex = imaginartPreproductionText.indexOf("AV Supports Catalogue");
+const lumensIndex = imaginartPreproductionText.indexOf("Lumens");
+assert.ok(newsletterIndex < turtleIndex && turtleIndex < eventIndex && eventIndex < catalogueIndex && catalogueIndex < lumensIndex);
+assert.equal(imaginartPreproductionNodes.filter((node) => node.type === "ELLIPSE").length, 0);
+const caseBody = imaginartPreproductionNodes.find(
+  (node) => node.type === "TEXT" && node.characters.startsWith("This was NOT an A/B test"),
+);
+assert.equal(caseBody.fontName.family, "Montserrat");
+const caseHeading = imaginartPreproductionNodes.find(
+  (node) => node.type === "TEXT" && node.characters === "Refreshing a specialist B2B newsletter",
+);
+assert.equal(caseHeading.fontName.family, "Inter");
+await execute(imaginartPreproduction);
+assert.equal(
+  generatedSections(imaginartPreproduction).length,
+  1,
+  "A final imaginArt rerun must not duplicate content",
+);
+assert.equal(imaginartPreproduction.notifications.at(-1).error, true);
 
 const wrongFile = createFigma({
   editorType: "figjam",

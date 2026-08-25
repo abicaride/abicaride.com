@@ -26,12 +26,20 @@
       "command": "build-direction-d"
     },
     {
+      "name": "Foundations: Build final pre-production direction",
+      "command": "build-final-direction"
+    },
+    {
       "name": "Personal Website: Build imaginArt case wireframe",
       "command": "build-imaginart-wireframe"
     },
     {
       "name": "Personal Website: Build reframed imaginArt exploration",
       "command": "build-imaginart-reframed"
+    },
+    {
+      "name": "Personal Website: Build final imaginArt pre-production",
+      "command": "build-imaginart-preproduction"
     },
     {
       "separator": true

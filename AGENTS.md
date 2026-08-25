@@ -5,6 +5,11 @@
 This is Abilene Caride's bilingual personal website, built with Astro and deployed
 as a static site.
 
+- Use `Abilene Caride` for all public-facing design, UI, copy and metadata.
+  `Abi` may remain in private working notes and established workspace/file names.
+  Do not rename `abicaride.com`, repository/account names, routes, slugs or other
+  technical identifiers solely to expand the name.
+
 - Prefer semantic HTML, Astro components and build-time data.
 - Do not add React or another UI framework unless explicitly requested.
 - Keep client-side JavaScript and dependencies to the minimum required.
@@ -127,6 +132,11 @@ The shared Figma workspace contains three complementary files:
 Do not treat exploratory frames or moodboard references as approved designs.
 Implement a Figma direction only when the task explicitly identifies it as
 approved or asks for that specific design to be implemented.
+
+The current approved working direction is documented in
+[`docs/design/V2-PREPRODUCTION-DIRECTION.md`](docs/design/V2-PREPRODUCTION-DIRECTION.md).
+Directions A/B/C/D remain exploration history; do not implement them as competing
+production directions.
 
 When translating an approved design:
 

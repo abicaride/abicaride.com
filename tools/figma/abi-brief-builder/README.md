@@ -21,11 +21,18 @@ its build.
   `D — Clean Organic Editorial`, that preserves A/B/C and combines their
   strongest qualities. It includes a Montserrat + Inter versus all-Montserrat
   type comparison and one working desktop homepage.
+- In **Abi Website Foundations → Explorations**: one history-preserving
+  `Final Direction — Clean Organic Editorial — Pre-production` section. It uses
+  Inter headings, Montserrat body copy, an imported real landscape hero image,
+  restrained full-width tints and the closed CTA/work hierarchy.
 - In **Abi Personal Website → Case Studies**: an editorial imaginArt case-study
   wireframe with ten narrative bands and four original explanatory diagrams.
 - In **Abi Personal Website → Case Studies**: one separate Direction D
   imaginArt exploration with challenge-led story headings, restrained editorial
   layouts and visibly qualified working metrics.
+- In **Abi Personal Website → Case Studies**: one final pre-production imaginArt
+  section using the approved newsletter → Turtle AV → Madrid story order, with
+  AV Supports Catalogue and Lumens presented as equal supporting evidence.
 
 It does not create finished homepage designs or polished marketing copy. The
 homepage concepts are deliberately substantial enough for visual review while
@@ -40,6 +47,11 @@ The photography notes identify provisional exploration choices only. Personal
 photo files are not part of this plugin and must not be added to the repository
 unless explicitly requested.
 
+The final-direction command can reuse a photograph already imported into the
+open Foundations page. It looks for an image layer named
+`WhatsApp Image 2026-08-25 at 18.49.46` and applies that image fill to the large
+landscape hero crop. The source file remains in Figma only.
+
 ## Safety model
 
 - The plugin has no network access.
@@ -48,8 +60,10 @@ unless explicitly requested.
   `Explorations`.
 - The imaginArt command validates the **Abi Personal Website** file and its
   `Case Studies` page.
-- It requires exactly one selected object as a placement anchor.
-- It creates the new section 400 px to the right of that anchor.
+- Exploration commands require exactly one selected object as a placement
+  anchor. Final pre-production commands prefer their tagged Direction D source
+  section automatically and use the current selection only as a fallback.
+- It creates each new section 400 px to the right of its anchor.
 - Generated root sections are tagged with private plugin data.
 - A command cannot create a second copy on the same page.
 - The plugin never deletes nodes. `Find generated content` selects its output so
@@ -121,6 +135,21 @@ The generated concept uses green as the dominant color, with pink and blue as
 sparse accents. Its asymmetry and organic forms are selective rather than a
 system of rounded cards.
 
+## Build the final pre-production direction
+
+1. Open **Abi Website Foundations → Explorations** in Figma Desktop.
+2. Import `WhatsApp Image 2026-08-25 at 18.49.46` onto the current page. Keep the
+   layer name intact; the photograph is not copied into this repository.
+3. Select the existing `D — Clean Organic Editorial` section as the placement
+   anchor.
+4. Run **Plugins → Development → Abi Website Brief Builder → Foundations: Build
+   final pre-production direction**.
+5. Confirm the photograph appears as a large landscape crop and review the
+   working English/Spanish positioning before production design begins.
+
+This command does not modify or delete A/B/C/D. Its output deliberately contains
+no decorative ellipse nodes and is labelled as the sole direction to advance.
+
 ## Build the imaginArt case-study structure
 
 1. Open **Abi Personal Website → Case Studies** in Figma Desktop.
@@ -147,6 +176,19 @@ The three primary stories remain Turtle AV, Mundo BrightSign and Madrid Open
 Days, but their visible headings now lead with the professional challenge.
 AV Supports Catalogue, Lumens and Bilbao remain supporting evidence. The older
 case-study exploration is preserved for comparison.
+
+## Build the final imaginArt pre-production direction
+
+1. Open **Abi Personal Website → Case Studies** in Figma Desktop.
+2. Select the existing reframed imaginArt exploration as the placement anchor.
+3. Run **Plugins → Development → Abi Website Brief Builder → Personal Website:
+   Build final imaginArt pre-production**.
+4. Verify the story order and caveats against
+   [`docs/content/case-study-imaginart.md`](../../../docs/content/case-study-imaginart.md).
+
+The final frame replaces repeated cards and decorative shapes with full-width
+tints, type hierarchy and thin rules. It does not alter or remove the earlier
+wireframe or Direction D exploration.
 
 ## Reruns and cleanup
 
