@@ -16,6 +16,9 @@ as a static site.
 - Preserve the English and Spanish experience, accessibility, privacy and
   performance in every change.
 - Reuse and extend the existing architecture before introducing a new pattern.
+- Use **Abilene Caride** in all public-facing UI, copy, metadata and design.
+  `Abi` may remain in private working notes, established Figma/workflow names
+  and technical identifiers; do not rename `abicaride.com`, routes or slugs.
 
 ## Architecture
 
@@ -132,6 +135,12 @@ The shared Figma workspace contains three complementary files:
 Do not treat exploratory frames or moodboard references as approved designs.
 Implement a Figma direction only when the task explicitly identifies it as
 approved or asks for that specific design to be implemented.
+
+The authoritative V2 art-direction record is
+[`docs/design/V2-PREPRODUCTION-DIRECTION.md`](docs/design/V2-PREPRODUCTION-DIRECTION.md).
+Its hero reference lives at
+[`docs/design/references/hero-approved-reference.jpg`](docs/design/references/hero-approved-reference.jpg)
+and is a design reference only, never a flattened production asset.
 
 The current approved working direction is documented in
 [`docs/design/V2-PREPRODUCTION-DIRECTION.md`](docs/design/V2-PREPRODUCTION-DIRECTION.md).

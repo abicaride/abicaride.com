@@ -26,7 +26,11 @@
       "command": "build-direction-d"
     },
     {
-      "name": "Foundations: Build final pre-production direction",
+      "name": "Foundations: Rebuild approved V2 foundations",
+      "command": "build-approved-foundations"
+    },
+    {
+      "name": "Foundations: Rebuild final pre-production direction",
       "command": "build-final-direction"
     },
     {
@@ -38,7 +42,7 @@
       "command": "build-imaginart-reframed"
     },
     {
-      "name": "Personal Website: Build final imaginArt pre-production",
+      "name": "Personal Website: Rebuild final imaginArt pre-production",
       "command": "build-imaginart-preproduction"
     },
     {

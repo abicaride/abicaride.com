@@ -16,11 +16,16 @@ Figma owns visual references, foundations, explorations and approved design
 intention. Astro owns production rendering. Codex or a developer translates an
 explicitly approved direction into the existing architecture.
 
-The visual exploration phase for V2 closed with the working pre-production
-direction recorded in
+The visual exploration phase for V2 closed with the refined approved
+pre-production direction recorded in
 [`../design/V2-PREPRODUCTION-DIRECTION.md`](../design/V2-PREPRODUCTION-DIRECTION.md).
 The historical A/B/C/D frames remain useful evidence of the decision process,
 but they are not competing implementation specifications.
+
+The approved hero reference at
+[`../design/references/hero-approved-reference.jpg`](../design/references/hero-approved-reference.jpg)
+expresses composition, atmosphere, photography direction and palette source.
+It is not a production asset and must not be imported into Astro.
 
 There is no requirement for perfect bidirectional synchronization.
 

@@ -7,7 +7,7 @@
  */
 
 const PLUGIN_DATA_KEY = "abi-website-brief-builder";
-const PLUGIN_VERSION = "5";
+const PLUGIN_VERSION = "6";
 const INSERTION_GAP = 400;
 
 const EXPECTED_FILES = {
@@ -25,9 +25,13 @@ const GENERATED_KIND = {
   imaginartReframed: "imaginart-reframed-editorial-exploration",
   finalDirection: "v2-final-direction-preproduction",
   imaginartPreproduction: "imaginart-final-preproduction-editorial",
+  approvedFoundations: "v2-approved-production-foundations",
 };
 
-const FINAL_HERO_PHOTO = "WhatsApp Image 2026-08-25 at 18.49.46";
+const FINAL_HERO_PHOTO = "AbileneHero";
+const FINAL_HERO_REFERENCE = "hero-approved-reference.jpg";
+const FINAL_HERO_REFERENCE_PATH =
+  "docs/design/references/hero-approved-reference.jpg";
 
 const FONT = {
   regular: { family: "Inter", style: "Regular" },
@@ -53,6 +57,22 @@ const SYNTHESIS_COLOR = {
   white: "#FFFFFF",
 };
 
+const FINAL_COLOR = {
+  canvas: "#F7F3EA",
+  surface: "#EEECE6",
+  surfaceStrong: "#E2DFD6",
+  ink: "#20241F",
+  inkMuted: "#62665E",
+  greenDeep: "#103A20",
+  green: "#34552E",
+  greenSoft: "#6F8A4F",
+  greenTint: "#DCE2D2",
+  burgundy: "#741A2A",
+  burgundyTint: "#EADBDD",
+  border: "#D3D0C7",
+  white: "#FFFFFF",
+};
+
 const COLOR = {
   ink: "#252421",
   muted: "#66625B",
@@ -73,10 +93,11 @@ const COLOR = {
 };
 
 const HOMEPAGE = {
-  name: "Abi Caride",
-  descriptor: "Content strategy · Communications · Content",
+  name: "Abilene Caride",
+  descriptor: "Content strategy.\nCommunications.\nBusiness.",
   workingLine:
-    "I turn complex information into clear, useful content for people and organizations.",
+    "I help companies connect with their audiences through clear, honest communication.",
+  specialistLine: "Content, communications and marketing specialist",
   cta: "Get in touch",
   leadCase: "imaginArt",
   leadDescriptor: "B2B content & communications",
@@ -156,24 +177,23 @@ const MOODBOARD = {
   ],
   openQuestions: [
     "final homepage positioning sentence",
-    "primary CTA",
-    "final hero photograph",
     "final selection/order of professional cases",
-    "final Abi review of public case-study voice",
+    "final Abilene review of public case-study voice",
+    "final processed hero photograph and realistic plant-environment composite",
   ],
   photography: {
     note:
       "Real photography is now available. Do not add personal photo files to the repository unless explicitly requested.",
     direction: [
-      "natural",
-      "approachable",
-      "calm",
-      "recognizably Abi",
-      "less corporate / LinkedIn-like",
-      "stronger personality than the current website portrait",
+      "realistic plant-filled interior or garden setting",
+      "warm daylight and soft depth of field",
+      "natural, approachable and calm",
+      "recognizably Abilene",
+      "professional and human rather than corporate / LinkedIn-like",
+      "pale warm architecture with real greenery",
     ],
     provisional: [
-      "Close portrait with curly hair + glasses + burgundy top — preferred hero exploration",
+      "Close portrait with curly hair + glasses + burgundy top — intended real hero source",
       "Full-body red/grey image — possible About / editorial supporting image",
       "Playful Totoro image — possible personal / About material, not hero",
     ],
@@ -192,6 +212,21 @@ const MOODBOARD = {
     ],
   },
 };
+
+const FINAL_PALETTE_TOKENS = [
+  ["--color-canvas", FINAL_COLOR.canvas, "Primary page background"],
+  ["--color-surface", FINAL_COLOR.surface, "Subtle section contrast"],
+  ["--color-surface-strong", FINAL_COLOR.surfaceStrong, "Stronger neutral separation"],
+  ["--color-ink", FINAL_COLOR.ink, "Main text"],
+  ["--color-ink-muted", FINAL_COLOR.inkMuted, "Supporting text"],
+  ["--color-green-deep", FINAL_COLOR.greenDeep, "Primary identity and CTA"],
+  ["--color-green", FINAL_COLOR.green, "Diagrams and links"],
+  ["--color-green-soft", FINAL_COLOR.greenSoft, "Large graphic accents"],
+  ["--color-green-tint", FINAL_COLOR.greenTint, "Rare pale accent"],
+  ["--color-burgundy", FINAL_COLOR.burgundy, "Restrained tertiary accent"],
+  ["--color-burgundy-tint", FINAL_COLOR.burgundyTint, "Optional pale accent"],
+  ["--color-border", FINAL_COLOR.border, "Rules and boundaries"],
+];
 
 const DIRECTIONS = [
   {
@@ -237,7 +272,10 @@ const DIRECTIONS = [
 ];
 
 function normalizeName(value) {
-  return value.trim().toLocaleLowerCase();
+  return value
+    .trim()
+    .toLocaleLowerCase()
+    .replace(/\.(?:avif|jpe?g|png|webp)$/i, "");
 }
 
 function hexToRgb(hex) {
@@ -351,6 +389,29 @@ function ensureNoExisting(kind) {
   );
 }
 
+function replacementPlacement(kind, historicalAnchorKind) {
+  const existing = collectGenerated(figma.currentPage, kind);
+  if (existing.length > 1) {
+    figma.currentPage.selection = existing;
+    figma.viewport.scrollAndZoomIntoView(existing);
+    throw new Error(
+      "More than one generated final section exists. Keep one before rebuilding.",
+    );
+  }
+
+  if (existing.length === 1) {
+    return {
+      existing: existing[0],
+      point: { x: existing[0].x, y: existing[0].y },
+    };
+  }
+
+  const anchor = historicalAnchorKind
+    ? preferGeneratedAnchor(historicalAnchorKind)
+    : requireSingleAnchor();
+  return { existing: null, point: insertionPoint(anchor) };
+}
+
 async function loadFonts() {
   await Promise.all([
     figma.loadFontAsync(FONT.regular),
@@ -435,6 +496,39 @@ function createRule(parent, options) {
     height: options.height || 2,
     fill: options.color || COLOR.line,
   });
+}
+
+const LINE_ICON_PATHS = {
+  email:
+    '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/>',
+  transform:
+    '<path d="M4 7h12"/><path d="m13 4 3 3-3 3"/><path d="M20 17H8"/><path d="m11 14-3 3 3 3"/>',
+  event:
+    '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M8 14h3v3H8z"/>',
+  catalogue:
+    '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
+  technical:
+    '<path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="5"/><path d="m5.6 5.6 2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>',
+  network:
+    '<circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="m10.8 7.2-4.6 8.6M13.2 7.2l4.6 8.6M7.5 18h9"/>',
+  trend:
+    '<path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/>',
+};
+
+function createLineIcon(parent, options) {
+  const path = LINE_ICON_PATHS[options.icon];
+  if (!path) throw new Error(`Unknown line icon: ${options.icon}`);
+  const size = options.size || 36;
+  const color = options.color || FINAL_COLOR.greenDeep;
+  const icon = figma.createNodeFromSvg(
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke="${color}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${path}</g></svg>`,
+  );
+  parent.appendChild(icon);
+  icon.name = `Icon — ${options.icon}`;
+  icon.resize(size, size);
+  icon.x = options.x;
+  icon.y = options.y;
+  return icon;
 }
 
 function createEllipse(parent, options) {
@@ -2621,7 +2715,7 @@ function createDirectionDHomepage(parent, x, y) {
       characters: meta,
       fontSize: 18,
       lineHeight: 28,
-      color: SYNTHESIS_COLOR.muted,
+      color: FINAL_COLOR.inkMuted,
       width: 410,
       x: 920,
       y: rowY + 10,
@@ -2756,7 +2850,7 @@ async function buildDirectionD() {
         "A’s calm + B’s intentional asymmetry + C’s rounded accents and strong type hierarchy. One synthesis for Abi’s next review—not a finished homepage.",
       fontSize: 19,
       lineHeight: 30,
-      color: SYNTHESIS_COLOR.muted,
+      color: FINAL_COLOR.inkMuted,
       width: 1700,
       x: 100,
       y: 96,
@@ -2811,7 +2905,7 @@ function createEditorialColumn(parent, options) {
     x: options.x,
     y: options.y,
     width: options.width,
-    color: options.color || SYNTHESIS_COLOR.line,
+    color: options.color || FINAL_COLOR.border,
   });
   appendText(parent, {
     characters: options.label,
@@ -3171,7 +3265,7 @@ function addFinalLabel(parent, characters, x, y, width = 520) {
     font: FONT.medium,
     fontSize: 14,
     lineHeight: 22,
-    color: SYNTHESIS_COLOR.green,
+    color: FINAL_COLOR.green,
     width,
     x,
     y,
@@ -3182,7 +3276,7 @@ function addFinalHeading(parent, options) {
   return appendText(parent, {
     ...options,
     font: options.font || FONT.semibold,
-    color: options.color || SYNTHESIS_COLOR.ink,
+    color: options.color || FINAL_COLOR.ink,
   });
 }
 
@@ -3190,7 +3284,7 @@ function addFinalBody(parent, options) {
   return appendText(parent, {
     ...options,
     font: options.font || FONT.montserrat,
-    color: options.color || SYNTHESIS_COLOR.ink,
+    color: options.color || FINAL_COLOR.ink,
   });
 }
 
@@ -3212,7 +3306,7 @@ function createFinalCaseHeading(band, number, title, metadata, subtitle) {
       characters: subtitle,
       fontSize: 19,
       lineHeight: 31,
-      color: SYNTHESIS_COLOR.muted,
+      color: FINAL_COLOR.inkMuted,
       width: 1020,
       x: 180,
       y: 166,
@@ -3225,7 +3319,7 @@ function createFinalColumn(parent, options) {
     x: options.x,
     y: options.y,
     width: options.width,
-    color: options.color || SYNTHESIS_COLOR.line,
+    color: options.color || FINAL_COLOR.border,
   });
   addFinalLabel(parent, options.label, options.x, options.y + 26, options.width);
   addFinalBody(parent, {
@@ -3238,114 +3332,351 @@ function createFinalColumn(parent, options) {
   });
 }
 
+function createTokenSwatch(parent, token, index, originY = 0) {
+  const [name, value, use] = token;
+  const column = index % 4;
+  const row = Math.floor(index / 4);
+  const x = 80 + column * 330;
+  const y = originY + row * 210;
+  const dark = [
+    FINAL_COLOR.ink,
+    FINAL_COLOR.greenDeep,
+    FINAL_COLOR.green,
+    FINAL_COLOR.burgundy,
+  ].includes(value);
+  const swatch = createCanvasFrame(parent, {
+    name: `Token — ${name}`,
+    x,
+    y,
+    width: 290,
+    height: 170,
+    fill: value,
+    stroke: FINAL_COLOR.border,
+    radius: 8,
+  });
+  addFinalBody(swatch, {
+    characters: `${name}\n${value}`,
+    font: FONT.montserratMedium,
+    fontSize: 15,
+    lineHeight: 24,
+    color: dark ? FINAL_COLOR.white : FINAL_COLOR.ink,
+    width: 250,
+    x: 20,
+    y: 20,
+  });
+  addFinalBody(swatch, {
+    characters: use,
+    fontSize: 13,
+    lineHeight: 20,
+    color: dark ? FINAL_COLOR.white : FINAL_COLOR.inkMuted,
+    width: 250,
+    x: 20,
+    y: 112,
+  });
+  return swatch;
+}
+
+async function buildApprovedFoundations() {
+  if (figma.editorType !== "figma") {
+    throw new Error("The approved V2 foundations can only be created in Figma Design.");
+  }
+  requireExpectedFile(EXPECTED_FILES.foundations);
+  if (!normalizeName(figma.currentPage.name).includes("foundations")) {
+    throw new Error(
+      `Open the Foundations page before running this command. Current page: “${figma.currentPage.name}”.`,
+    );
+  }
+
+  const placement = replacementPlacement(GENERATED_KIND.approvedFoundations);
+  await loadSynthesisFonts();
+  const referenceHash = findImageHashByName(FINAL_HERO_REFERENCE);
+  const section = createSection(
+    "V2 — Approved production foundations",
+    placement.point,
+    1740,
+    3600,
+    FINAL_COLOR.surface,
+    GENERATED_KIND.approvedFoundations,
+  );
+
+  populateSectionSafely(section, () => {
+    addFinalHeading(section, {
+      characters: "V2 — Approved production foundations",
+      fontSize: 48,
+      lineHeight: 58,
+      width: 1260,
+      x: 150,
+      y: 90,
+    });
+    addFinalBody(section, {
+      characters: "A refinement of Clean Organic Editorial—not another direction. These foundations are ready to inform production screens, but do not alter Astro yet.",
+      fontSize: 19,
+      lineHeight: 31,
+      color: FINAL_COLOR.inkMuted,
+      width: 1180,
+      x: 150,
+      y: 165,
+    });
+
+    addFinalLabel(section, "TYPOGRAPHY", 150, 300, 300);
+    addFinalHeading(section, {
+      characters: "Inter for headings, navigation and major metrics",
+      fontSize: 38,
+      lineHeight: 48,
+      width: 1180,
+      x: 150,
+      y: 350,
+    });
+    addFinalBody(section, {
+      characters: "Montserrat Regular for body copy, descriptions and supporting text. Keep long-form measure comfortable and document any concrete readability problem before reconsidering the decision.",
+      fontSize: 19,
+      lineHeight: 32,
+      width: 1050,
+      x: 150,
+      y: 420,
+    });
+    createRule(section, { x: 150, y: 550, width: 1440, color: FINAL_COLOR.border });
+
+    addFinalLabel(section, "PALETTE · DERIVED FROM THE APPROVED HERO", 150, 610, 700);
+    FINAL_PALETTE_TOKENS.forEach((token, index) =>
+      createTokenSwatch(section, token, index, 680),
+    );
+
+    createRule(section, { x: 150, y: 1350, width: 1440, color: FINAL_COLOR.border });
+    addFinalLabel(section, "GRAPHIC PRINCIPLES", 150, 1410, 400);
+    createFinalColumn(section, {
+      x: 150,
+      y: 1480,
+      width: 420,
+      label: "BACKGROUND RHYTHM",
+      body: "Warm cream → light warm neutral → warm cream → stronger neutral only when necessary. No large colored section blocks.",
+      bodySize: 17,
+      lineHeight: 28,
+    });
+    createFinalColumn(section, {
+      x: 660,
+      y: 1480,
+      width: 420,
+      label: "COLOR AS ACCENT",
+      body: "Deep green leads CTAs, links, icons and diagrams. Burgundy is tertiary: selected metrics or tiny details only—never the primary CTA or a section background.",
+      bodySize: 17,
+      lineHeight: 28,
+    });
+    createFinalColumn(section, {
+      x: 1170,
+      y: 1480,
+      width: 420,
+      label: "FORM",
+      body: "Whitespace, thin separators, meaningful line icons and diagrams. No floating ellipses, blobs, fake leaves or speculative rounded-card system.",
+      bodySize: 17,
+      lineHeight: 28,
+    });
+
+    createRule(section, { x: 150, y: 2050, width: 1440, color: FINAL_COLOR.border });
+    addFinalLabel(section, "APPROVED HERO ART-DIRECTION REFERENCE", 150, 2110, 700);
+    const reference = createCanvasFrame(section, {
+      name: `Design reference only — ${FINAL_HERO_REFERENCE}`,
+      x: 150,
+      y: 2180,
+      width: 900,
+      height: 600,
+      fill: FINAL_COLOR.greenTint,
+      stroke: FINAL_COLOR.border,
+      clipsContent: true,
+    });
+    if (!applyImageFill(reference, referenceHash)) {
+      addFinalHeading(reference, {
+        characters: FINAL_HERO_REFERENCE,
+        fontSize: 30,
+        lineHeight: 40,
+        width: 760,
+        x: 50,
+        y: 70,
+      });
+      addFinalBody(reference, {
+        characters: `Import ${FINAL_HERO_REFERENCE_PATH} on this page, keep its filename as the layer name, and rebuild.`,
+        fontSize: 18,
+        lineHeight: 30,
+        width: 740,
+        x: 50,
+        y: 150,
+      });
+    }
+    createFinalColumn(section, {
+      x: 1120,
+      y: 2180,
+      width: 470,
+      label: "APPROVED FOR",
+      body: "Wide landscape composition\nCopy left + portrait/environment right\nShared vertical hero zone\nPlant-filled realistic atmosphere\nWarm daylight and calm depth\nGreen-led palette",
+      bodySize: 17,
+      lineHeight: 29,
+    });
+    createFinalColumn(section, {
+      x: 1120,
+      y: 2700,
+      width: 470,
+      label: "NOT A PRODUCTION ASSET",
+      body: "Do not ship the flattened mockup. It contains baked-in type, navigation, CTAs, invented logos and generated compositing. Recreate the approved intent with HTML/CSS and the final processed real portrait.",
+      bodySize: 17,
+      lineHeight: 29,
+    });
+    addFinalBody(section, {
+      characters: "This reference supersedes previous hero explorations for composition, atmosphere and photographic art direction.",
+      font: FONT.montserratMedium,
+      fontSize: 19,
+      lineHeight: 31,
+      color: FINAL_COLOR.greenDeep,
+      width: 1280,
+      x: 150,
+      y: 3240,
+    });
+  });
+
+  placement.existing?.remove();
+  figma.currentPage.selection = [section];
+  figma.viewport.scrollAndZoomIntoView([section]);
+  closeWithMessage(
+    referenceHash
+      ? "Rebuilt the approved V2 foundations with the authoritative hero reference."
+      : "Rebuilt the approved V2 foundations. Import the reference image on this page and rebuild to show it.",
+  );
+}
+
 function createFinalHomepage(parent, x, y, heroImageHash) {
   const page = createCanvasFrame(parent, {
     name: "Final homepage — desktop pre-production",
     x,
     y,
     width: 1440,
-    height: 4260,
-    fill: SYNTHESIS_COLOR.warmWhite,
+    height: 3980,
+    fill: FINAL_COLOR.canvas,
   });
 
-  addFinalHeading(page, {
-    characters: "ABILENE CARIDE",
-    fontSize: 16,
-    lineHeight: 24,
+  const hero = createCanvasFrame(page, {
+    name: `Hero — full-bleed atmospheric image — ${FINAL_HERO_PHOTO}`,
+    x: 0,
+    y: 0,
+    width: 1440,
+    height: 860,
+    fill: FINAL_COLOR.greenTint,
+    clipsContent: true,
+  });
+  const hasHeroImage = applyImageFill(hero, heroImageHash);
+  const heroScrim = createCanvasFrame(hero, {
+    name: "Hero — warm readability gradient",
+    x: 0,
+    y: 0,
+    width: 960,
+    height: 860,
+  });
+  heroScrim.fills = [
+    {
+      type: "GRADIENT_LINEAR",
+      gradientStops: [
+        { position: 0, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.98 } },
+        { position: 0.62, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.84 } },
+        { position: 1, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0 } },
+      ],
+      gradientTransform: [
+        [1, 0, 0],
+        [0, 1, 0],
+      ],
+    },
+  ];
+
+  addFinalHeading(hero, {
+    characters: "Abilene Caride",
+    fontSize: 32,
+    lineHeight: 26,
     width: 260,
     x: 80,
-    y: 46,
+    y: 42,
   });
-  for (const [label, itemX] of [["Work", 1010], ["About", 1120], ["Contact", 1235]]) {
-    addFinalBody(page, {
+  for (const [label, itemX] of [
+    ["Work", 940],
+    ["About", 1060],
+    ["Contact", 1190],
+    ["ES", 1320],
+  ]) {
+    addFinalBody(hero, {
       characters: label,
       font: FONT.montserratMedium,
       fontSize: 15,
       lineHeight: 24,
-      width: 100,
+      width: 90,
       x: itemX,
-      y: 46,
+      y: 44,
+      color: FINAL_COLOR.surface,
     });
   }
-  createRule(page, { x: 80, y: 96, width: 1280, color: SYNTHESIS_COLOR.line });
-
-  addFinalLabel(page, "CONTENT STRATEGY · COMMUNICATIONS · CONTENT", 80, 160, 720);
-  addFinalHeading(page, {
-    characters: "I help companies connect with their audiences through clear, honest communication.",
-    fontSize: 68,
-    lineHeight: 78,
-    width: 1120,
+  addFinalHeading(hero, {
+    characters: HOMEPAGE.workingLine,
+    fontSize: 54,
+    lineHeight: 64,
+    color: FINAL_COLOR.greenDeep,
+    width: 660,
     x: 80,
-    y: 210,
+    y: 170,
   });
-  createPill(page, {
-    label: "Get in touch  ↗",
+  addFinalBody(hero, {
+    characters: HOMEPAGE.specialistLine,
+    font: FONT.medium,
+    fontSize: 24,
+    lineHeight: 64,
+    color: FINAL_COLOR.greenDeep,
+    width: 660,
     x: 80,
-    y: 470,
-    width: 200,
-    height: 54,
-    fill: SYNTHESIS_COLOR.green,
-    stroke: SYNTHESIS_COLOR.green,
-    color: SYNTHESIS_COLOR.white,
-    fontSize: 16,
-    lineHeight: 24,
+    y: 448,
   });
-  createPill(page, {
+  createPill(hero, {
+    label: "Get in touch  →",
+    x: 80,
+    y: 570,
+    width: 220,
+    height: 64,
+    fill: FINAL_COLOR.greenDeep,
+    stroke: FINAL_COLOR.greenDeep,
+    color: FINAL_COLOR.white,
+    fontSize: 18,
+    lineHeight: 28,
+  });
+  createPill(hero, {
     label: "View my work  ↓",
-    x: 300,
-    y: 470,
-    width: 210,
-    height: 54,
-    fill: SYNTHESIS_COLOR.warmWhite,
-    stroke: SYNTHESIS_COLOR.green,
-    color: SYNTHESIS_COLOR.green,
-    fontSize: 16,
-    lineHeight: 24,
+    x: 320,
+    y: 570,
+    width: 240,
+    height: 64,
+    fill: FINAL_COLOR.canvas,
+    stroke: FINAL_COLOR.greenDeep,
+    color: FINAL_COLOR.greenDeep,
+    fontSize: 18,
+    lineHeight: 28,
   });
-
-  const photo = createCanvasFrame(page, {
-    name: `Hero photograph — ${FINAL_HERO_PHOTO}`,
-    x: 80,
-    y: 590,
-    width: 1280,
-    height: 720,
-    fill: SYNTHESIS_COLOR.greenSoft,
-    radius: 16,
-    clipsContent: true,
-  });
-  if (!applyImageFill(photo, heroImageHash)) {
-    addFinalLabel(photo, "SOURCE PHOTO REQUIRED IN THIS FIGMA PAGE", 48, 48, 600);
-    addFinalHeading(photo, {
-      characters: FINAL_HERO_PHOTO,
-      fontSize: 32,
-      lineHeight: 42,
-      width: 700,
-      x: 48,
-      y: 110,
-    });
-    addFinalBody(photo, {
-      characters: "Large landscape crop · no retouching · no decorative portrait frame",
-      fontSize: 18,
-      lineHeight: 30,
-      width: 720,
-      x: 48,
-      y: 210,
+  if (!hasHeroImage) {
+    addFinalLabel(hero, "IMPORT ABILENEHERO.PNG ON THIS PAGE AND REBUILD", 820, 180, 520);
+    addFinalHeading(hero, {
+      characters: "Full-bleed plant environment with Abilene placed on the right",
+      fontSize: 34,
+      lineHeight: 44,
+      width: 530,
+      x: 820,
+      y: 238,
     });
   }
 
   const lead = createCanvasFrame(page, {
     name: "Lead work — imaginArt",
     x: 0,
-    y: 1420,
+    y: 860,
     width: 1440,
-    height: 720,
-    fill: SYNTHESIS_COLOR.greenSoft,
+    height: 780,
+    fill: FINAL_COLOR.surface,
   });
-  addFinalLabel(lead, "01 · LEAD PROFESSIONAL WORK", 80, 72, 430);
+  addFinalLabel(lead, "01 · SELECTED WORK", 80, 72, 430);
   addFinalHeading(lead, {
     characters: "Making specialist B2B communication clearer",
-    fontSize: 56,
-    lineHeight: 67,
+    fontSize: 54,
+    lineHeight: 65,
     width: 720,
     x: 80,
     y: 125,
@@ -3355,57 +3686,57 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     font: FONT.montserratMedium,
     fontSize: 18,
     lineHeight: 30,
-    color: SYNTHESIS_COLOR.green,
+    color: FINAL_COLOR.green,
     width: 650,
     x: 80,
     y: 285,
   });
   addFinalBody(lead, {
-    characters: "A professional story about translating technical and business information into useful, audience-aware communication across products, newsletters and events.",
-    fontSize: 21,
-    lineHeight: 35,
-    width: 610,
+    characters: "One lead case showing how technical and business information became useful communication.",
+    fontSize: 20,
+    lineHeight: 33,
+    width: 560,
     x: 80,
-    y: 350,
+    y: 355,
   });
-  createRule(lead, { x: 800, y: 150, width: 520, color: SYNTHESIS_COLOR.green });
+  createRule(lead, { x: 800, y: 150, width: 520, color: FINAL_COLOR.green });
   const leadItems = [
-    ["01", "Editorial newsletter", "~24% → ~34% open rate · approximate"],
-    ["02", "Turtle AV launch", "Technical input → usable B2B content"],
-    ["03", "Madrid Open Days", "Campaign system · ~110–125 attendees"],
+    ["email", "Newsletter", "~24% → ~34% · approximate"],
+    ["transform", "Brand launch", "Technical input → usable B2B content"],
+    ["event", "Corporate event", "Campaign system · ~110–125 attendees"],
   ];
-  leadItems.forEach(([number, title, meta], index) => {
-    const itemY = 180 + index * 145;
-    addFinalLabel(lead, number, 800, itemY, 60);
+  leadItems.forEach(([icon, title, meta], index) => {
+    const itemY = 180 + index * 150;
+    createLineIcon(lead, { icon, x: 800, y: itemY, size: 32 });
     addFinalHeading(lead, {
       characters: title,
       fontSize: 24,
       lineHeight: 32,
-      width: 430,
-      x: 880,
-      y: itemY - 5,
+      width: 400,
+      x: 860,
+      y: itemY - 2,
     });
     addFinalBody(lead, {
       characters: meta,
       fontSize: 15,
       lineHeight: 24,
-      color: SYNTHESIS_COLOR.muted,
+      color: FINAL_COLOR.inkMuted,
       width: 430,
-      x: 880,
+      x: 860,
       y: itemY + 42,
     });
-    createRule(lead, { x: 800, y: itemY + 100, width: 520, color: SYNTHESIS_COLOR.line });
+    createRule(lead, { x: 800, y: itemY + 108, width: 520, color: FINAL_COLOR.border });
   });
 
   const secondary = createCanvasFrame(page, {
     name: "Secondary work — equal hierarchy",
     x: 0,
-    y: 2140,
+    y: 1640,
     width: 1440,
-    height: 650,
-    fill: SYNTHESIS_COLOR.warmWhite,
+    height: 620,
+    fill: FINAL_COLOR.canvas,
   });
-  addFinalLabel(secondary, "02 · SELECTED EARLIER WORK", 80, 72, 430);
+  addFinalLabel(secondary, "02 · SECONDARY WORK", 80, 72, 430);
   const secondaryItems = [
     ["Secondary work — Website Analysis", "Website Analysis", "Content review · structure · recommendations", 80],
     ["Secondary work — Error Messages", "Error Messages", "UX writing · clarity · recovery", 740],
@@ -3416,9 +3747,9 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
       x: itemX,
       y: 150,
       width: 620,
-      height: 350,
+      height: 340,
     });
-    createRule(item, { x: 0, y: 0, width: 620, color: SYNTHESIS_COLOR.line });
+    createRule(item, { x: 0, y: 0, width: 620, color: FINAL_COLOR.border });
     addFinalHeading(item, {
       characters: title,
       fontSize: 38,
@@ -3431,7 +3762,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
       characters: meta,
       fontSize: 18,
       lineHeight: 29,
-      color: SYNTHESIS_COLOR.muted,
+      color: FINAL_COLOR.inkMuted,
       width: 520,
       x: 0,
       y: 118,
@@ -3441,7 +3772,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
       font: FONT.montserratMedium,
       fontSize: 16,
       lineHeight: 25,
-      color: SYNTHESIS_COLOR.green,
+      color: FINAL_COLOR.greenDeep,
       width: 250,
       x: 0,
       y: 240,
@@ -3449,12 +3780,12 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
   });
 
   const about = createCanvasFrame(page, {
-    name: "About — full-width pale blue transition",
+    name: "About — neutral tonal transition",
     x: 0,
-    y: 2790,
+    y: 2260,
     width: 1440,
-    height: 620,
-    fill: SYNTHESIS_COLOR.blueSoft,
+    height: 650,
+    fill: FINAL_COLOR.surface,
   });
   addFinalLabel(about, "ABOUT · WORKING POSITIONING", 80, 80, 440);
   addFinalHeading(about, {
@@ -3466,21 +3797,30 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     y: 145,
   });
   addFinalBody(about, {
-    characters: "I work across content strategy and communications, bringing structure, clarity and a human voice to complex subjects. The final first-person wording still needs Abilene’s review.",
+    characters: "I work across content strategy and communications, bringing structure, clarity and a human voice to complex subjects.",
     fontSize: 20,
     lineHeight: 34,
-    width: 540,
-    x: 800,
+    width: 500,
+    x: 820,
     y: 180,
+  });
+  addFinalBody(about, {
+    characters: "Final first-person wording still needs Abilene’s review.",
+    fontSize: 15,
+    lineHeight: 24,
+    color: FINAL_COLOR.inkMuted,
+    width: 500,
+    x: 820,
+    y: 330,
   });
 
   const cta = createCanvasFrame(page, {
-    name: "Contact — restrained pale pink transition",
+    name: "Contact — strong neutral transition",
     x: 0,
-    y: 3410,
+    y: 2910,
     width: 1440,
-    height: 570,
-    fill: SYNTHESIS_COLOR.pinkSoft,
+    height: 620,
+    fill: FINAL_COLOR.surfaceStrong,
   });
   addFinalLabel(cta, "CONTACT", 80, 82, 200);
   addFinalHeading(cta, {
@@ -3492,14 +3832,14 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     y: 140,
   });
   createPill(cta, {
-    label: "Get in touch  ↗",
+    label: "Get in touch  →",
     x: 1080,
     y: 175,
     width: 240,
     height: 58,
-    fill: SYNTHESIS_COLOR.green,
-    stroke: SYNTHESIS_COLOR.green,
-    color: SYNTHESIS_COLOR.white,
+    fill: FINAL_COLOR.greenDeep,
+    stroke: FINAL_COLOR.greenDeep,
+    color: FINAL_COLOR.white,
     fontSize: 17,
     lineHeight: 26,
   });
@@ -3507,10 +3847,29 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     characters: "Abilene Caride · Content strategy · Communications · Content",
     fontSize: 15,
     lineHeight: 24,
-    color: SYNTHESIS_COLOR.muted,
+    color: FINAL_COLOR.inkMuted,
     width: 700,
     x: 80,
-    y: 455,
+    y: 510,
+  });
+
+  const note = createCanvasFrame(page, {
+    name: "Pre-production note",
+    x: 0,
+    y: 3530,
+    width: 1440,
+    height: 450,
+    fill: FINAL_COLOR.canvas,
+  });
+  createRule(note, { x: 80, y: 60, width: 1280, color: FINAL_COLOR.border });
+  addFinalBody(note, {
+    characters: `Approved hero art direction: ${FINAL_HERO_REFERENCE_PATH}\nWorking Figma hero asset: ${FINAL_HERO_PHOTO}.png · full-bleed image with editable HTML/CSS-equivalent copy and navigation layered above it. The flattened reference is not a production component.`,
+    fontSize: 16,
+    lineHeight: 27,
+    color: FINAL_COLOR.inkMuted,
+    width: 1120,
+    x: 80,
+    y: 110,
   });
 
   return page;
@@ -3526,17 +3885,18 @@ async function buildFinalDirection() {
       `Open the Explorations page before running this command. Current page: “${figma.currentPage.name}”.`,
     );
   }
-  ensureNoExisting(GENERATED_KIND.finalDirection);
-  const anchor = preferGeneratedAnchor(GENERATED_KIND.directionD);
-  const point = insertionPoint(anchor);
+  const placement = replacementPlacement(
+    GENERATED_KIND.finalDirection,
+    GENERATED_KIND.directionD,
+  );
   await loadSynthesisFonts();
   const heroImageHash = findImageHashByName(FINAL_HERO_PHOTO);
   const section = createSection(
     "Final Direction — Clean Organic Editorial — Pre-production",
-    point,
+    placement.point,
     1800,
-    5200,
-    SYNTHESIS_COLOR.canvas,
+    5240,
+    FINAL_COLOR.surface,
     GENERATED_KIND.finalDirection,
   );
   populateSectionSafely(section, () => {
@@ -3549,21 +3909,21 @@ async function buildFinalDirection() {
       y: 90,
     });
     addFinalBody(section, {
-      characters: "Clean Organic Editorial closes visual exploration. A/B/C and the previous Direction D remain history; this frame is the only working direction to advance.",
+      characters: "Clean Organic Editorial has been refined around Abilene’s approved hero art direction. A/B/C/D remain history; this is the only working direction to advance.",
       fontSize: 19,
       lineHeight: 31,
-      color: SYNTHESIS_COLOR.muted,
+      color: FINAL_COLOR.inkMuted,
       width: 1180,
       x: 180,
       y: 165,
     });
-    createRule(section, { x: 180, y: 280, width: 1440, color: SYNTHESIS_COLOR.line });
+    createRule(section, { x: 180, y: 280, width: 1440, color: FINAL_COLOR.border });
     createFinalColumn(section, {
       x: 180,
       y: 330,
       width: 420,
       label: "TYPE",
-      body: "Inter — headings and navigation\nMontserrat — body and metadata\nH1 68/78 · H2 50–56/62–67 · body 19–21/31–35",
+      body: "Inter — H1/H2/H3, navigation and major metrics\nMontserrat Regular — body and supporting text\nComfortable measure and line height",
       bodySize: 17,
       lineHeight: 28,
     });
@@ -3572,7 +3932,7 @@ async function buildFinalDirection() {
       y: 330,
       width: 420,
       label: "COLOR + RHYTHM",
-      body: "Green dominant · warm neutral base · occasional pale blue and pink · full-width tints, whitespace and thin rules",
+      body: "Warm cream and neutral greys dominate · forest green leads · natural green supports · burgundy is a restrained tertiary accent",
       bodySize: 17,
       lineHeight: 28,
     });
@@ -3581,25 +3941,35 @@ async function buildFinalDirection() {
       y: 330,
       width: 420,
       label: "REMOVED",
-      body: "No decorative ellipses · no portrait circle · no card system · no false hierarchy · no competing LinkedIn or CV hero actions",
+      body: "No decorative ellipses or blobs · no portrait circle · no colored section blocks · no false hierarchy · no competing LinkedIn/CV hero actions",
       bodySize: 17,
       lineHeight: 28,
     });
     addFinalLabel(
       section,
-      heroImageHash ? "REAL HERO PHOTO LINKED · LANDSCAPE CROP · NO RETOUCH" : "HERO PHOTO SOURCE NOT FOUND — IMPORT IT ON THIS PAGE BEFORE REBUILDING",
+      heroImageHash ? "ABILENEHERO.PNG LINKED · FULL-BLEED EDITABLE HERO SIMULATION" : "ABILENEHERO.PNG NOT FOUND — IMPORT IT ON THIS PAGE BEFORE REBUILDING",
       180,
       620,
       1320,
     );
-    createFinalHomepage(section, 180, 760, heroImageHash);
+    addFinalBody(section, {
+      characters: `Authoritative art-direction reference: ${FINAL_HERO_REFERENCE_PATH} · approved for composition, atmosphere and palette · never as a flattened production asset`,
+      fontSize: 15,
+      lineHeight: 24,
+      color: FINAL_COLOR.inkMuted,
+      width: 1300,
+      x: 180,
+      y: 670,
+    });
+    createFinalHomepage(section, 180, 820, heroImageHash);
   });
+  placement.existing?.remove();
   figma.currentPage.selection = [section];
   figma.viewport.scrollAndZoomIntoView([section]);
   closeWithMessage(
     heroImageHash
-      ? "Created the final pre-production direction with the approved photograph."
-      : "Created the final direction with a photo placeholder. Import the approved photo on this page and rebuild to link it.",
+      ? "Rebuilt the refined final direction with AbileneHero.png as the full-bleed hero."
+      : "Rebuilt the refined final direction with a photo placeholder. Import AbileneHero.png on this page and rebuild to link it.",
   );
 }
 
@@ -3613,16 +3983,17 @@ async function buildImaginartPreproduction() {
       `Open the Case Studies page before running this command. Current page: “${figma.currentPage.name}”.`,
     );
   }
-  ensureNoExisting(GENERATED_KIND.imaginartPreproduction);
-  const anchor = preferGeneratedAnchor(GENERATED_KIND.imaginartReframed);
-  const point = insertionPoint(anchor);
+  const placement = replacementPlacement(
+    GENERATED_KIND.imaginartPreproduction,
+    GENERATED_KIND.imaginartReframed,
+  );
   await loadSynthesisFonts();
   const section = createSection(
     "imaginArt — Final Direction — Pre-production",
-    point,
+    placement.point,
     1740,
-    9420,
-    SYNTHESIS_COLOR.canvas,
+    8680,
+    FINAL_COLOR.surface,
     GENERATED_KIND.imaginartPreproduction,
   );
   const page = createCanvasFrame(section, {
@@ -3630,8 +4001,8 @@ async function buildImaginartPreproduction() {
     x: 150,
     y: 360,
     width: 1440,
-    height: 8840,
-    fill: SYNTHESIS_COLOR.warmWhite,
+    height: 8120,
+    fill: FINAL_COLOR.canvas,
   });
   populateSectionSafely(section, () => {
     addFinalHeading(section, {
@@ -3643,16 +4014,16 @@ async function buildImaginartPreproduction() {
       y: 90,
     });
     addFinalBody(section, {
-      characters: "Closed story order and visual hierarchy. Detailed factual constraints remain in docs/content/case-study-imaginart.md.",
+      characters: "The approved direction is now diagram-led, neutral and substantially less text-heavy. Detailed evidence constraints remain in docs/content/case-study-imaginart.md.",
       fontSize: 18,
       lineHeight: 29,
-      color: SYNTHESIS_COLOR.muted,
+      color: FINAL_COLOR.inkMuted,
       width: 1180,
       x: 150,
       y: 160,
     });
 
-    const hero = createCaseBand(page, { name: "01 Hero", y: 0, height: 650, fill: SYNTHESIS_COLOR.warmWhite });
+    const hero = createCaseBand(page, { name: "01 Hero", y: 0, height: 620, fill: FINAL_COLOR.canvas });
     addFinalLabel(hero, "LEAD PROFESSIONAL CASE · PRE-PRODUCTION", 80, 70, 700);
     addFinalHeading(hero, {
       characters: "Making specialist B2B communication clearer",
@@ -3670,34 +4041,48 @@ async function buildImaginartPreproduction() {
       x: 80,
       y: 350,
     });
-    createRule(hero, { x: 80, y: 575, width: 1280, color: SYNTHESIS_COLOR.line });
+    createRule(hero, { x: 80, y: 545, width: 1280, color: FINAL_COLOR.border });
 
-    const context = createCaseBand(page, { name: "02 Context and role", y: 650, height: 700, fill: SYNTHESIS_COLOR.blueSoft });
-    createFinalCaseHeading(context, "02", "Working between expertise and action", "CONTEXT + ROLE", "Technical accuracy, customer usefulness and business action had to coexist across products, editorial email and event communication.");
-    createFinalColumn(context, { x: 180, y: 320, width: 300, label: "ENGINEERING", body: "Technical truth\nProduct detail" });
-    createFinalColumn(context, { x: 570, y: 320, width: 300, label: "ABILENE", body: "Content structure\nFraming + copy\nChannel execution" });
-    createFinalColumn(context, { x: 960, y: 320, width: 300, label: "SALES + MANAGEMENT", body: "Customer reality\nBusiness context\nFinal validation" });
+    const context = createCaseBand(page, { name: "02 Context and collaboration", y: 620, height: 720, fill: FINAL_COLOR.surface });
+    createFinalCaseHeading(context, "02", "Working between expertise and action", "CONTEXT + COLLABORATION", "Technical knowledge, customer reality, business validation and content execution informed one another.");
+    createLineIcon(context, { icon: "network", x: 1280, y: 60, size: 42 });
+    const networkNodes = [
+      ["Engineering", "Technical knowledge", 150, 330],
+      ["Sales", "Customer reality", 150, 505],
+      ["Management", "Business validation", 1010, 330],
+      ["Abilene", "Structure · framing · execution", 1010, 505],
+    ];
+    networkNodes.forEach(([title, body, nodeX, nodeY]) => {
+      const node = createCanvasFrame(context, { name: `Collaboration — ${title}`, x: nodeX, y: nodeY, width: 280, height: 120, fill: FINAL_COLOR.canvas, stroke: FINAL_COLOR.border, radius: 6 });
+      addFinalHeading(node, { characters: title, fontSize: 21, lineHeight: 28, width: 235, x: 22, y: 20 });
+      addFinalBody(node, { characters: body, fontSize: 14, lineHeight: 22, color: FINAL_COLOR.inkMuted, width: 235, x: 22, y: 58 });
+    });
+    createRule(context, { x: 430, y: 390, width: 580, color: FINAL_COLOR.green });
+    createRule(context, { x: 430, y: 565, width: 580, color: FINAL_COLOR.green });
+    addFinalBody(context, { characters: "COLLABORATION · NOT A RIGID WATERFALL", font: FONT.montserratMedium, fontSize: 14, lineHeight: 22, color: FINAL_COLOR.greenDeep, width: 450, x: 495, y: 462 });
 
-    const email = createCaseBand(page, { name: "03 Refreshing a specialist B2B newsletter", y: 1350, height: 1260, fill: SYNTHESIS_COLOR.warmWhite });
-    createFinalCaseHeading(email, "03", "Refreshing a specialist B2B newsletter", "MUNDO BRIGHTSIGN · PRIMARY STORY 1", "A combined editorial revision: a closer professional tone, an emoji at the beginning of the subject and the CTA moved above the fold.");
+    const email = createCaseBand(page, { name: "03 Refreshing a specialist B2B newsletter", y: 1340, height: 1120, fill: FINAL_COLOR.canvas });
+    createFinalCaseHeading(email, "STORY 01", "Refreshing a specialist B2B newsletter", "MUNDO BRIGHTSIGN", "The result followed a broader editorial revision—not one isolated change.");
+    createLineIcon(email, { icon: "email", x: 1280, y: 60, size: 42 });
     createFinalColumn(email, { x: 160, y: 340, width: 500, label: "EARLIER EDITORIAL APPROACH", body: "Subject\nIntroduction\nContent\nAdditional content\nCTA", bodySize: 20, lineHeight: 36 });
     createFinalColumn(email, { x: 780, y: 340, width: 500, label: "REVISED EDITORIAL APPROACH", body: "Emoji + revised subject\nCloser professional tone\nCTA above the fold\nContent\nAdditional content", bodySize: 20, lineHeight: 36 });
-    addFinalHeading(email, { characters: "~24% → ~34%", fontSize: 68, lineHeight: 78, color: SYNTHESIS_COLOR.green, width: 600, x: 160, y: 790 });
-    addFinalBody(email, { characters: "Approximate recalled open rates · observed after the combined revision", fontSize: 18, lineHeight: 30, width: 720, x: 160, y: 885 });
-    createRule(email, { x: 160, y: 980, width: 1120, color: SYNTHESIS_COLOR.line });
-    addFinalBody(email, { characters: "This was NOT an A/B test. The evidence does not isolate the effect of the subject, tone or CTA, so no individual change is presented as causal and the figures are not audited data.", fontSize: 18, lineHeight: 31, color: SYNTHESIS_COLOR.muted, width: 1030, x: 160, y: 1025 });
+    createLineIcon(email, { icon: "trend", x: 880, y: 800, size: 56, color: FINAL_COLOR.burgundy });
+    addFinalHeading(email, { characters: "~24% → ~34%", fontSize: 68, lineHeight: 78, color: FINAL_COLOR.burgundy, width: 600, x: 160, y: 790 });
+    addFinalBody(email, { characters: "Approximate open rate · recalled by Abilene · not audited", fontSize: 17, lineHeight: 28, width: 650, x: 160, y: 880 });
+    addFinalBody(email, { characters: "NOT AN A/B TEST · no single change is presented as causal", font: FONT.montserratMedium, fontSize: 15, lineHeight: 24, color: FINAL_COLOR.inkMuted, width: 750, x: 160, y: 960 });
 
-    const turtle = createCaseBand(page, { name: "04 Launching a new brand in Spain", y: 2610, height: 1280, fill: SYNTHESIS_COLOR.greenSoft });
-    createFinalCaseHeading(turtle, "04", "Launching a new brand in Spain", "TURTLE AV · IMAGINART · PRIMARY STORY 2", "Abilene structured the page herself, turning technical product input into a usable B2B content sequence.");
+    const turtle = createCaseBand(page, { name: "04 Launching a new brand in Spain", y: 2460, height: 1080, fill: FINAL_COLOR.surface });
+    createFinalCaseHeading(turtle, "STORY 02", "Launching a new brand in Spain", "TURTLE AV · IMAGINART", "Abilene structured the page herself, turning technical product input into usable B2B communication.");
+    createLineIcon(turtle, { icon: "transform", x: 1280, y: 60, size: 42 });
     createFinalColumn(turtle, { x: 100, y: 350, width: 340, label: "RAW TECHNICAL INPUT", body: "4K · Dante · AES67\nPoE · HDR · latency\nRedundancy · compatibility", bodySize: 18 });
-    createFinalColumn(turtle, { x: 550, y: 350, width: 340, label: "CONTENT QUESTIONS", body: "What is it?\nWhy does it matter?\nWhich solution fits?\nWhere can it be used?\nWhat happens next?", bodySize: 18 });
-    createFinalColumn(turtle, { x: 1000, y: 350, width: 340, label: "STRUCTURED PRODUCT CONTENT", body: "Value proposition\nBenefits\nSolutions\nTechnical detail\nApplications\nContact CTA", bodySize: 18 });
-    addFinalHeading(turtle, { characters: "Technical truth → structure → usable B2B content", fontSize: 34, lineHeight: 45, width: 1040, x: 180, y: 850 });
-    addFinalBody(turtle, { characters: "Information architecture is the evidence here: selecting, ordering and explaining what a professional buyer needs without weakening technical accuracy.", fontSize: 19, lineHeight: 32, width: 900, x: 180, y: 940 });
+    createFinalColumn(turtle, { x: 550, y: 350, width: 340, label: "CONTENT STRATEGY / ARCHITECTURE", body: "Select · prioritize\nFeatures → benefits\nSpecs → applications\nFamilies → navigation", bodySize: 18 });
+    createFinalColumn(turtle, { x: 1000, y: 350, width: 340, label: "CLEAR PRODUCT COMMUNICATION", body: "Value proposition\nBenefits\nSolutions\nTechnical detail\nApplications\nContact CTA", bodySize: 18 });
+    addFinalHeading(turtle, { characters: "Technical truth → structure → usable B2B content", fontSize: 34, lineHeight: 45, width: 1040, x: 180, y: 840 });
 
-    const event = createCaseBand(page, { name: "05 Planning and promoting a corporate event", y: 3890, height: 1330, fill: SYNTHESIS_COLOR.warmWhite });
-    createFinalCaseHeading(event, "05", "Planning and promoting a corporate event", "IMAGINART · MADRID OPEN DAYS 2026 · PRIMARY STORY 3", "One communication objective carried across copy, Canva imagery, mailing design, registration, web and LinkedIn content input.");
-    createRule(event, { x: 120, y: 360, width: 1200, color: SYNTHESIS_COLOR.green });
+    const event = createCaseBand(page, { name: "05 Planning and promoting a corporate event", y: 3540, height: 1160, fill: FINAL_COLOR.canvas });
+    createFinalCaseHeading(event, "STORY 03", "Planning and promoting a corporate event", "IMAGINART · MADRID OPEN DAYS 2026", "One communication objective carried across the campaign system.");
+    createLineIcon(event, { icon: "event", x: 1280, y: 60, size: 42 });
+    createRule(event, { x: 120, y: 360, width: 1200, color: FINAL_COLOR.green });
     const campaign = [
       ["01", "Invitation", "Web post + mailing"],
       ["02", "Registration", "Form + practical details"],
@@ -3708,40 +4093,48 @@ async function buildImaginartPreproduction() {
       const itemX = 120 + index * 315;
       addFinalLabel(event, number, itemX, 395, 80);
       addFinalHeading(event, { characters: title, fontSize: 23, lineHeight: 31, width: 250, x: itemX, y: 440 });
-      addFinalBody(event, { characters: body, fontSize: 16, lineHeight: 26, color: SYNTHESIS_COLOR.muted, width: 250, x: itemX, y: 495 });
+      addFinalBody(event, { characters: body, fontSize: 16, lineHeight: 26, color: FINAL_COLOR.inkMuted, width: 250, x: itemX, y: 495 });
     });
-    addFinalHeading(event, { characters: "~110–125", fontSize: 68, lineHeight: 78, color: SYNTHESIS_COLOR.green, width: 500, x: 180, y: 760 });
-    addFinalBody(event, { characters: "attendees · compared with a usual range of ~70–80", fontSize: 20, lineHeight: 33, width: 600, x: 180, y: 855 });
-    addFinalBody(event, { characters: "Approximate recalled ranges · not audited · no precise uplift or causal claim. Bilbao remains supporting evidence of repeatable, conversion-oriented event communication.", fontSize: 18, lineHeight: 31, color: SYNTHESIS_COLOR.muted, width: 980, x: 180, y: 980 });
+    addFinalHeading(event, { characters: "~110–125", fontSize: 68, lineHeight: 78, color: FINAL_COLOR.greenDeep, width: 500, x: 180, y: 760 });
+    addFinalBody(event, { characters: "attendees · usual similar-event range ~70–80", fontSize: 19, lineHeight: 31, width: 650, x: 180, y: 850 });
+    addFinalBody(event, { characters: "Approximate recollections · no precise uplift · Bilbao supports repeatable event-communication evidence", fontSize: 15, lineHeight: 24, color: FINAL_COLOR.inkMuted, width: 920, x: 180, y: 930 });
 
-    const support = createCaseBand(page, { name: "06 Supporting technical-content evidence", y: 5220, height: 1260, fill: SYNTHESIS_COLOR.greenSoft });
-    createFinalCaseHeading(support, "06", "Other ways I worked with technical content", "SUPPORTING EVIDENCE · EQUAL LEVEL", "Two concise examples extend the same content-systems pattern without becoming additional main mini-cases.");
-    createFinalColumn(support, { x: 160, y: 350, width: 520, label: "STRUCTURING A TECHNICAL CATALOGUE", body: "AV Supports Catalogue\n\nInformation architecture · taxonomy and product categorization · structured product sheets · technical-to-commercial content · layout · imagery selection · sales enablement and content-systems thinking", bodySize: 18, lineHeight: 31 });
-    createFinalColumn(support, { x: 760, y: 350, width: 520, label: "ADAPTING TECHNICAL INFORMATION FOR B2B", body: "Lumens\n\nTechnical source documentation · feature selection and organization · practical-use framing · final communication piece. Technical content adaptation, not merely translation.", bodySize: 18, lineHeight: 31 });
-    createRule(support, { x: 720, y: 350, width: 2, height: 650, color: SYNTHESIS_COLOR.line });
-    addFinalBody(support, { characters: "Both examples show how Abilene builds reusable structures for complex information while keeping the final communication useful to commercial audiences.", font: FONT.montserratMedium, fontSize: 19, lineHeight: 32, width: 1040, x: 180, y: 1030 });
+    const catalogue = createCaseBand(page, { name: "06 Structuring a technical product catalogue", y: 4700, height: 1040, fill: FINAL_COLOR.surface });
+    createFinalCaseHeading(catalogue, "STORY 04", "Structuring a technical product catalogue", "AV SUPPORTS CATALOGUE", "A content system for a large technical product set—not isolated descriptions.");
+    createLineIcon(catalogue, { icon: "catalogue", x: 1280, y: 60, size: 42 });
+    createFinalColumn(catalogue, { x: 120, y: 340, width: 320, label: "PRODUCT FAMILIES", body: "Index\nTaxonomy\nProduct categorization", bodySize: 18 });
+    createFinalColumn(catalogue, { x: 560, y: 340, width: 320, label: "REPEATABLE STRUCTURE", body: "Description\nCompatible size\nWeight · VESA\nMovement · use case", bodySize: 18 });
+    createFinalColumn(catalogue, { x: 1000, y: 340, width: 320, label: "CUSTOMER-FACING OUTPUT", body: "Technical-to-commercial copy\nConsistent sheets\nLayout · imagery\nSales enablement", bodySize: 18 });
+    addFinalBody(catalogue, { characters: "Categorize → standardize → transform → enable", font: FONT.montserratMedium, fontSize: 18, lineHeight: 30, color: FINAL_COLOR.greenDeep, width: 900, x: 260, y: 835 });
 
-    const teams = createCaseBand(page, { name: "07 Working across teams", y: 6480, height: 900, fill: SYNTHESIS_COLOR.blueSoft });
-    createFinalCaseHeading(teams, "07", "Working across teams", "COLLABORATION", "The work sat between technical knowledge, audience needs and business constraints.");
-    createFinalColumn(teams, { x: 180, y: 340, width: 300, label: "ENGINEERING", body: "Technical truth\nProduct constraints" });
-    createFinalColumn(teams, { x: 570, y: 340, width: 300, label: "ABILENE", body: "Structure · framing\nCopy · execution" });
-    createFinalColumn(teams, { x: 960, y: 340, width: 300, label: "SALES + MANAGEMENT", body: "Customer context\nBusiness validation" });
-    addFinalBody(teams, { characters: "Collaboration is shown as an equal relationship, not a rigid waterfall the evidence cannot support.", fontSize: 17, lineHeight: 28, color: SYNTHESIS_COLOR.muted, width: 880, x: 280, y: 675 });
+    const lumens = createCaseBand(page, { name: "07 Adapting technical information for a B2B audience", y: 5740, height: 1040, fill: FINAL_COLOR.canvas });
+    createFinalCaseHeading(lumens, "STORY 05", "Adapting technical information for a B2B audience", "LUMENS", "Technical content adaptation—not merely translation.");
+    createLineIcon(lumens, { icon: "technical", x: 1280, y: 60, size: 42 });
+    createFinalColumn(lumens, { x: 120, y: 340, width: 320, label: "MANUFACTURER DOCUMENTATION", body: "Source specifications\nFeatures\nApplications", bodySize: 18 });
+    createFinalColumn(lumens, { x: 560, y: 340, width: 320, label: "ABILENE", body: "Select\nPrioritize\nAdapt\nStructure", bodySize: 18 });
+    createFinalColumn(lumens, { x: 1000, y: 340, width: 320, label: "CLEAR B2B COMMUNICATION", body: "What does it do?\nWho is it for?\nWhy does it matter?\nHow can it be used?", bodySize: 18 });
+    addFinalBody(lumens, { characters: "The underlying manufacturer specifications remain the source; the contribution is audience-aware selection, framing and communication.", fontSize: 16, lineHeight: 27, color: FINAL_COLOR.inkMuted, width: 980, x: 230, y: 835 });
 
-    const learning = createCaseBand(page, { name: "08 Learning", y: 7380, height: 880, fill: SYNTHESIS_COLOR.warmWhite });
-    createFinalCaseHeading(learning, "08", "A useful reminder", "LEARNING · WORKING PUBLIC VOICE", "The final first-person wording still requires Abilene’s review.");
-    addFinalHeading(learning, { characters: "“Something can feel obviously better to you and the data can still disagree.”", fontSize: 38, lineHeight: 51, width: 1040, x: 180, y: 340 });
-    addFinalBody(learning, { characters: "A/B testing was adopted later. This learning must not be rewritten as a claim that Mundo BrightSign itself was an A/B test.", fontSize: 19, lineHeight: 32, width: 920, x: 180, y: 515 });
-    createRule(learning, { x: 180, y: 670, width: 1080, color: SYNTHESIS_COLOR.line });
-    addFinalBody(learning, { characters: "Final editorial check: clarity, ownership and evidence limits matter more than making the case sound larger than it was.", font: FONT.montserratMedium, fontSize: 18, lineHeight: 30, width: 970, x: 180, y: 715 });
+    const outcomes = createCaseBand(page, { name: "08 Outcomes and evidence note", y: 6780, height: 920, fill: FINAL_COLOR.surfaceStrong });
+    createFinalCaseHeading(outcomes, "08", "Evidence before polish", "APPROXIMATE RESULTS · INTERNAL PRE-PRODUCTION", "The design keeps factual caveats visible and lets diagrams carry most of the explanation.");
+    createLineIcon(outcomes, { icon: "trend", x: 1280, y: 60, size: 42 });
+    addFinalHeading(outcomes, { characters: "~24% → ~34%", fontSize: 54, lineHeight: 66, color: FINAL_COLOR.burgundy, width: 500, x: 180, y: 340 });
+    addFinalBody(outcomes, { characters: "approximate open rate · not an A/B test", fontSize: 16, lineHeight: 25, width: 500, x: 180, y: 420 });
+    addFinalHeading(outcomes, { characters: "~110–125", fontSize: 54, lineHeight: 66, color: FINAL_COLOR.greenDeep, width: 500, x: 800, y: 340 });
+    addFinalBody(outcomes, { characters: "attendees · usual range ~70–80", fontSize: 16, lineHeight: 25, width: 500, x: 800, y: 420 });
+    createRule(outcomes, { x: 180, y: 535, width: 1080, color: FINAL_COLOR.border });
+    addFinalBody(outcomes, { characters: "Detailed facts, ownership, copyright boundaries and publication constraints live in docs/content/case-study-imaginart.md. No CTR, revenue, SEO growth, conversion or precise attendance uplift is invented.", fontSize: 17, lineHeight: 29, color: FINAL_COLOR.inkMuted, width: 1040, x: 180, y: 600 });
+    addFinalBody(outcomes, { characters: "Conceptual density target: roughly 40% explanatory copy / 60% visual communication.", font: FONT.montserratMedium, fontSize: 16, lineHeight: 25, color: FINAL_COLOR.greenDeep, width: 850, x: 180, y: 770 });
 
-    const evidence = createCaseBand(page, { name: "09 Evidence note", y: 8260, height: 580, fill: SYNTHESIS_COLOR.pinkSoft });
-    createFinalCaseHeading(evidence, "09", "Evidence before polish", "INTERNAL PRE-PRODUCTION DIRECTION", "The factual blueprint, ownership boundaries, publication constraints and interview-reuse notes live in docs/content/case-study-imaginart.md.");
-    addFinalBody(evidence, { characters: "Next: one Abilene review of public voice and story order, then production foundations and final desktop/mobile design.", font: FONT.montserratMedium, fontSize: 18, lineHeight: 30, color: SYNTHESIS_COLOR.green, width: 1040, x: 180, y: 350 });
+    const stop = createCaseBand(page, { name: "09 Stop condition", y: 7700, height: 420, fill: FINAL_COLOR.canvas });
+    createRule(stop, { x: 80, y: 70, width: 1280, color: FINAL_COLOR.border });
+    addFinalHeading(stop, { characters: "Visual exploration is closed.", fontSize: 34, lineHeight: 44, width: 720, x: 80, y: 120 });
+    addFinalBody(stop, { characters: "Next: production Foundations, then final Homepage and imaginArt desktop/mobile screens. Do not create another competing direction.", fontSize: 17, lineHeight: 28, color: FINAL_COLOR.inkMuted, width: 980, x: 80, y: 190 });
   });
+  placement.existing?.remove();
   figma.currentPage.selection = [section];
   figma.viewport.scrollAndZoomIntoView([section]);
-  closeWithMessage("Created the final imaginArt pre-production direction beside the selected exploration.");
+  closeWithMessage("Rebuilt the refined imaginArt pre-production direction with neutral bands, line icons and diagram-led storytelling.");
 }
 
 async function buildMoodboard() {
@@ -4021,6 +4414,9 @@ async function run() {
         break;
       case "build-final-direction":
         await buildFinalDirection();
+        break;
+      case "build-approved-foundations":
+        await buildApprovedFoundations();
         break;
       case "build-imaginart-wireframe":
         await buildImaginartWireframe();

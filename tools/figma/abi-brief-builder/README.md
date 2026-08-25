@@ -21,18 +21,23 @@ its build.
   `D — Clean Organic Editorial`, that preserves A/B/C and combines their
   strongest qualities. It includes a Montserrat + Inter versus all-Montserrat
   type comparison and one working desktop homepage.
-- In **Abi Website Foundations → Explorations**: one history-preserving
+- In **Abi Website Foundations → Foundations**: one replaceable
+  `V2 — Approved production foundations` section containing the approved
+  Inter/Montserrat typography, hero-derived token palette, graphic principles
+  and the authoritative hero art-direction reference.
+- In **Abi Website Foundations → Explorations**: one replaceable
   `Final Direction — Clean Organic Editorial — Pre-production` section. It uses
-  Inter headings, Montserrat body copy, an imported real landscape hero image,
-  restrained full-width tints and the closed CTA/work hierarchy.
+  a left-copy/right-photo hero, Inter headings, Montserrat body copy, neutral
+  tonal section contrast and the closed CTA/work hierarchy.
 - In **Abi Personal Website → Case Studies**: an editorial imaginArt case-study
   wireframe with ten narrative bands and four original explanatory diagrams.
 - In **Abi Personal Website → Case Studies**: one separate Direction D
   imaginArt exploration with challenge-led story headings, restrained editorial
   layouts and visibly qualified working metrics.
-- In **Abi Personal Website → Case Studies**: one final pre-production imaginArt
-  section using the approved newsletter → Turtle AV → Madrid story order, with
-  AV Supports Catalogue and Lumens presented as equal supporting evidence.
+- In **Abi Personal Website → Case Studies**: one replaceable final
+  pre-production imaginArt section using the approved newsletter → Turtle AV →
+  Madrid → AV Supports Catalogue → Lumens story order, with neutral bands,
+  original diagrams and one coherent line-icon family.
 
 It does not create finished homepage designs or polished marketing copy. The
 homepage concepts are deliberately substantial enough for visual review while
@@ -47,10 +52,17 @@ The photography notes identify provisional exploration choices only. Personal
 photo files are not part of this plugin and must not be added to the repository
 unless explicitly requested.
 
-The final-direction command can reuse a photograph already imported into the
-open Foundations page. It looks for an image layer named
-`WhatsApp Image 2026-08-25 at 18.49.46` and applies that image fill to the large
-landscape hero crop. The source file remains in Figma only.
+The final-direction command can reuse the approved hero image already imported
+into the open Explorations page. It looks for an image layer named
+`AbileneHero.png` and applies that image fill across the full hero zone, with an
+editable warm readability gradient, navigation, headline and CTA pair layered
+above it. The source file remains in Figma only.
+
+The approved Foundations command looks for an image layer named
+`hero-approved-reference.jpg`. Import
+`docs/design/references/hero-approved-reference.jpg` manually onto the
+Foundations page before running the command. The flattened image is placed only
+as a labelled design reference and is never treated as a production component.
 
 ## Safety model
 
@@ -65,9 +77,12 @@ landscape hero crop. The source file remains in Figma only.
   section automatically and use the current selection only as a fallback.
 - It creates each new section 400 px to the right of its anchor.
 - Generated root sections are tagged with private plugin data.
-- A command cannot create a second copy on the same page.
-- The plugin never deletes nodes. `Find generated content` selects its output so
-  it can be reviewed, moved or deleted manually.
+- Exploration commands cannot create a second copy on the same page. The three
+  approved/final commands safely replace only their own previously tagged
+  output after the new version has been created successfully.
+- Exploration commands never delete nodes. `Find generated content` selects
+  their output so it can be reviewed or moved manually. The three explicit
+  approved/final rebuild commands replace only their own tagged predecessor.
 - Existing V2 material created before this plugin is not tagged and is never
   modified automatically.
 
@@ -135,20 +150,37 @@ The generated concept uses green as the dominant color, with pink and blue as
 sparse accents. Its asymmetry and organic forms are selective rather than a
 system of rounded cards.
 
-## Build the final pre-production direction
+## Rebuild the approved V2 Foundations
+
+1. Open **Abi Website Foundations → Foundations** in Figma Desktop.
+2. Import `docs/design/references/hero-approved-reference.jpg` and keep the
+   filename as its Figma layer name.
+3. On the first run, select an existing frame immediately to the left of the
+   intended output.
+4. Run **Plugins → Development → Abi Website Brief Builder → Foundations:
+   Rebuild approved V2 foundations**.
+5. Confirm that the reference is labelled as design-only and that the cream,
+   neutral, green and restrained burgundy token swatches are visible.
+
+Rerunning replaces only the plugin-tagged approved Foundations section. It does
+not modify historical explorations or unrelated Foundations material.
+
+## Rebuild the final pre-production direction
 
 1. Open **Abi Website Foundations → Explorations** in Figma Desktop.
-2. Import `WhatsApp Image 2026-08-25 at 18.49.46` onto the current page. Keep the
-   layer name intact; the photograph is not copied into this repository.
+2. Import `C:\Users\alber\Downloads\AbileneHero.png` onto the current page. Keep
+   the layer name intact; the photograph is not copied into this repository.
 3. Select the existing `D — Clean Organic Editorial` section as the placement
    anchor.
-4. Run **Plugins → Development → Abi Website Brief Builder → Foundations: Build
+4. Run **Plugins → Development → Abi Website Brief Builder → Foundations: Rebuild
    final pre-production direction**.
-5. Confirm the photograph appears as a large landscape crop and review the
-   working English/Spanish positioning before production design begins.
+5. Confirm that `AbileneHero.png` fills the hero, Abilene remains on the right,
+   and the editable navigation, copy and CTA pair remain readable on the left.
 
 This command does not modify or delete A/B/C/D. Its output deliberately contains
-no decorative ellipse nodes and is labelled as the sole direction to advance.
+no decorative ellipse nodes, no large colored section blocks and is labelled as
+the sole direction to advance. Rerunning replaces only the plugin-tagged final
+direction.
 
 ## Build the imaginArt case-study structure
 
@@ -177,24 +209,26 @@ Days, but their visible headings now lead with the professional challenge.
 AV Supports Catalogue, Lumens and Bilbao remain supporting evidence. The older
 case-study exploration is preserved for comparison.
 
-## Build the final imaginArt pre-production direction
+## Rebuild the final imaginArt pre-production direction
 
 1. Open **Abi Personal Website → Case Studies** in Figma Desktop.
 2. Select the existing reframed imaginArt exploration as the placement anchor.
 3. Run **Plugins → Development → Abi Website Brief Builder → Personal Website:
-   Build final imaginArt pre-production**.
+   Rebuild final imaginArt pre-production**.
 4. Verify the story order and caveats against
    [`docs/content/case-study-imaginart.md`](../../../docs/content/case-study-imaginart.md).
 
-The final frame replaces repeated cards and decorative shapes with full-width
-tints, type hierarchy and thin rules. It does not alter or remove the earlier
-wireframe or Direction D exploration.
+The final frame replaces colored blocks and decorative shapes with neutral
+tonal bands, type hierarchy, thin rules, original diagrams and a coherent
+line-icon family. It does not alter or remove the earlier wireframe or Direction
+D exploration; rerunning replaces only its own tagged final output.
 
 ## Reruns and cleanup
 
-Run **Find generated content** to select the plugin-created section on the
-current page. Delete it manually if a rebuild is needed, then run the relevant
-build command again with a placement anchor selected.
+Run **Find generated content** to select plugin-created sections on the current
+page. Historical exploration commands still require manual deletion before a
+rerun. Approved Foundations, final homepage and final imaginArt commands rebuild
+their own tagged output in place without duplicating it.
 
 Figma's ordinary Undo command can also reverse a plugin run immediately.
 

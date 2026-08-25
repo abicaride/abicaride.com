@@ -200,6 +200,11 @@ function createFigma({ editorType, fileName, pageName, command }) {
       page.children.push(node);
       return node;
     },
+    createNodeFromSvg() {
+      const node = new MockNode("FRAME", page);
+      page.children.push(node);
+      return node;
+    },
     async loadFontAsync() {},
     notify(message, options = {}) {
       notifications.push({ message, ...options });
@@ -292,7 +297,7 @@ for (const expected of [
   "~110–125 attendees vs usual ~70–80",
   "NOT an A/B test",
   "not audited data",
-  "final Abi review of public case-study voice",
+  "final Abilene review of public case-study voice",
 ]) {
   assert.ok(moodboardText.includes(expected), `Missing Moodboard content: ${expected}`);
 }
@@ -368,8 +373,8 @@ const homepageText = allNodes(homepageSection)
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Abi Caride",
-  "Content strategy · Communications · Content",
+  "Abilene Caride",
+  "Content strategy.\nCommunications.\nBusiness.",
   "imaginArt",
   "technical product content",
   "email",
@@ -559,6 +564,61 @@ assert.equal(
 );
 assert.equal(imaginartReframed.notifications.at(-1).error, true);
 
+const approvedFoundations = createFigma({
+  editorType: "figma",
+  fileName: "Abi Website Foundations",
+  pageName: "01 — Foundations",
+  command: "build-approved-foundations",
+});
+const approvedReference = new MockNode("RECTANGLE", approvedFoundations.currentPage);
+approvedReference.name = "hero-approved-reference.jpg";
+approvedReference.fills = [
+  { type: "IMAGE", imageHash: "approved-reference-hash", scaleMode: "FILL" },
+];
+approvedReference.x = -900;
+approvedFoundations.currentPage.children.push(approvedReference);
+await execute(approvedFoundations);
+
+assert.equal(approvedFoundations.closed, true);
+assert.equal(approvedFoundations.notifications.at(-1).error, false);
+assert.equal(generatedSections(approvedFoundations).length, 1);
+const approvedFoundationsSection = generatedSections(approvedFoundations)[0];
+assert.equal(approvedFoundationsSection.width, 1740);
+assert.equal(approvedFoundationsSection.height, 3600);
+const approvedFoundationsNodes = allNodes(approvedFoundationsSection);
+const approvedFoundationsText = approvedFoundationsNodes
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const expected of [
+  "V2 — Approved production foundations",
+  "Inter for headings",
+  "Montserrat Regular",
+  "--color-canvas",
+  "#F7F3EA",
+  "--color-green-deep",
+  "#103A20",
+  "--color-burgundy",
+  "#741A2A",
+  "No floating ellipses",
+  "not a production asset",
+  "supersedes previous hero explorations",
+]) {
+  assert.ok(
+    approvedFoundationsText.toLowerCase().includes(expected.toLowerCase()),
+    `Missing approved Foundations content: ${expected}`,
+  );
+}
+const referenceFrame = approvedFoundationsNodes.find(
+  (node) => node.name === "Design reference only — hero-approved-reference.jpg",
+);
+assert.equal(referenceFrame.fills[0].type, "IMAGE");
+assert.equal(referenceFrame.fills[0].imageHash, "approved-reference-hash");
+assert.equal(approvedFoundationsNodes.filter((node) => node.type === "ELLIPSE").length, 0);
+await execute(approvedFoundations);
+assert.equal(generatedSections(approvedFoundations).length, 1);
+assert.equal(approvedFoundations.notifications.at(-1).error, false);
+
 const finalDirection = createFigma({
   editorType: "figma",
   fileName: "Abi Website Foundations",
@@ -566,7 +626,7 @@ const finalDirection = createFigma({
   command: "build-final-direction",
 });
 const approvedPhoto = new MockNode("RECTANGLE", finalDirection.currentPage);
-approvedPhoto.name = "WhatsApp Image 2026-08-25 at 18.49.46.jpeg";
+approvedPhoto.name = "AbileneHero.png";
 approvedPhoto.fills = [{ type: "IMAGE", imageHash: "approved-photo-hash", scaleMode: "FILL" }];
 approvedPhoto.x = -900;
 finalDirection.currentPage.children.push(approvedPhoto);
@@ -577,7 +637,7 @@ assert.equal(finalDirection.notifications.at(-1).error, false);
 assert.equal(generatedSections(finalDirection).length, 1);
 const finalDirectionSection = generatedSections(finalDirection)[0];
 assert.equal(finalDirectionSection.width, 1800);
-assert.equal(finalDirectionSection.height, 5200);
+assert.equal(finalDirectionSection.height, 5240);
 const finalDirectionNodes = allNodes(finalDirectionSection);
 const finalDirectionText = finalDirectionNodes
   .filter((node) => node.type === "TEXT")
@@ -586,25 +646,35 @@ const finalDirectionText = finalDirectionNodes
 for (const expected of [
   "Final Direction — Pre-production",
   "Abilene Caride",
-  "Content strategy · Communications · Content",
   "I help companies connect with their audiences through clear, honest communication.",
+  "Content, communications and marketing specialist",
   "Get in touch",
   "View my work",
   "Making specialist B2B communication clearer",
   "Website Analysis",
   "Error Messages",
-  "REAL HERO PHOTO LINKED",
+  "ABILENEHERO.PNG LINKED",
   "No decorative ellipses",
+  "no colored section blocks",
+  "docs/design/references/hero-approved-reference.jpg",
 ]) {
   assert.ok(finalDirectionText.toLowerCase().includes(expected.toLowerCase()), `Missing final direction content: ${expected}`);
 }
+assert.ok(!finalDirectionText.includes("EXPERIENCE WITH"), "The conceptual company strip must not appear in the final direction");
+assert.ok(!finalDirectionText.includes("Content strategy.\nCommunications.\nBusiness."), "The category list must not compete with the final hero statement");
 assert.ok(!finalDirectionText.includes("Abi Caride"), "Final public direction must use Abilene Caride");
 assert.equal(finalDirectionNodes.filter((node) => node.type === "ELLIPSE").length, 0);
 const heroPhoto = finalDirectionNodes.find(
-  (node) => node.name === "Hero photograph — WhatsApp Image 2026-08-25 at 18.49.46",
+  (node) => node.name === "Hero — full-bleed atmospheric image — AbileneHero",
 );
 assert.equal(heroPhoto.fills[0].type, "IMAGE");
 assert.equal(heroPhoto.fills[0].imageHash, "approved-photo-hash");
+assert.equal(heroPhoto.width, 1440);
+assert.equal(heroPhoto.height, 860);
+const heroScrim = finalDirectionNodes.find(
+  (node) => node.name === "Hero — warm readability gradient",
+);
+assert.equal(heroScrim.fills[0].type, "GRADIENT_LINEAR");
 const websiteAnalysis = finalDirectionNodes.find(
   (node) => node.name === "Secondary work — Website Analysis",
 );
@@ -614,16 +684,60 @@ const errorMessages = finalDirectionNodes.find(
 assert.equal(websiteAnalysis.y, errorMessages.y);
 assert.equal(websiteAnalysis.width, errorMessages.width);
 const finalBody = finalDirectionNodes.find(
-  (node) => node.type === "TEXT" && node.characters.startsWith("A professional story about translating"),
+  (node) => node.type === "TEXT" && node.characters.startsWith("One lead case showing"),
 );
 assert.equal(finalBody.fontName.family, "Montserrat");
 const finalHeading = finalDirectionNodes.find(
   (node) => node.type === "TEXT" && node.characters.startsWith("I help companies connect"),
 );
 assert.equal(finalHeading.fontName.family, "Inter");
+const heroName = finalDirectionNodes.find(
+  (node) => node.type === "TEXT" && node.characters === "Abilene Caride",
+);
+assert.equal(heroName.fontName.family, "Inter");
+assert.equal(heroName.fontName.style, "Semi Bold");
+assert.equal(heroName.fontSize, 32);
+assert.equal(heroName.x, 80);
+assert.equal(heroName.y, 42);
+const heroNavigation = [
+  ["Work", 940],
+  ["About", 1060],
+  ["Contact", 1190],
+  ["ES", 1320],
+];
+for (const [label, x] of heroNavigation) {
+  const item = finalDirectionNodes.find(
+    (node) => node.type === "TEXT" && node.characters === label && node.x === x && node.y === 44,
+  );
+  assert.ok(item, `Missing hero navigation item: ${label}`);
+  assert.equal(item.fills[0].color.r, 0xee / 0xff);
+  assert.equal(item.fills[0].color.g, 0xec / 0xff);
+  assert.equal(item.fills[0].color.b, 0xe6 / 0xff);
+}
+const specialistLine = finalDirectionNodes.find(
+  (node) => node.type === "TEXT" && node.characters === "Content, communications and marketing specialist",
+);
+assert.equal(specialistLine.fontName.family, "Inter");
+assert.equal(specialistLine.fontName.style, "Medium");
+assert.equal(specialistLine.fontSize, 24);
+assert.equal(specialistLine.x, 80);
+assert.equal(specialistLine.y, 448);
+assert.equal(specialistLine.width, 660);
+const primaryHeroCta = finalDirectionNodes.find(
+  (node) => node.type === "FRAME" && node.name === "Get in touch  →",
+);
+const secondaryHeroCta = finalDirectionNodes.find(
+  (node) => node.type === "FRAME" && node.name === "View my work  ↓",
+);
+assert.equal(primaryHeroCta.width, 220);
+assert.equal(primaryHeroCta.height, 64);
+assert.equal(primaryHeroCta.x, 80);
+assert.equal(secondaryHeroCta.width, 240);
+assert.equal(secondaryHeroCta.height, 64);
+assert.equal(secondaryHeroCta.x, 320);
 await execute(finalDirection);
 assert.equal(generatedSections(finalDirection).length, 1, "A final direction rerun must not duplicate content");
-assert.equal(finalDirection.notifications.at(-1).error, true);
+assert.equal(finalDirection.notifications.at(-1).error, false);
 
 const imaginartPreproduction = createFigma({
   editorType: "figma",
@@ -638,7 +752,7 @@ assert.equal(imaginartPreproduction.notifications.at(-1).error, false);
 assert.equal(generatedSections(imaginartPreproduction).length, 1);
 const imaginartPreproductionSection = generatedSections(imaginartPreproduction)[0];
 assert.equal(imaginartPreproductionSection.width, 1740);
-assert.equal(imaginartPreproductionSection.height, 9420);
+assert.equal(imaginartPreproductionSection.height, 8680);
 const imaginartPreproductionNodes = allNodes(imaginartPreproductionSection);
 const imaginartPreproductionText = imaginartPreproductionNodes
   .filter((node) => node.type === "TEXT")
@@ -646,18 +760,18 @@ const imaginartPreproductionText = imaginartPreproductionNodes
   .join("\n");
 for (const expected of [
   "Refreshing a specialist B2B newsletter",
-  "MUNDO BRIGHTSIGN · PRIMARY STORY 1",
+  "MUNDO BRIGHTSIGN",
   "~24% → ~34%",
   "NOT an A/B test",
   "Launching a new brand in Spain",
-  "TURTLE AV · IMAGINART · PRIMARY STORY 2",
+  "TURTLE AV · IMAGINART",
   "Planning and promoting a corporate event",
-  "MADRID OPEN DAYS 2026 · PRIMARY STORY 3",
+  "MADRID OPEN DAYS 2026",
   "AV Supports Catalogue",
   "Lumens",
   "Bilbao",
   "~110–125",
-  "usual range of ~70–80",
+  "usual similar-event range ~70–80",
   "not audited",
   "docs/content/case-study-imaginart.md",
   "Abilene",
@@ -667,15 +781,16 @@ for (const expected of [
     `Missing final imaginArt content: ${expected}`,
   );
 }
-const newsletterIndex = imaginartPreproductionText.indexOf("Refreshing a specialist B2B newsletter");
-const turtleIndex = imaginartPreproductionText.indexOf("Launching a new brand in Spain");
-const eventIndex = imaginartPreproductionText.indexOf("Planning and promoting a corporate event");
-const catalogueIndex = imaginartPreproductionText.indexOf("AV Supports Catalogue");
-const lumensIndex = imaginartPreproductionText.indexOf("Lumens");
+const orderedCaseText = imaginartPreproductionText.toLowerCase();
+const newsletterIndex = orderedCaseText.indexOf("refreshing a specialist b2b newsletter");
+const turtleIndex = orderedCaseText.indexOf("launching a new brand in spain");
+const eventIndex = orderedCaseText.indexOf("planning and promoting a corporate event");
+const catalogueIndex = orderedCaseText.indexOf("av supports catalogue");
+const lumensIndex = orderedCaseText.indexOf("lumens");
 assert.ok(newsletterIndex < turtleIndex && turtleIndex < eventIndex && eventIndex < catalogueIndex && catalogueIndex < lumensIndex);
 assert.equal(imaginartPreproductionNodes.filter((node) => node.type === "ELLIPSE").length, 0);
 const caseBody = imaginartPreproductionNodes.find(
-  (node) => node.type === "TEXT" && node.characters.startsWith("This was NOT an A/B test"),
+  (node) => node.type === "TEXT" && node.characters.startsWith("NOT AN A/B TEST"),
 );
 assert.equal(caseBody.fontName.family, "Montserrat");
 const caseHeading = imaginartPreproductionNodes.find(
@@ -688,7 +803,7 @@ assert.equal(
   1,
   "A final imaginArt rerun must not duplicate content",
 );
-assert.equal(imaginartPreproduction.notifications.at(-1).error, true);
+assert.equal(imaginartPreproduction.notifications.at(-1).error, false);
 
 const wrongFile = createFigma({
   editorType: "figjam",
