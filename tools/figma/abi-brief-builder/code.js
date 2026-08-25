@@ -7,7 +7,7 @@
  */
 
 const PLUGIN_DATA_KEY = "abi-website-brief-builder";
-const PLUGIN_VERSION = "3";
+const PLUGIN_VERSION = "4";
 const INSERTION_GAP = 400;
 
 const EXPECTED_FILES = {
@@ -21,6 +21,8 @@ const GENERATED_KIND = {
   foundations: "v2-exploration-directions",
   homepages: "v2-homepage-concepts",
   imaginart: "imaginart-case-wireframe",
+  directionD: "v2-direction-d-clean-organic-editorial",
+  imaginartReframed: "imaginart-reframed-editorial-exploration",
 };
 
 const FONT = {
@@ -29,6 +31,22 @@ const FONT = {
   semibold: { family: "Inter", style: "Semi Bold" },
   display: { family: "Georgia", style: "Regular" },
   displayBold: { family: "Georgia", style: "Bold" },
+  montserrat: { family: "Montserrat", style: "Regular" },
+  montserratMedium: { family: "Montserrat", style: "Medium" },
+  montserratBold: { family: "Montserrat", style: "Bold" },
+};
+
+const SYNTHESIS_COLOR = {
+  ink: "#17372E",
+  green: "#32664F",
+  greenSoft: "#DDE9DF",
+  pinkSoft: "#F4DEE3",
+  blueSoft: "#DCE9EE",
+  warmWhite: "#FBF9F3",
+  canvas: "#EFEEE8",
+  line: "#BAC9BF",
+  muted: "#5E6B65",
+  white: "#FFFFFF",
 };
 
 const COLOR = {
@@ -339,6 +357,17 @@ async function loadFonts() {
   ]);
 }
 
+async function loadSynthesisFonts() {
+  await Promise.all([
+    figma.loadFontAsync(FONT.regular),
+    figma.loadFontAsync(FONT.medium),
+    figma.loadFontAsync(FONT.semibold),
+    figma.loadFontAsync(FONT.montserrat),
+    figma.loadFontAsync(FONT.montserratMedium),
+    figma.loadFontAsync(FONT.montserratBold),
+  ]);
+}
+
 function createSection(name, point, width, height, fill, kind) {
   const section = figma.createSection();
   section.name = `[ABI BRIEF] ${name}`;
@@ -402,6 +431,19 @@ function createRule(parent, options) {
     height: options.height || 2,
     fill: options.color || COLOR.line,
   });
+}
+
+function createEllipse(parent, options) {
+  const ellipse = figma.createEllipse();
+  parent.appendChild(ellipse);
+  ellipse.name = options.name;
+  ellipse.resize(options.width, options.height);
+  ellipse.x = options.x;
+  ellipse.y = options.y;
+  ellipse.fills = options.fill ? [solid(options.fill)] : [];
+  ellipse.strokes = options.stroke ? [solid(options.stroke)] : [];
+  ellipse.strokeWeight = options.stroke ? options.strokeWeight || 1 : 0;
+  return ellipse;
 }
 
 function createPill(parent, options) {
@@ -2159,6 +2201,929 @@ async function buildImaginartWireframe() {
   closeWithMessage("Created the imaginArt case-study structure exploration.");
 }
 
+function addSynthesisLabel(parent, characters, x, y, width = 520) {
+  return appendText(parent, {
+    characters,
+    font: FONT.montserratMedium,
+    fontSize: 14,
+    lineHeight: 22,
+    color: SYNTHESIS_COLOR.green,
+    width,
+    x,
+    y,
+  });
+}
+
+function createTypographyComparison(parent, x, y) {
+  const board = createCanvasFrame(parent, {
+    name: "Direction D — typography comparison",
+    x,
+    y,
+    width: 720,
+    height: 1380,
+    fill: SYNTHESIS_COLOR.warmWhite,
+    stroke: SYNTHESIS_COLOR.line,
+    radius: 24,
+  });
+  addSynthesisLabel(board, "TYPE COMPARISON · WORKING DECISION", 48, 48, 600);
+  appendText(board, {
+    characters: "A cleaner voice",
+    font: FONT.montserratBold,
+    fontSize: 52,
+    lineHeight: 62,
+    color: SYNTHESIS_COLOR.ink,
+    width: 610,
+    x: 48,
+    y: 98,
+  });
+  appendText(board, {
+    characters:
+      "Both options keep the strong H1 / H2 / body contrast Abi liked. The comparison tests rhythm and readability—not final copy.",
+    fontSize: 20,
+    lineHeight: 31,
+    color: SYNTHESIS_COLOR.muted,
+    width: 610,
+    x: 48,
+    y: 185,
+  });
+  createRule(board, { x: 48, y: 310, width: 624, color: SYNTHESIS_COLOR.line });
+  addSynthesisLabel(board, "OPTION 1 · PROVISIONALLY SELECTED", 48, 350, 600);
+  appendText(board, {
+    characters: "Montserrat + Inter",
+    font: FONT.montserratBold,
+    fontSize: 40,
+    lineHeight: 50,
+    color: SYNTHESIS_COLOR.ink,
+    width: 610,
+    x: 48,
+    y: 396,
+  });
+  appendText(board, {
+    characters: "Clear structure, human rhythm",
+    font: FONT.montserratMedium,
+    fontSize: 25,
+    lineHeight: 36,
+    color: SYNTHESIS_COLOR.green,
+    width: 610,
+    x: 48,
+    y: 465,
+  });
+  appendText(board, {
+    characters:
+      "Montserrat gives headings and navigation a clean, confident shape. Inter keeps longer narrative text calm and easy to scan.",
+    font: FONT.regular,
+    fontSize: 21,
+    lineHeight: 34,
+    color: SYNTHESIS_COLOR.ink,
+    width: 610,
+    x: 48,
+    y: 535,
+  });
+  createPill(board, {
+    label: "Recommended for Direction D",
+    x: 48,
+    y: 690,
+    width: 300,
+    fill: SYNTHESIS_COLOR.greenSoft,
+    stroke: SYNTHESIS_COLOR.greenSoft,
+    color: SYNTHESIS_COLOR.ink,
+  });
+  createRule(board, { x: 48, y: 790, width: 624, color: SYNTHESIS_COLOR.line });
+  addSynthesisLabel(board, "OPTION 2", 48, 830, 600);
+  appendText(board, {
+    characters: "Montserrat throughout",
+    font: FONT.montserratBold,
+    fontSize: 40,
+    lineHeight: 50,
+    color: SYNTHESIS_COLOR.ink,
+    width: 610,
+    x: 48,
+    y: 876,
+  });
+  appendText(board, {
+    characters: "Consistent, geometric, more insistent",
+    font: FONT.montserratMedium,
+    fontSize: 25,
+    lineHeight: 36,
+    color: SYNTHESIS_COLOR.green,
+    width: 610,
+    x: 48,
+    y: 945,
+  });
+  appendText(board, {
+    characters:
+      "The single-family system feels cohesive, but longer paragraphs become more geometric and slightly less relaxed.",
+    font: FONT.montserrat,
+    fontSize: 21,
+    lineHeight: 34,
+    color: SYNTHESIS_COLOR.ink,
+    width: 610,
+    x: 48,
+    y: 1015,
+  });
+  appendText(board, {
+    characters:
+      "Decision to validate with Abi: retain Option 1, or choose the more uniform Option 2 after reading real case-study copy.",
+    fontSize: 17,
+    lineHeight: 28,
+    color: SYNTHESIS_COLOR.muted,
+    width: 610,
+    x: 48,
+    y: 1195,
+  });
+  return board;
+}
+
+function createDirectionDHomepage(parent, x, y) {
+  const frame = createCanvasFrame(parent, {
+    name: "Home D — Clean Organic Editorial",
+    x,
+    y,
+    width: 1440,
+    height: 3400,
+    fill: SYNTHESIS_COLOR.warmWhite,
+  });
+
+  appendText(frame, {
+    characters: "ABI CARIDE",
+    font: FONT.montserratBold,
+    fontSize: 17,
+    lineHeight: 24,
+    color: SYNTHESIS_COLOR.ink,
+    width: 220,
+    x: 80,
+    y: 46,
+  });
+  for (const [label, itemX] of [["Work", 1010], ["About", 1120], ["Contact", 1235]]) {
+    appendText(frame, {
+      characters: label,
+      font: FONT.montserratMedium,
+      fontSize: 15,
+      lineHeight: 24,
+      color: SYNTHESIS_COLOR.ink,
+      width: 100,
+      x: itemX,
+      y: 46,
+    });
+  }
+  createRule(frame, { x: 80, y: 96, width: 1280, color: SYNTHESIS_COLOR.line });
+  createPill(frame, {
+    label: "D — Clean Organic Editorial",
+    x: 80,
+    y: 130,
+    width: 310,
+    fill: SYNTHESIS_COLOR.greenSoft,
+    stroke: SYNTHESIS_COLOR.greenSoft,
+    color: SYNTHESIS_COLOR.ink,
+  });
+  addSynthesisLabel(frame, "DESKTOP SYNTHESIS · WORKING COPY · NOT APPROVED", 920, 142, 440);
+
+  addSynthesisLabel(frame, "CONTENT STRATEGY · COMMUNICATIONS · CONTENT", 80, 250, 650);
+  appendText(frame, {
+    characters: "Clear thinking,\nmade human.",
+    font: FONT.montserratBold,
+    fontSize: 82,
+    lineHeight: 92,
+    color: SYNTHESIS_COLOR.ink,
+    width: 760,
+    x: 80,
+    y: 300,
+  });
+  appendText(frame, {
+    characters:
+      "Working positioning: I turn complex information into clear, useful content for people and organizations.",
+    fontSize: 25,
+    lineHeight: 39,
+    color: SYNTHESIS_COLOR.ink,
+    width: 620,
+    x: 80,
+    y: 515,
+  });
+  createPill(frame, {
+    label: "Get in touch  ↗",
+    x: 80,
+    y: 665,
+    width: 210,
+    height: 56,
+    fill: SYNTHESIS_COLOR.green,
+    stroke: SYNTHESIS_COLOR.green,
+    color: SYNTHESIS_COLOR.white,
+    fontSize: 17,
+    lineHeight: 24,
+  });
+  createEllipse(frame, {
+    name: "Hero pink organic accent",
+    x: 915,
+    y: 210,
+    width: 420,
+    height: 610,
+    fill: SYNTHESIS_COLOR.pinkSoft,
+  });
+  const photo = createCanvasFrame(frame, {
+    name: "Preferred real portrait — working placement",
+    x: 955,
+    y: 245,
+    width: 350,
+    height: 540,
+    fill: SYNTHESIS_COLOR.blueSoft,
+    stroke: SYNTHESIS_COLOR.line,
+    radius: 175,
+  });
+  addSynthesisLabel(photo, "REAL PHOTO · NO RETOUCH", 34, 38, 280);
+  appendText(photo, {
+    characters: "Close portrait\nCurly hair + glasses\nBurgundy top",
+    font: FONT.montserratMedium,
+    fontSize: 24,
+    lineHeight: 35,
+    color: SYNTHESIS_COLOR.ink,
+    width: 275,
+    x: 34,
+    y: 350,
+  });
+  createEllipse(frame, {
+    name: "Hero green detail",
+    x: 860,
+    y: 690,
+    width: 118,
+    height: 82,
+    fill: SYNTHESIS_COLOR.greenSoft,
+  });
+
+  createRule(frame, { x: 80, y: 890, width: 1280, color: SYNTHESIS_COLOR.line });
+  addSynthesisLabel(frame, "01 · LEAD PROFESSIONAL WORK", 80, 945, 400);
+  appendText(frame, {
+    characters: "Making specialist B2B\ncontent clearer",
+    font: FONT.montserratBold,
+    fontSize: 57,
+    lineHeight: 68,
+    color: SYNTHESIS_COLOR.ink,
+    width: 760,
+    x: 80,
+    y: 995,
+  });
+  appendText(frame, {
+    characters:
+      "imaginArt · Product content, editorial email and event communication",
+    font: FONT.montserratMedium,
+    fontSize: 18,
+    lineHeight: 29,
+    color: SYNTHESIS_COLOR.green,
+    width: 650,
+    x: 80,
+    y: 1160,
+  });
+  appendText(frame, {
+    characters:
+      "One professional story about turning technical and business information into communication a specialist audience can use.",
+    fontSize: 22,
+    lineHeight: 34,
+    color: SYNTHESIS_COLOR.ink,
+    width: 600,
+    x: 80,
+    y: 1230,
+  });
+  const leadVisual = createCanvasFrame(frame, {
+    name: "Lead-case transformation diagram",
+    x: 820,
+    y: 1010,
+    width: 540,
+    height: 430,
+    fill: SYNTHESIS_COLOR.warmWhite,
+  });
+  createEllipse(leadVisual, {
+    name: "Technical input",
+    x: 30,
+    y: 30,
+    width: 190,
+    height: 125,
+    fill: SYNTHESIS_COLOR.blueSoft,
+  });
+  createEllipse(leadVisual, {
+    name: "Useful communication",
+    x: 305,
+    y: 245,
+    width: 205,
+    height: 145,
+    fill: SYNTHESIS_COLOR.greenSoft,
+  });
+  appendText(leadVisual, {
+    characters: "TECHNICAL\nINPUT",
+    font: FONT.montserratBold,
+    fontSize: 16,
+    lineHeight: 23,
+    color: SYNTHESIS_COLOR.ink,
+    width: 140,
+    x: 58,
+    y: 67,
+  });
+  appendText(leadVisual, {
+    characters: "structure + framing",
+    font: FONT.montserratMedium,
+    fontSize: 18,
+    lineHeight: 27,
+    color: SYNTHESIS_COLOR.green,
+    width: 220,
+    x: 175,
+    y: 185,
+  });
+  appendText(leadVisual, {
+    characters: "USEFUL B2B\nCOMMUNICATION",
+    font: FONT.montserratBold,
+    fontSize: 16,
+    lineHeight: 23,
+    color: SYNTHESIS_COLOR.ink,
+    width: 170,
+    x: 330,
+    y: 292,
+  });
+  appendText(frame, {
+    characters: "View case study  ↗",
+    font: FONT.montserratMedium,
+    fontSize: 17,
+    lineHeight: 26,
+    color: SYNTHESIS_COLOR.green,
+    width: 260,
+    x: 80,
+    y: 1395,
+  });
+
+  createRule(frame, { x: 80, y: 1530, width: 1280, color: SYNTHESIS_COLOR.line });
+  addSynthesisLabel(frame, "02 · SELECTED EARLIER WORK", 80, 1580, 400);
+  const secondaryRows = [
+    ["Website analysis", "Content review · structure · recommendations"],
+    ["Error messages", "UX writing · clarity · recovery"],
+  ];
+  secondaryRows.forEach(([title, meta], index) => {
+    const rowY = 1660 + index * 205;
+    const titleX = index === 0 ? 80 : 230;
+    appendText(frame, {
+      characters: `0${index + 2}`,
+      font: FONT.montserratMedium,
+      fontSize: 17,
+      lineHeight: 26,
+      color: SYNTHESIS_COLOR.green,
+      width: 70,
+      x: titleX,
+      y: rowY + 13,
+    });
+    appendText(frame, {
+      characters: title,
+      font: FONT.montserratBold,
+      fontSize: 40,
+      lineHeight: 50,
+      color: SYNTHESIS_COLOR.ink,
+      width: 600,
+      x: titleX + 80,
+      y: rowY,
+    });
+    appendText(frame, {
+      characters: meta,
+      fontSize: 18,
+      lineHeight: 28,
+      color: SYNTHESIS_COLOR.muted,
+      width: 410,
+      x: 920,
+      y: rowY + 10,
+    });
+    createRule(frame, {
+      x: titleX,
+      y: rowY + 120,
+      width: 1360 - titleX,
+      color: SYNTHESIS_COLOR.line,
+    });
+  });
+
+  addSynthesisLabel(frame, "ABOUT · WORKING POSITIONING", 80, 2190, 400);
+  appendText(frame, {
+    characters: "Curious about the detail.\nFocused on the person reading.",
+    font: FONT.montserratBold,
+    fontSize: 52,
+    lineHeight: 64,
+    color: SYNTHESIS_COLOR.ink,
+    width: 850,
+    x: 80,
+    y: 2245,
+  });
+  appendText(frame, {
+    characters: HOMEPAGE.about,
+    fontSize: 22,
+    lineHeight: 35,
+    color: SYNTHESIS_COLOR.ink,
+    width: 650,
+    x: 600,
+    y: 2440,
+  });
+  createEllipse(frame, {
+    name: "About blue accent",
+    x: 85,
+    y: 2450,
+    width: 330,
+    height: 155,
+    fill: SYNTHESIS_COLOR.blueSoft,
+  });
+  appendText(frame, {
+    characters: "natural · approachable · calm",
+    font: FONT.montserratMedium,
+    fontSize: 17,
+    lineHeight: 26,
+    color: SYNTHESIS_COLOR.ink,
+    width: 280,
+    x: 112,
+    y: 2512,
+  });
+
+  createRule(frame, { x: 80, y: 2815, width: 1280, color: SYNTHESIS_COLOR.line });
+  createEllipse(frame, {
+    name: "CTA pink detail",
+    x: 80,
+    y: 2890,
+    width: 160,
+    height: 110,
+    fill: SYNTHESIS_COLOR.pinkSoft,
+  });
+  appendText(frame, {
+    characters: "Have something complex\nthat needs clarity?",
+    font: FONT.montserratBold,
+    fontSize: 52,
+    lineHeight: 64,
+    color: SYNTHESIS_COLOR.ink,
+    width: 820,
+    x: 170,
+    y: 2920,
+  });
+  createPill(frame, {
+    label: "Let’s talk  ↗",
+    x: 1090,
+    y: 2960,
+    width: 220,
+    height: 58,
+    fill: SYNTHESIS_COLOR.green,
+    stroke: SYNTHESIS_COLOR.green,
+    color: SYNTHESIS_COLOR.white,
+    fontSize: 18,
+    lineHeight: 26,
+  });
+  appendText(frame, {
+    characters:
+      "CONTROLLED ASYMMETRY\nUnequal hero columns · offset secondary rows · editorial image placement\n\nSELECTIVE SHAPES\nPortrait arch · three small organic accents · pill CTAs—not rounded cards everywhere",
+    fontSize: 15,
+    lineHeight: 24,
+    color: SYNTHESIS_COLOR.muted,
+    width: 900,
+    x: 80,
+    y: 3205,
+  });
+  return frame;
+}
+
+async function buildDirectionD() {
+  if (figma.editorType !== "figma") {
+    throw new Error("Direction D can only be created in Figma Design.");
+  }
+  requireExpectedFile(EXPECTED_FILES.foundations);
+  if (!normalizeName(figma.currentPage.name).includes("explorations")) {
+    throw new Error(
+      `Open the Explorations page before running this command. Current page: “${figma.currentPage.name}”.`,
+    );
+  }
+  ensureNoExisting(GENERATED_KIND.directionD);
+  const anchor = requireSingleAnchor();
+  const point = insertionPoint(anchor);
+  await loadSynthesisFonts();
+
+  const section = createSection(
+    "D — Clean Organic Editorial",
+    point,
+    2540,
+    3730,
+    SYNTHESIS_COLOR.canvas,
+    GENERATED_KIND.directionD,
+  );
+  populateSectionSafely(section, () => {
+    appendText(section, {
+      characters: "V2 — SYNTHESIS DIRECTION",
+      font: FONT.montserratBold,
+      fontSize: 28,
+      lineHeight: 38,
+      color: SYNTHESIS_COLOR.ink,
+      width: 800,
+      x: 100,
+      y: 52,
+    });
+    appendText(section, {
+      characters:
+        "A’s calm + B’s intentional asymmetry + C’s rounded accents and strong type hierarchy. One synthesis for Abi’s next review—not a finished homepage.",
+      fontSize: 19,
+      lineHeight: 30,
+      color: SYNTHESIS_COLOR.muted,
+      width: 1700,
+      x: 100,
+      y: 96,
+    });
+    createTypographyComparison(section, 100, 190);
+    createDirectionDHomepage(section, 900, 190);
+  });
+  figma.currentPage.selection = [section];
+  figma.viewport.scrollAndZoomIntoView([section]);
+  closeWithMessage("Created Direction D beside the selected A/B/C exploration section.");
+}
+
+function createEditorialCaseHeading(band, number, title, metadata, subtitle) {
+  addSynthesisLabel(band, number, 80, 62, 80);
+  appendText(band, {
+    characters: title,
+    font: FONT.montserratBold,
+    fontSize: 50,
+    lineHeight: 61,
+    color: SYNTHESIS_COLOR.ink,
+    width: 1020,
+    x: 180,
+    y: 48,
+  });
+  if (metadata) {
+    appendText(band, {
+      characters: metadata,
+      font: FONT.montserratMedium,
+      fontSize: 16,
+      lineHeight: 25,
+      color: SYNTHESIS_COLOR.green,
+      width: 1060,
+      x: 180,
+      y: 122,
+    });
+  }
+  if (subtitle) {
+    appendText(band, {
+      characters: subtitle,
+      fontSize: 19,
+      lineHeight: 30,
+      color: SYNTHESIS_COLOR.muted,
+      width: 1020,
+      x: 180,
+      y: 165,
+    });
+  }
+}
+
+function createEditorialColumn(parent, options) {
+  createRule(parent, {
+    x: options.x,
+    y: options.y,
+    width: options.width,
+    color: options.color || SYNTHESIS_COLOR.line,
+  });
+  appendText(parent, {
+    characters: options.label,
+    font: FONT.montserratBold,
+    fontSize: 15,
+    lineHeight: 23,
+    color: SYNTHESIS_COLOR.green,
+    width: options.width,
+    x: options.x,
+    y: options.y + 26,
+  });
+  appendText(parent, {
+    characters: options.body,
+    fontSize: options.bodySize || 19,
+    lineHeight: options.lineHeight || 30,
+    color: SYNTHESIS_COLOR.ink,
+    width: options.width,
+    x: options.x,
+    y: options.y + 75,
+  });
+}
+
+async function buildImaginartReframed() {
+  if (figma.editorType !== "figma") {
+    throw new Error("The reframed imaginArt exploration can only be created in Figma Design.");
+  }
+  requireExpectedFile(EXPECTED_FILES.personal);
+  if (!normalizeName(figma.currentPage.name).includes("case studies")) {
+    throw new Error(
+      `Open the Case Studies page before running this command. Current page: “${figma.currentPage.name}”.`,
+    );
+  }
+  ensureNoExisting(GENERATED_KIND.imaginartReframed);
+  const anchor = requireSingleAnchor();
+  const point = insertionPoint(anchor);
+  await loadSynthesisFonts();
+
+  const section = createSection(
+    "imaginArt — Reframed Editorial Exploration",
+    point,
+    1740,
+    9020,
+    SYNTHESIS_COLOR.canvas,
+    GENERATED_KIND.imaginartReframed,
+  );
+  populateSectionSafely(section, () => {
+    appendText(section, {
+      characters:
+        "DIRECTION D · WORKING COPY · ORIGINAL DIAGRAMS\nDetailed factual and evidence blueprint: docs/content/case-study-imaginart.md",
+      font: FONT.montserratMedium,
+      fontSize: 16,
+      lineHeight: 25,
+      color: SYNTHESIS_COLOR.muted,
+      width: 1300,
+      x: 150,
+      y: 54,
+    });
+    const page = createCanvasFrame(section, {
+      name: "imaginArt — Reframed Editorial Exploration",
+      x: 150,
+      y: 130,
+      width: 1440,
+      height: 8730,
+      fill: SYNTHESIS_COLOR.warmWhite,
+    });
+
+    const hero = createCaseBand(page, { name: "01 Hero", y: 0, height: 760, fill: SYNTHESIS_COLOR.warmWhite });
+    addSynthesisLabel(hero, "LEAD PROFESSIONAL CASE · WORKING NARRATIVE", 80, 70, 700);
+    appendText(hero, {
+      characters: "Making specialist B2B\ncommunication clearer",
+      font: FONT.montserratBold,
+      fontSize: 72,
+      lineHeight: 84,
+      color: SYNTHESIS_COLOR.ink,
+      width: 900,
+      x: 80,
+      y: 145,
+    });
+    appendText(hero, {
+      characters: "imaginArt · B2B content & communications",
+      font: FONT.montserratMedium,
+      fontSize: 22,
+      lineHeight: 32,
+      color: SYNTHESIS_COLOR.green,
+      width: 700,
+      x: 80,
+      y: 355,
+    });
+    appendText(hero, {
+      characters:
+        "Communications Specialist · 2023–Present\nProduct content · editorial email · event communication",
+      fontSize: 20,
+      lineHeight: 32,
+      color: SYNTHESIS_COLOR.ink,
+      width: 700,
+      x: 80,
+      y: 420,
+    });
+    createEllipse(hero, { name: "Hero green form", x: 1010, y: 120, width: 300, height: 450, fill: SYNTHESIS_COLOR.greenSoft });
+    createEllipse(hero, { name: "Hero blue form", x: 890, y: 410, width: 220, height: 150, fill: SYNTHESIS_COLOR.blueSoft });
+    appendText(hero, {
+      characters: "TECHNICAL TRUTH\n↓\nSTRUCTURE + VOICE\n↓\nUSEFUL ACTION",
+      font: FONT.montserratBold,
+      fontSize: 18,
+      lineHeight: 32,
+      color: SYNTHESIS_COLOR.ink,
+      width: 240,
+      x: 1040,
+      y: 235,
+    });
+    createRule(hero, { x: 80, y: 685, width: 1280, color: SYNTHESIS_COLOR.line });
+
+    const context = createCaseBand(page, { name: "02 Context and role", y: 760, height: 700, fill: SYNTHESIS_COLOR.warmWhite });
+    createEditorialCaseHeading(
+      context,
+      "02",
+      "Working between expertise and action",
+      "CONTEXT + ROLE",
+      "Technical accuracy, customer usefulness and business action had to coexist across channels.",
+    );
+    createEditorialColumn(context, { x: 180, y: 285, width: 310, label: "ENGINEERING", body: "Technical truth\nProduct detail" });
+    createEditorialColumn(context, { x: 565, y: 285, width: 310, label: "ABI", body: "Content structure\nFraming + copy\nChannel execution" });
+    createEditorialColumn(context, { x: 950, y: 285, width: 310, label: "SALES + MANAGEMENT", body: "Customer reality\nBusiness context\nFinal validation" });
+    appendText(context, {
+      characters: "An iterative collaboration—not a claimed rigid waterfall.",
+      fontSize: 17,
+      lineHeight: 27,
+      color: SYNTHESIS_COLOR.muted,
+      width: 700,
+      x: 565,
+      y: 545,
+    });
+
+    const turtle = createCaseBand(page, { name: "03 Launching a new brand in Spain", y: 1460, height: 1120, fill: SYNTHESIS_COLOR.white });
+    createEditorialCaseHeading(
+      turtle,
+      "03",
+      "Launching a new brand in Spain",
+      "TURTLE AV · IMAGINART",
+      "Technical product information became a usable B2B content sequence. Abi structured the page herself.",
+    );
+    createEditorialColumn(turtle, { x: 100, y: 300, width: 340, label: "RAW TECHNICAL INPUT", body: "4K · Dante · AES67\nPoE · HDR · latency\nRedundancy · compatibility", bodySize: 18 });
+    createEditorialColumn(turtle, { x: 550, y: 300, width: 340, label: "CONTENT QUESTIONS", body: "What is it?\nWhy does it matter?\nWhich solution fits?\nWhere can it be used?\nWhat happens next?", bodySize: 18 });
+    createEditorialColumn(turtle, { x: 1000, y: 300, width: 340, label: "STRUCTURED PRODUCT CONTENT", body: "Value proposition\nBenefits\nSolutions\nTechnical detail\nApplications\nContact CTA", bodySize: 18 });
+    appendText(turtle, { characters: "→", font: FONT.montserratBold, fontSize: 42, lineHeight: 50, color: SYNTHESIS_COLOR.green, width: 60, x: 470, y: 440 });
+    appendText(turtle, { characters: "→", font: FONT.montserratBold, fontSize: 42, lineHeight: 50, color: SYNTHESIS_COLOR.green, width: 60, x: 920, y: 440 });
+    createEllipse(turtle, { name: "Turtle supporting accent", x: 100, y: 780, width: 180, height: 110, fill: SYNTHESIS_COLOR.blueSoft });
+    appendText(turtle, {
+      characters: "CONTENT ARCHITECTURE\nTechnical-to-usable B2B content",
+      font: FONT.montserratMedium,
+      fontSize: 20,
+      lineHeight: 31,
+      color: SYNTHESIS_COLOR.ink,
+      width: 600,
+      x: 220,
+      y: 800,
+    });
+    appendText(turtle, {
+      characters: "Original explanatory diagram · not a recreation of imaginArt artwork",
+      fontSize: 16,
+      lineHeight: 25,
+      color: SYNTHESIS_COLOR.muted,
+      width: 600,
+      x: 740,
+      y: 835,
+    });
+
+    const email = createCaseBand(page, { name: "04 Refreshing a specialist B2B newsletter", y: 2580, height: 1180, fill: SYNTHESIS_COLOR.warmWhite });
+    createEditorialCaseHeading(
+      email,
+      "04",
+      "Refreshing a specialist B2B newsletter",
+      "MUNDO BRIGHTSIGN",
+      "A combined editorial revision: closer professional tone, emoji-led subject and CTA above the fold.",
+    );
+    createEditorialColumn(email, { x: 150, y: 310, width: 430, label: "EARLIER APPROACH", body: "Subject\nIntro\nContent\nContent\nCTA", bodySize: 20, lineHeight: 37 });
+    createEditorialColumn(email, { x: 650, y: 310, width: 430, label: "REVISED APPROACH", body: "Emoji + revised subject\nCloser professional tone\nCTA above the fold\nContent\nAdditional content", bodySize: 20, lineHeight: 37 });
+    appendText(email, { characters: "~24%", font: FONT.montserratBold, fontSize: 62, lineHeight: 72, color: SYNTHESIS_COLOR.ink, width: 280, x: 160, y: 720 });
+    appendText(email, { characters: "→", font: FONT.montserratBold, fontSize: 52, lineHeight: 62, color: SYNTHESIS_COLOR.green, width: 100, x: 505, y: 725 });
+    appendText(email, { characters: "~34%", font: FONT.montserratBold, fontSize: 62, lineHeight: 72, color: SYNTHESIS_COLOR.green, width: 300, x: 650, y: 720 });
+    appendText(email, {
+      characters:
+        "Approximate recalled open rates · observed after the combined revision · NOT an A/B test · no single change is presented as causal",
+      fontSize: 17,
+      lineHeight: 27,
+      color: SYNTHESIS_COLOR.muted,
+      width: 1030,
+      x: 160,
+      y: 835,
+    });
+    createRule(email, { x: 160, y: 975, width: 1120, color: SYNTHESIS_COLOR.line });
+    appendText(email, {
+      characters: "Working story: a more intentional hierarchy and editorial voice preceded a stronger observed open rate.",
+      font: FONT.montserratMedium,
+      fontSize: 21,
+      lineHeight: 33,
+      color: SYNTHESIS_COLOR.ink,
+      width: 1000,
+      x: 160,
+      y: 1020,
+    });
+
+    const event = createCaseBand(page, { name: "05 Planning and promoting a corporate event", y: 3760, height: 1200, fill: SYNTHESIS_COLOR.white });
+    createEditorialCaseHeading(
+      event,
+      "05",
+      "Planning and promoting a corporate event",
+      "IMAGINART · MADRID OPEN DAYS 2026",
+      "One communication objective carried across web, email, registration, Canva imagery and LinkedIn content.",
+    );
+    createEllipse(event, { name: "Event objective", x: 100, y: 320, width: 250, height: 160, fill: SYNTHESIS_COLOR.pinkSoft });
+    appendText(event, { characters: "EVENT\nOBJECTIVE", font: FONT.montserratBold, fontSize: 19, lineHeight: 29, color: SYNTHESIS_COLOR.ink, width: 180, x: 142, y: 370 });
+    appendText(event, { characters: "→", font: FONT.montserratBold, fontSize: 42, lineHeight: 50, color: SYNTHESIS_COLOR.green, width: 70, x: 395, y: 370 });
+    createEditorialColumn(event, { x: 500, y: 320, width: 330, label: "CAMPAIGN SYSTEM", body: "Mailing design + copy\nWeb invitation / post\nRegistration form\nCanva imagery\nLinkedIn content input", bodySize: 18 });
+    appendText(event, { characters: "→", font: FONT.montserratBold, fontSize: 42, lineHeight: 50, color: SYNTHESIS_COLOR.green, width: 70, x: 865, y: 370 });
+    createEllipse(event, { name: "Attendance outcome", x: 980, y: 305, width: 300, height: 190, fill: SYNTHESIS_COLOR.greenSoft });
+    appendText(event, { characters: "REGISTRATION\n↓\nEVENT", font: FONT.montserratBold, fontSize: 19, lineHeight: 31, color: SYNTHESIS_COLOR.ink, width: 190, x: 1038, y: 345 });
+    appendText(event, { characters: "~110–125", font: FONT.montserratBold, fontSize: 64, lineHeight: 74, color: SYNTHESIS_COLOR.green, width: 430, x: 170, y: 750 });
+    appendText(event, { characters: "attendees", font: FONT.montserratMedium, fontSize: 22, lineHeight: 32, color: SYNTHESIS_COLOR.ink, width: 250, x: 180, y: 830 });
+    appendText(event, { characters: "vs usual ~70–80", font: FONT.montserratBold, fontSize: 38, lineHeight: 48, color: SYNTHESIS_COLOR.ink, width: 500, x: 700, y: 775 });
+    appendText(event, {
+      characters: "Approximate recalled ranges · no precise uplift or causal claim",
+      fontSize: 17,
+      lineHeight: 27,
+      color: SYNTHESIS_COLOR.muted,
+      width: 850,
+      x: 700,
+      y: 845,
+    });
+    appendText(event, {
+      characters: "Bilbao supports repeat event-communication evidence and a conversion-oriented information structure.",
+      fontSize: 17,
+      lineHeight: 27,
+      color: SYNTHESIS_COLOR.muted,
+      width: 1050,
+      x: 180,
+      y: 1020,
+    });
+
+    const support = createCaseBand(page, { name: "06 Supporting technical-content evidence", y: 4960, height: 1140, fill: SYNTHESIS_COLOR.warmWhite });
+    createEditorialCaseHeading(
+      support,
+      "06",
+      "Other ways I worked with technical content",
+      "SUPPORTING EVIDENCE · NOT ADDITIONAL MAIN MINI-CASES",
+      "Two compact examples extend the same content-design pattern without competing with the three primary stories.",
+    );
+    createEditorialColumn(support, {
+      x: 180,
+      y: 330,
+      width: 500,
+      label: "STRUCTURING A 19-PAGE TECHNICAL PRODUCT CATALOGUE",
+      body: "AV Supports Catalogue\n\nInformation architecture · taxonomy and product categorization · structured product sheets · technical-to-commercial content · layout and imagery selection · sales enablement",
+      bodySize: 18,
+      lineHeight: 30,
+    });
+    createEditorialColumn(support, {
+      x: 780,
+      y: 330,
+      width: 500,
+      label: "ADAPTING TECHNICAL PRODUCT INFORMATION FOR A B2B AUDIENCE",
+      body: "Lumens\n\nSource technical documentation · feature selection and organization · practical-use framing · final communication piece. Adaptation, not merely translation.",
+      bodySize: 18,
+      lineHeight: 30,
+    });
+    createEllipse(support, { name: "Supporting pink accent", x: 120, y: 815, width: 150, height: 95, fill: SYNTHESIS_COLOR.pinkSoft });
+    appendText(support, {
+      characters: "CONTENT SYSTEMS THINKING\nRepeated structures and clear categories across a large, related content set.",
+      font: FONT.montserratMedium,
+      fontSize: 20,
+      lineHeight: 32,
+      color: SYNTHESIS_COLOR.ink,
+      width: 850,
+      x: 230,
+      y: 830,
+    });
+
+    const outcomes = createCaseBand(page, { name: "07 Outcomes", y: 6100, height: 760, fill: SYNTHESIS_COLOR.white });
+    createEditorialCaseHeading(outcomes, "07", "Observed outcomes", "APPROXIMATE WORKING EVIDENCE", "Large metric moments, with the evidence limits kept visible.");
+    appendText(outcomes, { characters: "~24% → ~34%", font: FONT.montserratBold, fontSize: 62, lineHeight: 72, color: SYNTHESIS_COLOR.green, width: 520, x: 180, y: 315 });
+    appendText(outcomes, { characters: "Mundo BrightSign open rate", fontSize: 18, lineHeight: 28, color: SYNTHESIS_COLOR.ink, width: 430, x: 180, y: 400 });
+    appendText(outcomes, { characters: "~110–125", font: FONT.montserratBold, fontSize: 62, lineHeight: 72, color: SYNTHESIS_COLOR.green, width: 430, x: 800, y: 315 });
+    appendText(outcomes, { characters: "Madrid attendees vs usual ~70–80", fontSize: 18, lineHeight: 28, color: SYNTHESIS_COLOR.ink, width: 450, x: 800, y: 400 });
+    createRule(outcomes, { x: 180, y: 515, width: 1080, color: SYNTHESIS_COLOR.line });
+    appendText(outcomes, {
+      characters: "Both figures are approximate and recalled by Abi. They are not audited data. The email result was not an A/B test.",
+      fontSize: 17,
+      lineHeight: 27,
+      color: SYNTHESIS_COLOR.muted,
+      width: 1050,
+      x: 180,
+      y: 555,
+    });
+
+    const teams = createCaseBand(page, { name: "08 Working across teams", y: 6860, height: 900, fill: SYNTHESIS_COLOR.warmWhite });
+    createEditorialCaseHeading(teams, "08", "Working across teams", "COLLABORATION", "Abi operated between technical knowledge, audience needs and business constraints.");
+    createEllipse(teams, { name: "Engineering", x: 150, y: 330, width: 250, height: 170, fill: SYNTHESIS_COLOR.blueSoft });
+    createEllipse(teams, { name: "Abi", x: 590, y: 300, width: 280, height: 240, fill: SYNTHESIS_COLOR.greenSoft });
+    createEllipse(teams, { name: "Sales and management", x: 1040, y: 330, width: 250, height: 170, fill: SYNTHESIS_COLOR.pinkSoft });
+    appendText(teams, { characters: "ENGINEERING\nTechnical truth", font: FONT.montserratBold, fontSize: 17, lineHeight: 27, color: SYNTHESIS_COLOR.ink, width: 190, x: 182, y: 385 });
+    appendText(teams, { characters: "ABI\nStructure · framing\ncopy · execution", font: FONT.montserratBold, fontSize: 17, lineHeight: 27, color: SYNTHESIS_COLOR.ink, width: 210, x: 630, y: 360 });
+    appendText(teams, { characters: "SALES + MANAGEMENT\nCustomer + business", font: FONT.montserratBold, fontSize: 16, lineHeight: 26, color: SYNTHESIS_COLOR.ink, width: 210, x: 1060, y: 385 });
+    createRule(teams, { x: 400, y: 415, width: 190, color: SYNTHESIS_COLOR.green });
+    createRule(teams, { x: 870, y: 415, width: 170, color: SYNTHESIS_COLOR.green });
+    appendText(teams, {
+      characters: "The diagram communicates collaboration, not a fixed sequence that the evidence cannot support.",
+      fontSize: 17,
+      lineHeight: 27,
+      color: SYNTHESIS_COLOR.muted,
+      width: 850,
+      x: 300,
+      y: 650,
+    });
+
+    const learning = createCaseBand(page, { name: "09 Learning", y: 7760, height: 570, fill: SYNTHESIS_COLOR.white });
+    createEditorialCaseHeading(learning, "09", "A useful reminder", "LEARNING · WORKING VOICE", "Final first-person voice still requires Abi’s review.");
+    appendText(learning, {
+      characters: "“Something can feel obviously better to you and the data can still disagree.”",
+      font: FONT.montserratBold,
+      fontSize: 34,
+      lineHeight: 47,
+      color: SYNTHESIS_COLOR.ink,
+      width: 1040,
+      x: 180,
+      y: 285,
+    });
+    appendText(learning, { characters: "A/B testing was adopted later. This is working copy—not a claim about Mundo BrightSign.", fontSize: 17, lineHeight: 27, color: SYNTHESIS_COLOR.muted, width: 1000, x: 180, y: 415 });
+
+    const evidence = createCaseBand(page, { name: "10 Evidence note", y: 8330, height: 400, fill: SYNTHESIS_COLOR.warmWhite });
+    createEditorialCaseHeading(
+      evidence,
+      "10",
+      "Evidence before polish",
+      "INTERNAL DESIGN EXPLORATION",
+      "Detailed facts, ownership, reuse limits and publication constraints live in docs/content/case-study-imaginart.md. This Figma brief intentionally does not duplicate the full blueprint.",
+    );
+    appendText(evidence, {
+      characters: "Next: Abi reviews the public voice, story order and which source links or company assets—if any—can appear.",
+      font: FONT.montserratMedium,
+      fontSize: 17,
+      lineHeight: 27,
+      color: SYNTHESIS_COLOR.green,
+      width: 1050,
+      x: 180,
+      y: 285,
+    });
+  });
+
+  figma.currentPage.selection = [section];
+  figma.viewport.scrollAndZoomIntoView([section]);
+  closeWithMessage("Created the reframed imaginArt editorial exploration beside the selected anchor.");
+}
+
 async function buildMoodboard() {
   if (figma.editorType !== "figjam") {
     throw new Error(
@@ -2431,8 +3396,14 @@ async function run() {
       case "build-homepage-concepts":
         await buildHomepageConcepts();
         break;
+      case "build-direction-d":
+        await buildDirectionD();
+        break;
       case "build-imaginart-wireframe":
         await buildImaginartWireframe();
+        break;
+      case "build-imaginart-reframed":
+        await buildImaginartReframed();
         break;
       case "find-generated":
         findGenerated();

@@ -17,8 +17,15 @@ its build.
   homepage concepts using the same information architecture and working
   content, so the visual direction can be evaluated without a copy or scope
   change distorting the comparison.
+- In **Abi Website Foundations → Explorations**: one separate synthesis section,
+  `D — Clean Organic Editorial`, that preserves A/B/C and combines their
+  strongest qualities. It includes a Montserrat + Inter versus all-Montserrat
+  type comparison and one working desktop homepage.
 - In **Abi Personal Website → Case Studies**: an editorial imaginArt case-study
   wireframe with ten narrative bands and four original explanatory diagrams.
+- In **Abi Personal Website → Case Studies**: one separate Direction D
+  imaginArt exploration with challenge-led story headings, restrained editorial
+  layouts and visibly qualified working metrics.
 
 It does not create finished homepage designs or polished marketing copy. The
 homepage concepts are deliberately substantial enough for visual review while
@@ -99,6 +106,21 @@ Photo areas are intentional placeholders. The plugin records the preferred
 provisional portrait direction but does not import, copy or commit Abi's
 personal photos.
 
+## Build Direction D
+
+1. Open **Abi Website Foundations → Explorations** in Figma Desktop.
+2. Select the existing `V2 — Desktop Homepage Concepts` section as the
+   placement anchor so the synthesis is created beside A/B/C.
+3. Run
+   **Plugins → Development → Abi Website Brief Builder → Foundations: Build Direction D synthesis**.
+4. Review the typography comparison first, then the desktop homepage. Option 1
+   (Montserrat headings/navigation with Inter body copy) is provisionally
+   selected; Option 2 remains visible for Abi's review.
+
+The generated concept uses green as the dominant color, with pink and blue as
+sparse accents. Its asymmetry and organic forms are selective rather than a
+system of rounded cards.
+
 ## Build the imaginArt case-study structure
 
 1. Open **Abi Personal Website → Case Studies** in Figma Desktop.
@@ -111,6 +133,20 @@ personal photos.
 The metrics are visibly marked as approximate working evidence. Mundo
 BrightSign is explicitly not presented as an A/B test, and no external artwork
 is copied into the file.
+
+## Build the reframed imaginArt exploration
+
+1. Open **Abi Personal Website → Case Studies** in Figma Desktop.
+2. Select the existing imaginArt structure exploration as the placement anchor.
+3. Run
+   **Plugins → Development → Abi Website Brief Builder → Personal Website: Build reframed imaginArt exploration**.
+4. Review the challenge-led headings and original diagrams against
+   [`docs/content/case-study-imaginart.md`](../../../docs/content/case-study-imaginart.md).
+
+The three primary stories remain Turtle AV, Mundo BrightSign and Madrid Open
+Days, but their visible headings now lead with the professional challenge.
+AV Supports Catalogue, Lumens and Bilbao remain supporting evidence. The older
+case-study exploration is preserved for comparison.
 
 ## Reruns and cleanup
 

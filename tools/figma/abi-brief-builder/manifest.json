@@ -22,8 +22,16 @@
       "command": "build-homepage-concepts"
     },
     {
+      "name": "Foundations: Build Direction D synthesis",
+      "command": "build-direction-d"
+    },
+    {
       "name": "Personal Website: Build imaginArt case wireframe",
       "command": "build-imaginart-wireframe"
+    },
+    {
+      "name": "Personal Website: Build reframed imaginArt exploration",
+      "command": "build-imaginart-reframed"
     },
     {
       "separator": true

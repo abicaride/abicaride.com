@@ -191,6 +191,11 @@ function createFigma({ editorType, fileName, pageName, command }) {
       page.children.push(node);
       return node;
     },
+    createEllipse() {
+      const node = new MockNode("ELLIPSE", page);
+      page.children.push(node);
+      return node;
+    },
     async loadFontAsync() {},
     notify(message, options = {}) {
       notifications.push({ message, ...options });
@@ -453,6 +458,102 @@ const emailMetric = allNodes(imaginartSection).find(
 );
 assert.equal(emailMetric.width, 640);
 assert.equal(emailMetric.fontSize, 76);
+
+const directionD = createFigma({
+  editorType: "figma",
+  fileName: "Abi Website Foundations",
+  pageName: "03 — Explorations",
+  command: "build-direction-d",
+});
+await execute(directionD);
+
+assert.equal(directionD.closed, true);
+assert.equal(directionD.notifications.at(-1).error, false);
+assert.equal(generatedSections(directionD).length, 1);
+const directionDSection = generatedSections(directionD)[0];
+assert.equal(directionDSection.width, 2540);
+assert.equal(directionDSection.height, 3730);
+const directionDFrames = allNodes(directionDSection)
+  .filter((node) => node.type === "FRAME")
+  .map((node) => node.name);
+assert.ok(directionDFrames.includes("Direction D — typography comparison"));
+assert.ok(directionDFrames.includes("Home D — Clean Organic Editorial"));
+const directionDText = allNodes(directionDSection)
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const expected of [
+  "OPTION 1 · PROVISIONALLY SELECTED",
+  "Montserrat + Inter",
+  "Montserrat throughout",
+  "D — Clean Organic Editorial",
+  "Clear thinking",
+  "Making specialist B2B",
+  "imaginArt",
+  "Website analysis",
+  "Error messages",
+  "CONTROLLED ASYMMETRY",
+  "SELECTIVE SHAPES",
+]) {
+  assert.ok(directionDText.includes(expected), `Missing Direction D content: ${expected}`);
+}
+for (const inventedCase of ["Ailanto", "Ethic"]) {
+  assert.ok(!directionDText.includes(inventedCase), `Invented case found in D: ${inventedCase}`);
+}
+await execute(directionD);
+assert.equal(generatedSections(directionD).length, 1, "A Direction D rerun must not duplicate content");
+assert.equal(directionD.notifications.at(-1).error, true);
+
+const imaginartReframed = createFigma({
+  editorType: "figma",
+  fileName: "Abi Personal Website",
+  pageName: "02 — Case Studies",
+  command: "build-imaginart-reframed",
+});
+await execute(imaginartReframed);
+
+assert.equal(imaginartReframed.closed, true);
+assert.equal(imaginartReframed.notifications.at(-1).error, false);
+assert.equal(generatedSections(imaginartReframed).length, 1);
+const imaginartReframedSection = generatedSections(imaginartReframed)[0];
+assert.equal(imaginartReframedSection.width, 1740);
+assert.equal(imaginartReframedSection.height, 9020);
+const imaginartReframedText = allNodes(imaginartReframedSection)
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const expected of [
+  "Making specialist B2B",
+  "Launching a new brand in Spain",
+  "TURTLE AV · IMAGINART",
+  "Refreshing a specialist B2B newsletter",
+  "MUNDO BRIGHTSIGN",
+  "Planning and promoting a corporate event",
+  "MADRID OPEN DAYS 2026",
+  "Structuring a 19-page technical product catalogue",
+  "AV Supports Catalogue",
+  "Adapting technical product information for a B2B audience",
+  "Lumens",
+  "Bilbao",
+  "~24% → ~34%",
+  "~110–125",
+  "usual ~70–80",
+  "NOT an A/B test",
+  "not audited data",
+  "docs/content/case-study-imaginart.md",
+]) {
+  assert.ok(
+    imaginartReframedText.toLowerCase().includes(expected.toLowerCase()),
+    `Missing reframed imaginArt content: ${expected}`,
+  );
+}
+await execute(imaginartReframed);
+assert.equal(
+  generatedSections(imaginartReframed).length,
+  1,
+  "A reframed imaginArt rerun must not duplicate content",
+);
+assert.equal(imaginartReframed.notifications.at(-1).error, true);
 
 const wrongFile = createFigma({
   editorType: "figjam",
