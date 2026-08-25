@@ -152,6 +152,10 @@ src/
 ├── lib/                    Build-time content and routing helpers
 ├── pages/                  Static route entry points
 └── styles/                 Design tokens and global CSS
+
+tools/
+└── figma/
+    └── abi-brief-builder/  Optional local V2 brief plugin
 ```
 
 Important boundaries:
@@ -169,6 +173,8 @@ Important boundaries:
   scoped to their components.
 - `src/assets/` owns images that enter Astro's processing pipeline. `public/`
   is reserved for stable URLs and files that Astro should not transform.
+- `tools/figma/` owns optional local design-workflow utilities. They do not run
+  in production and must not become Astro build dependencies.
 
 See [`AGENTS.md`](../AGENTS.md) for operational rules that protect these
 boundaries.
@@ -401,6 +407,11 @@ The existing workspace separates:
 
 Moodboards and explorations are not approved specifications by default. There
 is no requirement for perfect or automatic bidirectional Figma/code sync.
+
+The local [`Abi Website Brief Builder`](../tools/figma/abi-brief-builder/README.md)
+can lay out the current V2 source brief in the Moodboard and Foundations files.
+It is an optional, manually run Figma Desktop tool with no network access. It
+does not synchronize Figma with Astro or make Figma a production dependency.
 
 ## Role of Codex
 

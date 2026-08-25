@@ -1,0 +1,34 @@
+{
+  "name": "Abi Website Brief Builder",
+  "id": "1567075123184659021",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma", "figjam"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  },
+  "menu": [
+    {
+      "name": "Moodboard: Build V2 creative brief",
+      "command": "build-moodboard"
+    },
+    {
+      "name": "Foundations: Build exploration directions",
+      "command": "build-foundations"
+    },
+    {
+      "separator": true
+    },
+    {
+      "name": "Find generated content",
+      "command": "find-generated"
+    }
+  ],
+  "relaunchButtons": [
+    {
+      "command": "find-generated",
+      "name": "Find generated section"
+    }
+  ]
+}

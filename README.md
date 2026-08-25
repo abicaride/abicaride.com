@@ -109,6 +109,8 @@ The static output is written to `dist/`.
 │   ├── pages/                      English and Spanish route wrappers
 │   ├── styles/                     Design tokens and global CSS
 │   └── content.config.ts           Project collection schema
+├── tools/figma/
+│   └── abi-brief-builder/          Optional local V2 brief plugin
 ├── AGENTS.md                       Architecture-aware contributor rules
 ├── CLAUDE.md                       Imports AGENTS.md
 ├── astro.config.mjs                Site and i18n configuration
