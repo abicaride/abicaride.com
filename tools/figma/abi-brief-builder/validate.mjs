@@ -253,10 +253,10 @@ const moodboardSection = generatedSections(moodboard)[0];
 assert.equal(moodboardSection.x, 1500);
 assert.equal(moodboardSection.y, 200);
 assert.equal(moodboardSection.width, 3960);
-assert.equal(moodboardSection.height, 4240);
+assert.equal(moodboardSection.height, 5740);
 assert.equal(
   allNodes(moodboardSection).filter((node) => node.type === "SHAPE_WITH_TEXT").length,
-  11,
+  12,
 );
 const moodboardText = allNodes(moodboardSection)
   .filter((node) => node.type === "TEXT")
@@ -268,10 +268,33 @@ for (const expected of [
   "Marina Posniak",
   "Josiah Flores",
   "Leah Kim",
-  "Potential lead case — imaginArt",
-  "exact +10pp email-open-rate context",
+  "Photography direction",
+  "curly hair + glasses + burgundy top",
+  "Totoro image",
+  "imaginArt — supported lead-case evidence",
+  "docs/content/case-study-imaginart.md",
+  "Turtle AV",
+  "Mundo BrightSign",
+  "Madrid Open Days 2026",
+  "AV Supports Catalogue",
+  "Lumens",
+  "Bilbao",
+  "~24% → ~34%",
+  "~110–125 attendees vs usual ~70–80",
+  "NOT an A/B test",
+  "not audited data",
+  "final Abi review of public case-study voice",
 ]) {
   assert.ok(moodboardText.includes(expected), `Missing Moodboard content: ${expected}`);
+}
+
+for (const obsolete of [
+  "Madrid expected attendance",
+  "Madrid actual attendance",
+  "exact +10pp email-open-rate context",
+  "exact ownership of every deliverable",
+]) {
+  assert.ok(!moodboardText.includes(obsolete), `Obsolete Moodboard content: ${obsolete}`);
 }
 
 await execute(moodboard);

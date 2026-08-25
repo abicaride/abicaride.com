@@ -7,7 +7,7 @@
  */
 
 const PLUGIN_DATA_KEY = "abi-website-brief-builder";
-const PLUGIN_VERSION = "1";
+const PLUGIN_VERSION = "2";
 const INSERTION_GAP = 400;
 
 const EXPECTED_FILES = {
@@ -96,25 +96,42 @@ const MOODBOARD = {
     },
   ],
   openQuestions: [
-    "final hero photography",
-    "final positioning sentence",
+    "final homepage positioning sentence",
     "primary CTA",
-    "final professional case selection",
+    "final hero photograph",
+    "final selection/order of professional cases",
+    "final Abi review of public case-study voice",
   ],
-  evidence: [
-    "Turtle AV product/landing content",
-    "Madrid Open Days campaign",
-    "Bilbao event communication",
-    "Hikvision event/editorial content",
-    "BrightSign newsletters/email campaigns",
-    "additional imaginArt articles",
-  ],
-  confirmation: [
-    "Madrid expected attendance",
-    "Madrid actual attendance",
-    "exact +10pp email-open-rate context",
-    "exact ownership of every deliverable",
-  ],
+  photography: {
+    note:
+      "Real photography is now available. Do not add personal photo files to the repository unless explicitly requested.",
+    direction: [
+      "natural",
+      "approachable",
+      "calm",
+      "recognizably Abi",
+      "less corporate / LinkedIn-like",
+      "stronger personality than the current website portrait",
+    ],
+    provisional: [
+      "Close portrait with curly hair + glasses + burgundy top — preferred hero exploration",
+      "Full-body red/grey image — possible About / editorial supporting image",
+      "Playful Totoro image — possible personal / About material, not hero",
+    ],
+  },
+  imaginArt: {
+    blueprint: "docs/content/case-study-imaginart.md",
+    primaryStories: [
+      "Turtle AV — technical product content; Abi structured the page herself; content architecture from technical input to usable B2B content",
+      "Mundo BrightSign — revised editorial approach; closer professional tone; emoji-led subject; CTA above the fold; ~24% → ~34% open rate; NOT an A/B test",
+      "Madrid Open Days 2026 — copy; Canva imagery; mailing design/copy; registration form; web invitation/post; LinkedIn input; ~110–125 attendees vs usual ~70–80",
+    ],
+    supportingEvidence: [
+      "AV Supports Catalogue — information architecture; taxonomy/product categorization; structured product sheets; technical-to-commercial content; layout; imagery selection; sales enablement and content-systems thinking",
+      "Lumens — technical source documentation adapted for a B2B audience; feature selection and organization; practical-use framing; technical content adaptation",
+      "Bilbao — supporting event-communication evidence; conversion-oriented information structure",
+    ],
+  },
 };
 
 const DIRECTIONS = [
@@ -503,7 +520,7 @@ async function buildMoodboard() {
   await loadFonts();
 
   const sectionWidth = 3960;
-  const sectionHeight = 4240;
+  const sectionHeight = 5740;
   const padding = 120;
   const columnGap = 80;
   const columnWidth = 1186;
@@ -631,12 +648,23 @@ async function buildMoodboard() {
     bodyLineHeight: 34,
   });
   createFigJamCard(section, {
-    title: "Potential lead case — imaginArt",
-    body: `Current hypothesis\nA broader professional case showing how Abi translated complex audiovisual technology and business needs into clear B2B content across web, events, email and product communication.\n\nPotential evidence\n${bullets(MOODBOARD.evidence)}\n\nNeeds confirmation — do not invent metrics\n${bullets(MOODBOARD.confirmation)}\n\nDo not write the final case study yet.`,
+    title: "Photography direction",
+    body: `${MOODBOARD.photography.note}\n\nWorking direction\n${bullets(MOODBOARD.photography.direction)}\n\nProvisional exploration choices\n${bullets(MOODBOARD.photography.provisional)}\n\nThese are working design choices, not final selections.`,
     x: padding + columnWidth + columnGap,
     y: 3100,
     width: columnWidth * 2 + columnGap,
     height: 980,
+    fill: COLOR.sage,
+    bodySize: 23,
+    bodyLineHeight: 34,
+  });
+  createFigJamCard(section, {
+    title: "imaginArt — supported lead-case evidence",
+    body: `Working conclusion\nOne broad professional case can show how Abi turned complex audiovisual information and business needs into clear, useful B2B communication across product, email and events.\n\nDetailed factual / evidence blueprint\n${MOODBOARD.imaginArt.blueprint}\nKeep detailed facts there; the Figma brief should not duplicate the entire document.\n\nThree primary stories\n${bullets(MOODBOARD.imaginArt.primaryStories)}\n\nSupporting evidence\n${bullets(MOODBOARD.imaginArt.supportingEvidence)}\n\nMetrics note\nThe open-rate and attendance figures are approximate, recalled values suitable for working and design exploration. They are not audited data.\n\nDo not write the final public case study yet.`,
+    x: padding,
+    y: 4160,
+    width: sectionWidth - padding * 2,
+    height: 1400,
     fill: COLOR.yellow,
     bodySize: 23,
     bodyLineHeight: 33,

@@ -8,12 +8,22 @@ its build.
 
 - In **Abi Website Moodboard**: one bounded `V2 — Creative Brief` FigJam
   section containing Abi's feedback, visual references, positioning note,
-  homepage content hypothesis and the potential imaginArt lead case.
+  homepage content hypothesis, working photography direction and a concise
+  imaginArt lead-case evidence map.
 - In **Abi Website Foundations → Explorations**: one bounded section containing
   direction boards for `A — Editorial Calm`, `B — Fresh / Image-led` and
   `C — Content-led Personality`.
 
 It does not create finished homepage designs or polished marketing copy.
+
+The detailed imaginArt factual and evidence blueprint lives in
+[`docs/content/case-study-imaginart.md`](../../../docs/content/case-study-imaginart.md).
+The Figma output deliberately summarizes its three primary stories and
+supporting evidence instead of duplicating the full working document.
+
+The photography notes identify provisional exploration choices only. Personal
+photo files are not part of this plugin and must not be added to the repository
+unless explicitly requested.
 
 ## Safety model
 
@@ -76,8 +86,10 @@ Figma's ordinary Undo command can also reverse a plugin run immediately.
 
 The source feedback and layout data live directly in `code.js` so the plugin can
 run without package installation, compilation or bundling. If the brief changes,
-update the relevant `MOODBOARD` or `DIRECTIONS` data and re-import or rerun the
-local plugin.
+update the relevant `MOODBOARD` or `DIRECTIONS` data. When evidence changes,
+update the internal imaginArt blueprint first and keep the Figma summary
+concise. Re-import the local plugin, delete the older generated section manually
+and rerun the relevant command.
 
 The manifest deliberately declares `allowedDomains: ["none"]`; adding external
 references to the generated text does not cause the plugin to fetch those sites.
