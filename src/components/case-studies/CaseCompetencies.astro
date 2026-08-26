@@ -1,0 +1,36 @@
+---
+interface Props {
+  title: string;
+  items: string[];
+  compact?: boolean;
+}
+
+const { title, items, compact = false } = Astro.props;
+const titleId = `case-competencies-${title.toLocaleLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+---
+
+<section class:list={['case-competencies', { compact }]} aria-labelledby={titleId}>
+  <div class="case-competencies-inner">
+    <h2 id={titleId}>{title}</h2>
+    <ul>
+      {items.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .case-competencies { padding: var(--space-section) var(--space-page); background: var(--color-surface); }
+  .compact { margin-inline: calc(-1 * var(--space-page)); }
+  .case-competencies-inner { display: grid; width: 100%; max-width: var(--size-content); margin-inline: auto; gap: clamp(var(--space-10), 6vw, var(--space-16)); }
+  h2 { max-width: 18ch; font-size: calc(var(--font-size-2xl) - 5px); }
+  ul { display: grid; margin: 0; padding: 0; list-style: none; }
+  li { padding-block: var(--space-6); border-block-start: var(--border-width) solid var(--color-border); color: var(--color-green-deep); font-family: var(--font-heading); font-size: calc(clamp(1.6rem, 1.35rem + 1.1vw, 2.75rem) - 5px); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-tight); line-height: var(--line-height-tight); }
+
+  @media (min-width: 48rem) {
+    ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    li { min-width: 0; padding: var(--space-6); overflow-wrap: anywhere; }
+    li + li { border-inline-start: var(--border-width) solid var(--color-border); }
+    li:first-child { padding-inline-start: 0; }
+    li:last-child { padding-inline-end: 0; }
+  }
+</style>

@@ -1,5 +1,5 @@
 {
-  "version": "2.1.6",
+  "version": "2.1.7",
   "status": "CURRENT",
   "name": "Clean Organic Editorial",
   "sourceOfTruth": "Astro repository",
@@ -8,6 +8,7 @@
     "src/i18n/config.ts",
     "src/components/",
     "src/components/pages/",
+    "src/data/selectedCaseDetails.ts",
     "src/assets/images/abilene-hero-v2.png",
     "src/assets/images/abilene-about-v2.png",
     "src/assets/brand/abilene-mark.svg",

@@ -1,0 +1,62 @@
+---
+import type { AtAGlanceItem } from '../../data/selectedCaseDetails';
+
+interface Props {
+  title: string;
+  items: AtAGlanceItem[];
+  compact?: boolean;
+}
+
+const { title, items, compact = false } = Astro.props;
+const titleId = `at-a-glance-${title.toLocaleLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+---
+
+<section class:list={['at-a-glance', { compact }]} aria-labelledby={titleId}>
+  <div class="at-a-glance-inner">
+    <h2 id={titleId}>{title}</h2>
+    <dl>
+      {items.map((item) => {
+        const values = Array.isArray(item.value) ? item.value : [item.value];
+        return (
+          <div>
+            <dt>{item.label}</dt>
+            <dd>
+              {values.map((value) => <p>{value}</p>)}
+              {item.note && <p class="note">{item.note}</p>}
+            </dd>
+          </div>
+        );
+      })}
+    </dl>
+  </div>
+</section>
+
+<style>
+  .at-a-glance {
+    padding: clamp(var(--space-12), 7vw, var(--space-20)) var(--space-page);
+    background: var(--color-surface);
+  }
+  .at-a-glance-inner { display: grid; width: 100%; max-width: var(--size-content); margin-inline: auto; gap: var(--space-10); }
+  h2 { font-size: var(--font-size-xl); }
+  dl { display: grid; margin: 0; }
+  dl > div { display: grid; min-width: 0; padding-block: var(--space-6); border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-3); }
+  dt { color: var(--color-green); font-family: var(--font-heading); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; }
+  dd { display: grid; min-width: 0; margin: 0; gap: var(--space-2); font-size: var(--font-size-md); overflow-wrap: anywhere; }
+  .note { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+
+  @media (min-width: 48rem) {
+    dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    dl > div { padding: var(--space-6); }
+    dl > div:nth-child(odd) { padding-inline-start: 0; }
+    dl > div:nth-child(even) { border-inline-start: var(--border-width) solid var(--color-border); }
+  }
+
+  @media (min-width: 70rem) {
+    dl { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    dl > div:nth-child(n) { padding-inline: var(--space-6); border-inline-start: var(--border-width) solid var(--color-border); }
+    dl > div:first-child { padding-inline-start: 0; border-inline-start: 0; }
+    dl > div:last-child { padding-inline-end: 0; }
+  }
+
+  .compact { margin-inline: calc(-1 * var(--space-page)); }
+</style>

@@ -147,7 +147,7 @@ const HOMEPAGE = {
   specialistLine: "Content, communications and marketing specialist",
   cta: "Get in touch",
   leadCase: "imaginArt",
-  leadDescriptor: "B2B content & communications",
+  leadDescriptor: "Marketing, B2B content & communications",
   themes: [
     "technical product content",
     "email",
@@ -163,7 +163,7 @@ const HOMEPAGE = {
 
 const CASE_STUDY = {
   title: "imaginArt",
-  descriptor: "B2B content & communications",
+  descriptor: "Marketing, B2B content & communications",
   role: "Communications Specialist · 2023–Present",
 };
 
@@ -4409,13 +4409,14 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     fill: FINAL_COLOR.surface,
   });
   addFinalLabel(lead, "01 · SELECTED WORK", 80, 72, 430);
+  addFinalLabel(lead, "MARKETING, B2B CONTENT & COMMUNICATIONS · IMAGINART", 80, 120, 650);
   addFinalHeading(lead, {
     characters: "Making specialist B2B communication clearer",
     fontSize: 54,
     lineHeight: 65,
     width: 720,
     x: 80,
-    y: 125,
+    y: 160,
   });
   addFinalBody(lead, {
     characters: "Product content, editorial email improvements and event communication for a specialist audiovisual audience.",
@@ -4425,7 +4426,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     color: FINAL_COLOR.green,
     width: 650,
     x: 80,
-    y: 285,
+    y: 320,
   });
   addFinalBody(lead, {
     characters: "A lead professional case showing how technical and business information became clearer, useful communication.",
@@ -4433,7 +4434,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     lineHeight: 33,
     width: 560,
     x: 80,
-    y: 355,
+    y: 390,
   });
   createRule(lead, { x: 800, y: 150, width: 520, color: FINAL_COLOR.green });
   const leadItems = [
@@ -4541,7 +4542,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     y: 145,
   });
   addFinalBody(about, {
-    characters: "I’m a Galician in Barcelona with a broad path through administration, communication, UX writing and B2B content. Helping people understand what they need is the thread connecting it all.",
+    characters: "I’m Galician and live in Barcelona. My career began in administration, shifted into communications and digital marketing, and expanded into UX writing and B2B and B2C content. Helping people get what they need is the thread connecting it all.",
     fontSize: 20,
     lineHeight: 34,
     width: 500,
@@ -4911,10 +4912,140 @@ function createFinalImaginartHero(page) {
   createRule(hero, { x: 80, y: 515, width: 1280, color: FINAL_COLOR.border });
 }
 
-function createFinalImaginartCollaboration(page) {
+function createCurrentImaginartAtAGlance(page) {
+  const overview = createCaseBand(page, {
+    name: "02 At a glance",
+    y: 560,
+    height: 500,
+    fill: CASE_COLOR.surface,
+  });
+  addFinalHeading(overview, {
+    characters: "At a glance",
+    fontSize: 44,
+    lineHeight: 54,
+    width: 600,
+    x: 80,
+    y: 70,
+  });
+  const items = [
+    ["THE CHALLENGE", "Make specialist technical information clearer and easier to act on."],
+    ["MY ROLE", "Communications Specialist"],
+    ["WHAT I DID", "Content strategy · Product content · Email · Events"],
+    ["EVIDENCE", "~24% → ~34% email open rate\n~110–125 event attendees\nApproximate recalled figures"],
+  ];
+  items.forEach(([label, value], index) => {
+    const itemX = 80 + index * 320;
+    createRule(overview, { x: itemX, y: 205, width: 280, color: FINAL_COLOR.border });
+    addFinalLabel(overview, label, itemX, 235, 280);
+    addFinalBody(overview, {
+      characters: value,
+      fontSize: 17,
+      lineHeight: 28,
+      width: 280,
+      x: itemX,
+      y: 285,
+    });
+    if (index > 0) {
+      createRule(overview, { x: itemX - 20, y: 205, width: 1, height: 210, color: FINAL_COLOR.border });
+    }
+  });
+}
+
+function createCurrentImaginartIndex(page) {
+  const indexBand = createCaseBand(page, {
+    name: "03 In this case",
+    y: 1060,
+    height: 360,
+    fill: CASE_COLOR.canvas,
+  });
+  addFinalLabel(indexBand, "IN THIS CASE", 80, 65, 280);
+  const items = [
+    ["01", "Newsletter"],
+    ["02", "Brand launch"],
+    ["03", "Corporate event"],
+    ["04", "Product catalogue"],
+    ["05", "Technical adaptation"],
+  ];
+  items.forEach(([number, label], itemIndex) => {
+    const itemX = 80 + itemIndex * 256;
+    createRule(indexBand, { x: itemX, y: 145, width: 220, color: FINAL_COLOR.border });
+    addFinalLabel(indexBand, number, itemX, 175, 60);
+    addFinalHeading(indexBand, {
+      characters: label,
+      fontSize: 20,
+      lineHeight: 28,
+      width: 205,
+      x: itemX,
+      y: 220,
+    });
+  });
+}
+
+function createCurrentImaginartSynthesis(page) {
+  const synthesis = createCaseBand(page, {
+    name: "10 The common thread",
+    y: 8090,
+    height: 500,
+    fill: CASE_COLOR.canvas,
+  });
+  addFinalLabel(synthesis, "THE COMMON THREAD", 80, 70, 340);
+  addFinalHeading(synthesis, {
+    characters: "Making complex information clearer and more useful.",
+    fontSize: 58,
+    lineHeight: 69,
+    width: 760,
+    x: 80,
+    y: 125,
+  });
+  addFinalBody(synthesis, {
+    characters: "Across product content, email, events and catalogues, the work was about connecting specialist knowledge with what an audience actually needed to understand and do next.",
+    fontSize: 20,
+    lineHeight: 33,
+    color: FINAL_COLOR.inkMuted,
+    width: 510,
+    x: 850,
+    y: 155,
+  });
+}
+
+function createCurrentImaginartCompetencies(page) {
+  const competencies = createCaseBand(page, {
+    name: "11 What this work shows",
+    y: 8590,
+    height: 520,
+    fill: CASE_COLOR.surface,
+  });
+  addFinalHeading(competencies, {
+    characters: "What this work shows",
+    fontSize: 71,
+    lineHeight: 80,
+    width: 920,
+    x: 80,
+    y: 70,
+  });
+  const items = ["Content strategy", "Technical communication", "Campaign execution"];
+  items.forEach((label, index) => {
+    const itemX = 80 + index * 440;
+    createRule(competencies, { x: itemX, y: 270, width: 400, color: FINAL_COLOR.border });
+    if (index > 0) {
+      createRule(competencies, { x: itemX - 40, y: 270, width: 1, height: 150, color: FINAL_COLOR.border });
+    }
+    addFinalHeading(competencies, {
+      characters: label,
+      fontSize: 39,
+      lineHeight: 48,
+      color: FINAL_COLOR.greenDeep,
+      width: 380,
+      x: itemX,
+      y: 315,
+    });
+  });
+}
+
+function createFinalImaginartCollaboration(page, yOffset = 0) {
   const context = createCaseBand(page, {
     name: "02 Context and collaboration",
-    y: 560,
+    y: 560 + yOffset,
     height: 820,
     fill: CASE_COLOR.surface,
   });
@@ -4981,10 +5112,10 @@ function createFinalImaginartCollaboration(page) {
   });
 }
 
-function createFinalImaginartNewsletter(page) {
+function createFinalImaginartNewsletter(page, yOffset = 0) {
   const email = createCaseBand(page, {
     name: "03 Refreshing a specialist B2B newsletter",
-    y: 1380,
+    y: 1380 + yOffset,
     height: 1180,
     fill: CASE_COLOR.canvas,
   });
@@ -5076,10 +5207,10 @@ function createFinalImaginartNewsletter(page) {
   });
 }
 
-function createFinalImaginartTurtle(page) {
+function createFinalImaginartTurtle(page, yOffset = 0) {
   const turtle = createCaseBand(page, {
     name: "04 Launching a new brand in Spain",
-    y: 2560,
+    y: 2560 + yOffset,
     height: 1240,
     fill: CASE_COLOR.surface,
   });
@@ -5172,10 +5303,10 @@ function createFinalImaginartTurtle(page) {
   });
 }
 
-function createFinalImaginartEvent(page) {
+function createFinalImaginartEvent(page, yOffset = 0) {
   const event = createCaseBand(page, {
     name: "05 Planning and promoting a corporate event",
-    y: 3800,
+    y: 3800 + yOffset,
     height: 1260,
     fill: CASE_COLOR.canvas,
   });
@@ -5270,10 +5401,10 @@ function createFinalImaginartEvent(page) {
   });
 }
 
-function createFinalImaginartCatalogue(page) {
+function createFinalImaginartCatalogue(page, yOffset = 0) {
   const catalogue = createCaseBand(page, {
     name: "06 Structuring a technical product catalogue",
-    y: 5060,
+    y: 5060 + yOffset,
     height: 1120,
     fill: CASE_COLOR.surfaceStrong,
   });
@@ -5326,10 +5457,10 @@ function createFinalImaginartCatalogue(page) {
   });
 }
 
-function createFinalImaginartLumens(page) {
+function createFinalImaginartLumens(page, yOffset = 0) {
   const lumens = createCaseBand(page, {
     name: "07 Adapting technical information for a B2B audience",
-    y: 6180,
+    y: 6180 + yOffset,
     height: 1050,
     fill: CASE_COLOR.canvas,
   });
@@ -6073,7 +6204,7 @@ async function publishCurrentImaginart() {
     "imaginArt — production snapshot",
     placement.point,
     1740,
-    8640,
+    10520,
     CASE_COLOR.surface,
     GENERATED_KIND.currentImaginart,
   );
@@ -6082,7 +6213,7 @@ async function publishCurrentImaginart() {
     x: 150,
     y: 360,
     width: 1440,
-    height: 8080,
+    height: 9960,
     fill: CASE_COLOR.canvas,
   });
   populateSectionSafely(section, () => {
@@ -6095,7 +6226,7 @@ async function publishCurrentImaginart() {
       y: 70,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/case-studies/ImaginartCaseStudy.astro and src/data/imaginartCase.ts. Approximate metrics retain their public caveats.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/case-studies/ImaginartCaseStudy.astro, src/data/imaginartCase.ts and src/data/selectedCaseDetails.ts. Approximate metrics retain their public caveats.`,
       fontSize: 18,
       lineHeight: 29,
       color: FINAL_COLOR.inkMuted,
@@ -6104,13 +6235,17 @@ async function publishCurrentImaginart() {
       y: 135,
     });
     createFinalImaginartHero(page);
-    createFinalImaginartCollaboration(page);
-    createFinalImaginartNewsletter(page);
-    createFinalImaginartTurtle(page);
-    createFinalImaginartEvent(page);
-    createFinalImaginartCatalogue(page);
-    createFinalImaginartLumens(page);
-    createFinalContactFooter(page, 7230);
+    createCurrentImaginartAtAGlance(page);
+    createCurrentImaginartIndex(page);
+    createFinalImaginartCollaboration(page, 860);
+    createFinalImaginartNewsletter(page, 860);
+    createFinalImaginartTurtle(page, 860);
+    createFinalImaginartEvent(page, 860);
+    createFinalImaginartCatalogue(page, 860);
+    createFinalImaginartLumens(page, 860);
+    createCurrentImaginartSynthesis(page);
+    createCurrentImaginartCompetencies(page);
+    createFinalContactFooter(page, 9110);
   });
   placement.existing?.remove();
   figma.currentPage.selection = [section];

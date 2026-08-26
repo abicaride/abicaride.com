@@ -1,11 +1,16 @@
 ---
 import { imaginartCase } from '../../data/imaginartCase';
+import { selectedCaseDetails } from '../../data/selectedCaseDetails';
 import { getLocalizedPath, type Locale } from '../../i18n/config';
+import CaseAtAGlance from './CaseAtAGlance.astro';
+import CaseCompetencies from './CaseCompetencies.astro';
 import LineIcon from '../LineIcon.astro';
 
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const copy = imaginartCase[locale];
+const details = selectedCaseDetails[locale]['imaginart-b2b-content'];
+const caseIndex = details.caseIndex!;
 ---
 
 <article class="case-study">
@@ -19,6 +24,19 @@ const copy = imaginartCase[locale];
     </div>
     <p class="hero-intro">{copy.hero.introduction}</p>
   </header>
+
+  <CaseAtAGlance title={details.atAGlance.title} items={details.atAGlance.items} />
+
+  <nav class="case-index" aria-labelledby="case-index-title">
+    <div class="case-index-inner">
+      <h2 id="case-index-title">{caseIndex.title}</h2>
+      <ol>
+        {caseIndex.items.map((item) => (
+          <li><a href={item.anchor}><span>{item.number}</span>{item.label}</a></li>
+        ))}
+      </ol>
+    </div>
+  </nav>
 
   <section class="collaboration story-section" aria-labelledby="collaboration-title">
     <div class="section-copy">
@@ -39,7 +57,7 @@ const copy = imaginartCase[locale];
     <p class="diagram-note">{copy.collaboration.note}</p>
   </section>
 
-  <section class="newsletter story-section" aria-labelledby="newsletter-title">
+  <section id="newsletter" class="newsletter story-section" aria-labelledby="newsletter-title">
     <header class="story-heading"><p class="story-number">{copy.newsletter.number}</p><div><p class="context">{copy.newsletter.context}</p><h2 id="newsletter-title">{copy.newsletter.title}</h2><p>{copy.newsletter.introduction}</p></div></header>
     <div class="metric" aria-label={`${copy.newsletter.earlier} to ${copy.newsletter.revised}`}>
       <strong>{copy.newsletter.earlier}</strong><span class="metric-line" aria-hidden="true"><i></i><i></i></span><strong>{copy.newsletter.revised}</strong>
@@ -53,7 +71,7 @@ const copy = imaginartCase[locale];
     <p class="disclaimer">{copy.newsletter.disclaimer}</p>
   </section>
 
-  <section class="turtle story-section" aria-labelledby="turtle-title">
+  <section id="brand-launch" class="turtle story-section" aria-labelledby="turtle-title">
     <header class="story-heading"><p class="story-number">{copy.turtle.number}</p><div><p class="context">{copy.turtle.context}</p><h2 id="turtle-title">{copy.turtle.title}</h2><p>{copy.turtle.introduction}</p></div></header>
     <div class="transformation-flow">
       <div class="flow-stage"><LineIcon name="structure"/><strong>{copy.turtle.input}</strong></div><span aria-hidden="true">→</span>
@@ -64,7 +82,7 @@ const copy = imaginartCase[locale];
     <p class="takeaway">{copy.turtle.takeaway}</p>
   </section>
 
-  <section class="event story-section" aria-labelledby="event-title">
+  <section id="corporate-event" class="event story-section" aria-labelledby="event-title">
     <header class="story-heading"><p class="story-number">{copy.event.number}</p><div><p class="context">{copy.event.context}</p><h2 id="event-title">{copy.event.title}</h2><p>{copy.event.introduction}</p></div></header>
     <div class="campaign-flow">
       <ul>{copy.event.channels.map((channel) => <li><LineIcon name="event" size={26}/><span>{channel}</span></li>)}</ul>
@@ -78,7 +96,7 @@ const copy = imaginartCase[locale];
     <p class="supporting-note">{copy.event.bilbao}</p>
   </section>
 
-  <section class="catalogue story-section" aria-labelledby="catalogue-title">
+  <section id="catalogue" class="catalogue story-section" aria-labelledby="catalogue-title">
     <header class="story-heading"><p class="story-number">{copy.catalogue.number}</p><div><p class="context">{copy.catalogue.context}</p><h2 id="catalogue-title">{copy.catalogue.title}</h2><p>{copy.catalogue.introduction}</p></div></header>
     <div class="catalogue-system">
       <strong>{copy.catalogue.families}</strong><span aria-hidden="true">↓</span>
@@ -89,7 +107,7 @@ const copy = imaginartCase[locale];
     <p class="takeaway">{copy.catalogue.takeaway}</p>
   </section>
 
-  <section class="lumens story-section" aria-labelledby="lumens-title">
+  <section id="technical-adaptation" class="lumens story-section" aria-labelledby="lumens-title">
     <header class="story-heading"><p class="story-number">{copy.lumens.number}</p><div><p class="context">{copy.lumens.context}</p><h2 id="lumens-title">{copy.lumens.title}</h2><p>{copy.lumens.introduction}</p></div></header>
     <div class="vertical-flow">
       <strong>{copy.lumens.source}</strong><span aria-hidden="true">↓</span>
@@ -100,16 +118,21 @@ const copy = imaginartCase[locale];
     <p class="diagram-note">{copy.lumens.note}</p>
   </section>
 
-  <section class="case-close" aria-labelledby="case-close-title">
+  <section class="case-synthesis" aria-labelledby="case-close-title">
     <p class="eyebrow">{copy.close.eyebrow}</p><h2 id="case-close-title">{copy.close.title}</h2><p>{copy.close.text}</p>
-    <a class="arrow-link" href={getLocalizedPath(locale, 'projects')}>{copy.close.back}</a>
   </section>
+
+  <CaseCompetencies title={details.competencies.title} items={details.competencies.items} />
+
+  <nav class="case-navigation" aria-label={locale === 'en' ? 'Case study navigation' : 'Navegación del caso de estudio'}>
+    <a class="arrow-link" href={getLocalizedPath(locale, 'projects')}>{copy.close.back}</a>
+  </nav>
 </article>
 
 <style>
   .case-study { font-size: clamp(1.05rem, 1rem + .25vw, 1.25rem); }
-  .case-hero, .story-section, .case-close { padding: var(--space-section) var(--space-page); }
-  .case-hero > *, .story-section > *, .case-close > * { width: 100%; min-width: 0; max-width: var(--size-content); margin-inline: auto; }
+  .case-hero, .story-section, .case-synthesis, .case-navigation { padding: var(--space-section) var(--space-page); }
+  .case-hero > *, .story-section > *, .case-synthesis > *, .case-navigation > * { width: 100%; min-width: 0; max-width: var(--size-content); margin-inline: auto; }
   .case-hero { display: grid; min-height: 42rem; padding-block-start: var(--space-12); align-content: center; background: var(--color-canvas); gap: clamp(var(--space-10), 7vw, var(--space-20)); }
   .back-link { justify-self: start; color: var(--color-green-deep); font-family: var(--font-heading); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); text-decoration: none; }
   .hero-copy { display: grid; gap: var(--space-5); }
@@ -117,7 +140,15 @@ const copy = imaginartCase[locale];
   .descriptor { max-width: 48rem; color: var(--color-ink-muted); font-size: var(--font-size-lg); }
   .role, .context, .story-number { color: var(--color-green); font-family: var(--font-heading); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); letter-spacing: .05em; text-transform: uppercase; }
   .hero-intro { max-width: var(--size-prose); padding-block-start: var(--space-8); border-block-start: var(--border-width) solid var(--color-border); font-size: var(--font-size-lg); }
+  .case-index { padding: clamp(var(--space-10), 6vw, var(--space-16)) var(--space-page); border-block: var(--border-width) solid var(--color-border); background: var(--color-canvas); }
+  .case-index-inner { display: grid; width: 100%; max-width: var(--size-content); margin-inline: auto; gap: var(--space-8); }
+  .case-index h2 { color: var(--color-green); font-size: var(--font-size-xs); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; }
+  .case-index ol { display: grid; margin: 0; padding: 0; gap: var(--space-2); list-style: none; }
+  .case-index a { display: flex; min-height: 2.75rem; padding-block: var(--space-3); border-block-start: var(--border-width) solid var(--color-border); align-items: baseline; gap: var(--space-3); color: var(--color-ink); font-family: var(--font-heading); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); text-decoration: none; }
+  .case-index a:hover { color: var(--color-green-deep); text-decoration: underline; text-underline-offset: .25em; }
+  .case-index a span { color: var(--color-green); font-size: var(--font-size-xs); }
   .story-section { display: grid; gap: clamp(var(--space-10), 7vw, var(--space-20)); }
+  .story-section[id] { scroll-margin-block-start: calc(var(--size-header) + var(--space-4)); }
   .collaboration, .turtle, .lumens { background: var(--color-surface); }
   .event { background: var(--color-canvas); }
   .catalogue { background: var(--color-surface-strong); }
@@ -179,16 +210,20 @@ const copy = imaginartCase[locale];
   .lumens-work ul { justify-content: center; }
   .audience-questions { display: grid; margin: 0; padding: 0; gap: var(--space-3); list-style: none; }
   .audience-questions li { padding-block: var(--space-4); border-block-start: var(--border-width) solid var(--color-border); font-family: var(--font-heading); font-weight: var(--font-weight-medium); }
-  .case-close { display: grid; background: var(--color-canvas); gap: var(--space-5); }
-  .case-close h2 { max-width: 18ch; font-size: var(--font-size-2xl); }
-  .case-close > p:not(.eyebrow) { max-width: var(--size-prose); color: var(--color-ink-muted); }
-  .case-close .arrow-link { justify-self: start; margin-inline: max(var(--space-page), calc((100vw - var(--size-content)) / 2)); }
+  .case-synthesis { display: grid; background: var(--color-canvas); gap: var(--space-5); }
+  .case-synthesis h2 { max-width: 18ch; font-size: var(--font-size-2xl); }
+  .case-synthesis > p:not(.eyebrow) { max-width: var(--size-prose); color: var(--color-ink-muted); }
+  .case-navigation { display: grid; padding-block: var(--space-10); background: var(--color-canvas); }
+  .case-navigation .arrow-link { justify-self: start; }
 
   @media (min-width: 48rem) {
     .case-hero { grid-template-columns: minmax(0, 1.4fr) minmax(20rem, .6fr); }
     .case-hero .back-link { grid-column: 1 / -1; }
     .hero-intro { align-self: end; }
     .hero-copy h1 { font-size: var(--font-size-3xl); }
+    .case-index-inner { grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--space-12); }
+    .case-index ol { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; }
+    .case-index li + li { padding-inline-start: var(--space-5); border-inline-start: var(--border-width) solid var(--color-border); }
     .metric { grid-template-columns: auto minmax(4rem, 1fr) auto; gap: var(--space-4); }
     .collaboration-flow { grid-template-columns: minmax(0, .8fr) auto minmax(0, 1.1fr) auto minmax(0, .8fr); }
     .flow-arrow, .hierarchy-comparison > span, .transformation-flow > span { transform: none; }

@@ -613,7 +613,7 @@ const approvedFoundationsText = approvedFoundationsNodes
   .join("\n");
 for (const expected of [
   "V2 — Current production foundations",
-  "Design release 2.1.6",
+  "Design release 2.1.7",
   "Inter for headings",
   "Montserrat Regular",
   "--color-canvas",
@@ -1099,7 +1099,7 @@ const currentComponentsText = currentComponentsNodes
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Design release 2.1.6",
+  "Design release 2.1.7",
   "Home",
   "Get in touch",
   "View my work",
@@ -1201,8 +1201,10 @@ const currentHomepageText = currentHomepageNodes
 for (const expected of [
   "Homepage — current production snapshot",
   "I help companies connect with their audiences through clear, honest communication.",
+  "MARKETING, B2B CONTENT & COMMUNICATIONS · IMAGINART",
   "More ways of making digital communication useful.",
   "Clear thinking, honest communication and a practical way forward.",
+  "I’m Galician and live in Barcelona.",
 ]) {
   assert.ok(currentHomepageText.includes(expected), `Missing current Homepage content: ${expected}`);
 }
@@ -1240,9 +1242,38 @@ const currentImaginartText = allNodes(currentImaginartSection)
   .filter((node) => node.type === "TEXT")
   .map((node) => node.characters)
   .join("\n");
-for (const expected of ["~24%", "~34%", "Not an A/B test", "Madrid Open Days 2026", "AV Supports Catalogue", "Lumens"]) {
+for (const expected of [
+  "At a glance",
+  "In this case",
+  "The challenge",
+  "Content strategy · Product content · Email · Events",
+  "~24%",
+  "~34%",
+  "Not an A/B test",
+  "Madrid Open Days 2026",
+  "AV Supports Catalogue",
+  "Lumens",
+  "The common thread",
+  "What this work shows",
+  "Content strategy",
+  "Technical communication",
+  "Campaign execution",
+]) {
   assert.ok(currentImaginartText.toLowerCase().includes(expected.toLowerCase()), `Missing current imaginArt content: ${expected}`);
 }
+const currentImaginartPage = allNodes(currentImaginartSection).find(
+  (node) => node.name === "imaginArt case study — desktop · current production snapshot",
+);
+assert.equal(currentImaginartSection.height, 10520);
+assert.equal(currentImaginartPage.height, 9960);
+const competencyHeading = allNodes(currentImaginartSection).find(
+  (node) => node.type === "TEXT" && node.characters === "What this work shows",
+);
+const competencyItem = allNodes(currentImaginartSection).find(
+  (node) => node.type === "TEXT" && node.characters === "Technical communication",
+);
+assert.equal(competencyHeading.fontSize, 71);
+assert.equal(competencyItem.fontSize, 39);
 
 const currentAbout = createFigma({
   editorType: "figma",

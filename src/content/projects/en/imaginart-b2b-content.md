@@ -4,7 +4,7 @@ description: How I structured technical product content, refreshed editorial ema
 locale: en
 routeSlug: imaginart-b2b-content
 translationKey: imaginart-b2b-content
-category: B2B content & communications
+category: Marketing, B2B content & communications
 company: imaginArt
 role: Communications Specialist
 period: 2023–Present

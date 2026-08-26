@@ -4,7 +4,7 @@ description: Cómo estructuré contenido técnico de producto, renové la comuni
 locale: es
 routeSlug: imaginart-contenido-b2b
 translationKey: imaginart-b2b-content
-category: Contenido y comunicación B2B
+category: Marketing, contenido y comunicación B2B
 company: imaginArt
 role: Especialista en Comunicación
 period: 2023–actualidad

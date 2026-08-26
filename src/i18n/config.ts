@@ -93,7 +93,7 @@ export const ui = {
       aboutEyebrow: 'A little about me',
       aboutTitle: 'Clear thinking, honest communication and a practical way forward.',
       aboutText:
-        'I’m a Galician in Barcelona with a broad path through administration, communication, UX writing and B2B content. Helping people understand what they need is the thread connecting it all.',
+        'I’m Galician and live in Barcelona. My career began in administration, shifted into communications and digital marketing, and expanded into UX writing and B2B and B2C content. Helping people get what they need is the thread connecting it all.',
       aboutLink: 'More about me',
     },
     about: {
@@ -256,7 +256,7 @@ export const ui = {
       aboutEyebrow: 'Un poco sobre mí',
       aboutTitle: 'Ideas claras, comunicación honesta y una manera práctica de avanzar.',
       aboutText:
-        'Soy gallega y vivo en Barcelona. Mi recorrido pasa por la administración, la comunicación, el UX writing y el contenido B2B. Ayudar a las personas a entender lo que necesitan es el hilo que une todo.',
+        'Soy gallega y vivo en Barcelona. Mi recorrido empieza por la administración, cambia a comunicación y marketing digital, así como el UX writing y el contenido B2B y B2C. Ayudar a las personas a conseguir lo que necesitan es el hilo que une todo.',
       aboutLink: 'Conóceme un poco más',
     },
     about: {
@@ -279,11 +279,11 @@ export const ui = {
         { title: 'Hoy', detail: 'Estrategia de contenidos · Comunicación · Negocio', icon: 'compass' },
       ],
       principlesEyebrow: 'Cómo trabajo',
-      principlesTitle: 'Claro. Honesto. Práctico.',
+      principlesTitle: 'Clara. Honesta. Práctica.',
       principles: [
-        { title: 'Claro', text: 'Hago comprensible la información compleja.', icon: 'clear' },
-        { title: 'Honesto', text: 'La comunicación no necesita sonar complicada para ser profesional.', icon: 'honest' },
-        { title: 'Práctico', text: 'Un buen contenido debe ayudar a la audiencia y tener sentido para el negocio que hay detrás.', icon: 'practical' },
+        { title: 'Clara', text: 'Hago comprensible la información compleja.', icon: 'clear' },
+        { title: 'Honesta', text: 'La comunicación no necesita sonar complicada para ser profesional.', icon: 'honest' },
+        { title: 'Práctica', text: 'Un buen contenido debe ayudar a la audiencia y tener sentido para el negocio que hay detrás.', icon: 'practical' },
       ],
       experienceTitle: 'Experiencia',
       experienceIntro: 'Un perfil amplio, construido con intención.',
