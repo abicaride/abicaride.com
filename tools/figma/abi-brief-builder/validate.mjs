@@ -612,7 +612,7 @@ const approvedFoundationsText = approvedFoundationsNodes
   .join("\n");
 for (const expected of [
   "V2 — Current production foundations",
-  "Design release 2.1.3",
+  "Design release 2.1.4",
   "Inter for headings",
   "Montserrat Regular",
   "--color-canvas",
@@ -1089,7 +1089,7 @@ const currentComponentsText = allNodes(currentComponentsSection)
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Design release 2.1.3",
+  "Design release 2.1.4",
   "Home",
   "Get in touch",
   "View my work",
