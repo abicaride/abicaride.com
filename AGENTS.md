@@ -132,6 +132,10 @@ The shared Figma workspace contains three complementary files:
   collects references and visual preferences; it is not an implementation
   specification.
 
+These file links are intentionally public and view-only. Public visibility does
+not make exploratory material an approved specification, and agents must not
+change sharing permissions or grant edit access unless explicitly requested.
+
 Do not treat exploratory frames or moodboard references as approved designs.
 Implement a Figma direction only when the task explicitly identifies it as
 approved or asks for that specific design to be implemented.

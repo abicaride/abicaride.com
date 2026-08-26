@@ -6,7 +6,7 @@ routeSlug: paginas-error-404
 translationKey: error-404-pages
 category: Ejercicio de UX writing
 featured: false
-order: 4
+order: 7
 draft: false
 image:
   src: ../../../assets/images/projects/error-404-pages.jpg

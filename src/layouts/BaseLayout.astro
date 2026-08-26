@@ -1,13 +1,9 @@
 ---
+import AnalyticsConsent from '../components/AnalyticsConsent.astro';
+import BackToTop from '../components/BackToTop.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import AnalyticsConsent from '../components/AnalyticsConsent.astro';
-import {
-  defaultLocale,
-  switchLocalePath,
-  ui,
-  type Locale,
-} from '../i18n/config';
+import { defaultLocale, switchLocalePath, ui, type Locale } from '../i18n/config';
 import '../styles/global.css';
 
 interface Props {
@@ -17,23 +13,15 @@ interface Props {
   alternatePath?: string;
   currentLocalePath?: string;
   indexable?: boolean;
+  headerVariant?: 'default' | 'overlay';
+  showBackToTop?: boolean;
 }
 
-const {
-  title,
-  description,
-  locale,
-  alternatePath,
-  currentLocalePath,
-  indexable = true,
-} = Astro.props;
+const { title, description, locale, alternatePath, currentLocalePath, indexable = true, headerVariant = 'default', showBackToTop = false } = Astro.props;
 const currentPath = Astro.url.pathname;
 const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 const resolvedAlternatePath = alternatePath ?? switchLocalePath(currentPath, otherLocale);
-const localizedPaths: Record<Locale, string> = {
-  [locale]: currentPath,
-  [otherLocale]: resolvedAlternatePath,
-} as Record<Locale, string>;
+const localizedPaths = { [locale]: currentPath, [otherLocale]: resolvedAlternatePath } as Record<Locale, string>;
 const fullTitle = title === ui[locale].siteName ? title : `${title} | ${ui[locale].siteName}`;
 const canonicalUrl = new URL(currentPath, Astro.site);
 const defaultUrl = new URL(localizedPaths[defaultLocale], Astro.site);
@@ -64,25 +52,15 @@ const defaultUrl = new URL(localizedPaths[defaultLocale], Astro.site);
   <body>
     <a class="skip-link" href="#main-content">{ui[locale].skipToContent}</a>
     <div class="site-frame">
-      <SiteHeader
-        locale={locale}
-        currentPath={currentPath}
-        alternatePath={resolvedAlternatePath}
-        currentLocalePath={currentLocalePath}
-      />
-      <main id="main-content">
-        <slot />
-      </main>
+      <SiteHeader locale={locale} currentPath={currentPath} alternatePath={resolvedAlternatePath} currentLocalePath={currentLocalePath} variant={headerVariant} />
+      <main id="main-content"><slot /></main>
       <SiteFooter locale={locale} />
     </div>
+    {showBackToTop && <BackToTop label={ui[locale].backToTop} />}
     <AnalyticsConsent locale={locale} />
   </body>
 </html>
 
 <style>
-  .site-frame {
-    display: grid;
-    min-height: 100vh;
-    grid-template-rows: auto 1fr auto;
-  }
+  .site-frame { position: relative; display: grid; min-height: 100vh; grid-template-rows: auto 1fr auto; }
 </style>

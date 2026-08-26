@@ -5,8 +5,8 @@ locale: en
 routeSlug: cognitive-biases
 translationKey: cognitive-biases
 category: UX writing exercise
-featured: false
-order: 5
+featured: true
+order: 2
 draft: false
 image:
   src: ../../../assets/images/projects/cognitive-biases.jpg

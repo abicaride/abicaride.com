@@ -1,72 +1,36 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
 import { ui, type Locale } from '../../i18n/config';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
-interface Props {
-  locale: Locale;
-}
-
+interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const copy = ui[locale];
 ---
 
 <BaseLayout title={copy.contact.title} description={copy.contact.description} locale={locale}>
   <section class="contact-shell" aria-labelledby="contact-title">
-    <p class="eyebrow">{copy.contact.eyebrow}</p>
-    <h1 id="contact-title">{copy.contact.heading}</h1>
-    <p class="lede">{copy.contact.introduction}</p>
-    <div class="contact-links">
-      <a href="mailto:abicaride@gmail.com">{copy.contact.emailLabel}<span aria-hidden="true"> ↗</span></a>
-      <a href="https://www.linkedin.com/in/abilene-caride/" target="_blank" rel="noreferrer">
-        {copy.contact.linkedinLabel}<span aria-hidden="true"> ↗</span>
-      </a>
+    <div class="contact-intro">
+      <p class="eyebrow">{copy.contact.eyebrow}</p>
+      <h1 id="contact-title">{copy.contact.heading}</h1>
+      <p>{copy.contact.introduction}</p>
+    </div>
+    <div class="contact-actions">
+      <a class="email-action" href="mailto:abicaride@gmail.com"><span>{copy.contact.emailLabel}</span><strong>abicaride@gmail.com</strong><span aria-hidden="true">→</span></a>
+      <a class="secondary-action" href="https://www.linkedin.com/in/abilene-caride/" target="_blank" rel="noreferrer">{copy.contact.linkedinLabel}<span aria-hidden="true">↗</span></a>
     </div>
     <p class="location">{copy.contact.location}</p>
   </section>
 </BaseLayout>
 
 <style>
-  .contact-shell {
-    display: grid;
-    max-width: var(--size-content);
-    margin-inline: auto;
-    padding: var(--space-section) var(--space-page) var(--space-24);
-    gap: var(--space-6);
-  }
-
-  h1 {
-    max-width: 12ch;
-  }
-
-  .lede {
-    max-width: var(--size-prose);
-    color: var(--color-text-muted);
-    font-size: var(--font-size-lg);
-  }
-
-  .contact-links {
-    display: grid;
-    margin-block-start: var(--space-6);
-    border-block-start: var(--border-width) solid var(--color-border);
-  }
-
-  .contact-links a {
-    display: flex;
-    padding-block: var(--space-4);
-    border-block-end: var(--border-width) solid var(--color-border);
-    color: var(--color-text);
-    font-family: var(--font-display);
-    font-size: var(--font-size-xl);
-    justify-content: space-between;
-    text-decoration: none;
-  }
-
-  .contact-links a:hover {
-    color: var(--color-accent);
-  }
-
-  .location {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
-  }
+  .contact-shell { display: grid; min-height: 42rem; max-width: var(--size-content); margin-inline: auto; padding: var(--space-section) var(--space-page); align-content: center; gap: var(--space-12); }
+  .contact-intro { display: grid; max-width: 54rem; gap: var(--space-5); }
+  h1 { max-width: 16ch; font-size: var(--font-size-3xl); }
+  .contact-intro > p:last-child { max-width: var(--size-prose); color: var(--color-ink-muted); font-size: var(--font-size-md); }
+  .contact-actions { display: grid; border-block-start: var(--border-width) solid var(--color-border); }
+  .email-action { display: grid; grid-template-columns: minmax(0, 1fr) auto; padding-block: var(--space-6); border-block-end: var(--border-width) solid var(--color-border); align-items: center; gap: var(--space-3); color: var(--color-green-deep); text-decoration: none; }
+  .email-action > span:first-child { grid-column: 1 / -1; color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .email-action strong { overflow-wrap: anywhere; font-family: var(--font-heading); font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.75rem); }
+  .secondary-action { display: flex; padding-block: var(--space-5); border-block-end: var(--border-width) solid var(--color-border); justify-content: space-between; color: var(--color-ink); font-family: var(--font-heading); font-weight: var(--font-weight-medium); text-decoration: none; }
+  .location { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
 </style>

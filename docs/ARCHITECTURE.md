@@ -38,9 +38,10 @@ runtime database or application server.
 
 ### Minimal client-side JavaScript
 
-Pages are static HTML and CSS. Two small scripts are deliberate exceptions: the
-root language gateway reads browser language preferences without storage or
-tracking, and the consent/analytics script responds to a visitor's local choice.
+Pages are static HTML and CSS. Small native-script enhancements are deliberate:
+the root language gateway reads browser language preferences without storage or
+tracking, the consent/analytics script responds to a visitor's local choice,
+and long pages may add an `IntersectionObserver`-driven Back to top control.
 
 ### Git as the production source of truth
 
@@ -91,6 +92,7 @@ configuration is external to this repository.
 - strict TypeScript through `astro/tsconfigs/strict`;
 - Astro components and semantic HTML;
 - native CSS and CSS custom properties;
+- self-hosted Inter and Montserrat WOFF2 files with no runtime font request;
 - no client UI framework.
 
 Astro is the only production dependency in `package.json`.
@@ -139,8 +141,9 @@ Astro is the only production dependency in `package.json`.
 
 ```text
 src/
-├── assets/                 Source images processed by Astro
+├── assets/                 Source images and self-hosted fonts
 ├── components/
+│   ├── case-studies/       Intentional bespoke case-study renderers
 │   └── pages/              Shared EN/ES page composition
 ├── content/
 │   └── projects/
@@ -255,6 +258,13 @@ flowchart LR
 finds the translated counterpart. `ProjectPage.astro` renders the Markdown body
 and optional structured components.
 
+The imaginArt project is one intentional exception to generic Markdown page
+composition. Paired collection entries continue to own routes, SEO and preview
+metadata, while `ImaginartCaseStudy.astro` and typed bilingual data in
+`src/data/imaginartCase.ts` render its evidence-led diagrams. This avoids both
+forcing a story-specific layout into Markdown and introducing an arbitrary page
+builder or CMS schema.
+
 ### Writing collection — Planned
 
 A separate Content Collection may later contain articles, notes or insights.
@@ -335,7 +345,9 @@ The implementation uses Basic Consent Mode v2 semantics:
 - the footer can reopen settings and withdrawal clears accessible GA cookies;
 - there are no custom events, Google Tag Manager or advertising features.
 
-This script is the intentional exception to the otherwise static client model.
+Analytics remains the only enhancement that uses storage or makes an optional
+third-party request. The root gateway and Back to top behavior neither track nor
+store visitor data.
 
 ## Deployment
 
@@ -399,11 +411,18 @@ flowchart LR
     DEV --> ASTRO["Astro implementation"]
 ```
 
-The existing workspace separates:
+The existing workspace is public to read through three view-only file links:
 
-- **Abi Website Moodboard** — references and preferences;
-- **Abi Website Foundations** — foundations, components and explorations;
-- **Abi Personal Website** — production-oriented page designs.
+- [**Abi Website Moodboard**](https://www.figma.com/board/PxH3eYTrRg5f2g8UenwGtP/Abi-Website-Moodboard)
+  — references and preferences;
+- [**Abi Website Foundations**](https://www.figma.com/design/2yrZXRDGo95taZ1J3VOPxx/Abi-Website-Foundations)
+  — foundations, components and explorations;
+- [**Abi Personal Website**](https://www.figma.com/design/qzSb1nHDgRm21LNLkCjaFT/Abi-Personal-Website)
+  — production-oriented page designs.
+
+Public link access is deliberately view-only. Abi and Albert retain their
+existing collaboration permissions, and visitors are not invited into the
+Figma team or given editing access.
 
 Moodboards and explorations are not approved specifications by default. There
 is no requirement for perfect or automatic bidirectional Figma/code sync.

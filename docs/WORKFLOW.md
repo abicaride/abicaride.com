@@ -143,6 +143,10 @@ The shared design workspace is divided into:
 - [Abi Personal Website](https://www.figma.com/design/qzSb1nHDgRm21LNLkCjaFT/Abi-Personal-Website)
   for production-oriented homepage and case-study designs.
 
+All three links are public and view-only. Public readers can follow the design
+process without joining the Figma team or receiving edit access. The repository
+remains the implementation and production source of truth.
+
 Moodboard references and explorations are not approved designs by default.
 
 ## Add something the website cannot currently do

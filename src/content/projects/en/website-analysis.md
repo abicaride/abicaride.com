@@ -6,8 +6,8 @@ routeSlug: website-analysis
 translationKey: website-analysis
 category: UX writing · Postgraduate project
 year: 2022
-featured: true
-order: 3
+featured: false
+order: 4
 draft: false
 image:
   src: ../../../assets/images/projects/website-analysis.jpg

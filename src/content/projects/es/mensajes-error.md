@@ -5,8 +5,8 @@ locale: es
 routeSlug: mensajes-error
 translationKey: error-messages
 category: Ejercicio de UX writing
-featured: false
-order: 6
+featured: true
+order: 3
 draft: false
 image:
   src: ../../../assets/images/projects/error-messages.jpg

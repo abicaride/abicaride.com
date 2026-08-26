@@ -6,7 +6,7 @@ routeSlug: mensajes-transaccionales
 translationKey: transactional-messages
 category: Ejercicio de UX writing
 featured: false
-order: 7
+order: 8
 draft: false
 image:
   src: ../../../assets/images/projects/transactional-messages.jpg

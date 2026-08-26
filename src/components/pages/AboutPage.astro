@@ -1,117 +1,132 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
 import { Picture } from 'astro:assets';
-import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
+import aboutImage from '../../assets/images/abilene-about-v2.png';
+import { ui, type Locale } from '../../i18n/config';
 import { profiles } from '../../data/profile';
-import outdoorsImage from '../../assets/images/abilene-outdoors.jpg';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LineIcon from '../LineIcon.astro';
 
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const copy = ui[locale];
 const profile = profiles[locale];
+const primaryLanguages = profile.languages.slice(0, 4);
+const additionalLanguages = profile.languages.slice(4);
 ---
 
-<BaseLayout title={copy.about.title} description={copy.about.description} locale={locale}>
-  <article class="about-shell">
-    <header class="about-header">
-      <div class="header-copy">
+<BaseLayout title={copy.about.title} description={copy.about.description} locale={locale} showBackToTop>
+  <article class="about-page">
+    <header class="about-hero" data-back-to-top-anchor>
+      <div class="hero-copy">
         <p class="eyebrow">{copy.about.eyebrow}</p>
         <h1>{copy.about.heading}</h1>
-        <p class="lede">{copy.about.introduction}</p>
+        <p>{copy.about.introduction}</p>
+        <p>{copy.about.story}</p>
       </div>
-      <Picture
-        src={outdoorsImage}
-        formats={['avif', 'webp']}
-        fallbackFormat="jpg"
-        widths={[320, 480, 640, 800, 960, 1200]}
-        sizes="(min-width: 78rem) 448px, (min-width: 48rem) 40vw, calc(100vw - 32px)"
-        quality={75}
-        alt={locale === 'en' ? 'Abilene smiling beside the waterfront' : 'Abilene sonriendo junto al paseo marítimo'}
-        loading="eager"
-        decoding="async"
-        fetchpriority="high"
-      />
+      <figure>
+        <Picture src={aboutImage} formats={['avif', 'webp']} fallbackFormat="png" widths={[420, 640, 840, 1080]} sizes="(min-width: 80rem) 560px, (min-width: 50rem) 44vw, calc(100vw - 40px)" quality={82} alt={copy.about.heroAlt} loading="eager" decoding="async" fetchpriority="high" />
+      </figure>
     </header>
 
-    <section class="story" aria-label={locale === 'en' ? 'My story' : 'Mi historia'}>
-      <p>{copy.about.story}</p>
-      <p>{copy.about.perspective}</p>
-      <aside><h2>{copy.about.valuesTitle}</h2><p>{copy.about.valuesText}</p></aside>
-    </section>
-
-    <section class="profile-section" aria-labelledby="experience-title">
-      <header><p class="section-number" aria-hidden="true">01</p><h2 id="experience-title">{copy.about.experienceTitle}</h2></header>
-      <ol class="timeline">
-        {profile.experience.map((item) => (
-          <li>
-            <div><h3>{item.title}</h3><p class="organization">{item.organization}</p></div>
-            <p class="period">{item.period}</p>
-            {item.description && <p class="description">{item.description}</p>}
-          </li>
+    <section class="career section-band" aria-labelledby="career-title">
+      <div class="section-intro"><p class="eyebrow">{copy.about.pathEyebrow}</p><h2 id="career-title">{copy.about.pathTitle}</h2><p>{copy.about.pathText}</p></div>
+      <ol class="career-path">
+        {copy.about.path.map((item, index) => (
+          <li><LineIcon name={item.icon}/><div><h3>{item.title}</h3><p>{item.detail}</p></div>{index < copy.about.path.length - 1 && <span aria-hidden="true">→</span>}</li>
         ))}
       </ol>
     </section>
 
-    <section class="profile-section" aria-labelledby="education-title">
-      <header><p class="section-number" aria-hidden="true">02</p><h2 id="education-title">{copy.about.educationTitle}</h2></header>
-      <ol class="education">
-        {profile.education.map((item) => <li><div><h3>{item.title}</h3><p>{item.organization}</p></div><p class="period">{item.period}</p></li>)}
+    <section class="principles section-band" aria-labelledby="principles-title">
+      <div class="section-intro"><p class="eyebrow">{copy.about.principlesEyebrow}</p><h2 id="principles-title">{copy.about.principlesTitle}</h2></div>
+      <ul>
+        {copy.about.principles.map((item) => <li><LineIcon name={item.icon}/><h3>{item.title}</h3><p>{item.text}</p></li>)}
+      </ul>
+    </section>
+
+    <section class="record section-band" aria-labelledby="experience-title">
+      <header><p class="eyebrow">{copy.about.experienceTitle}</p><h2 id="experience-title">{copy.about.experienceIntro}</h2></header>
+      <ol class="timeline">
+        {profile.experience.map((item) => <li><p class="period">{item.period}</p><div><h3>{item.organization}</h3><p>{item.title}</p></div></li>)}
       </ol>
     </section>
 
-    <div class="profile-pair">
-      <section aria-labelledby="languages-title">
-        <p class="section-number" aria-hidden="true">03</p>
-        <h2 id="languages-title">{copy.about.languagesTitle}</h2>
-        <ul>{profile.languages.map((language) => <li>{language}</li>)}</ul>
-      </section>
-      <section aria-labelledby="tools-title">
-        <p class="section-number" aria-hidden="true">04</p>
-        <h2 id="tools-title">{copy.about.toolsTitle}</h2>
-        <dl>{profile.tools.map((group) => <div><dt>{group.label}</dt><dd>{group.items}</dd></div>)}</dl>
-      </section>
-    </div>
+    <section class="education section-band" aria-labelledby="education-title">
+      <header><p class="eyebrow">{copy.about.educationTitle}</p><h2 id="education-title">{copy.about.educationIntro}</h2></header>
+      <ol>
+        {profile.education.map((item) => <li><div><h3>{item.title}</h3><p>{item.organization}</p></div>{item.period && <p class="period">{item.period}</p>}</li>)}
+      </ol>
+    </section>
 
-    <a class="contact-cta" href={getLocalizedPath(locale, 'contact')}>
-      <span>{locale === 'en' ? 'Have something worth talking about?' : '¿Tienes algo de lo que merezca la pena hablar?'}</span>
-      <strong>{copy.about.contactLink}<span aria-hidden="true"> ↗</span></strong>
-    </a>
+    <section class="personal section-band" aria-labelledby="personal-title">
+      <div class="section-intro"><p class="eyebrow">{copy.about.personalEyebrow}</p><h2 id="personal-title">{copy.about.personalTitle}</h2></div>
+      <ul>{copy.about.personal.map((item) => <li><LineIcon name={item.icon}/><div><h3>{item.title}</h3><p>{item.text}</p></div></li>)}</ul>
+    </section>
+
+    <section class="languages section-band" aria-labelledby="languages-title">
+      <header><p class="eyebrow">{copy.about.languagesTitle}</p><h2 id="languages-title">{copy.about.languagesIntro}</h2></header>
+      <ul class="primary-languages">{primaryLanguages.map((language) => <li>{language}</li>)}</ul>
+      <p>{additionalLanguages.join(' · ')}</p>
+    </section>
   </article>
 </BaseLayout>
 
 <style>
-  .about-shell { display: grid; max-width: var(--size-content); margin-inline: auto; padding: var(--space-section) var(--space-page) var(--space-24); gap: var(--space-20); }
-  .about-header { display: grid; gap: var(--space-8); }
-  .header-copy { display: grid; align-content: center; gap: var(--space-5); }
-  .header-copy h1 { max-width: 15ch; font-size: var(--font-size-2xl); }
-  .lede { max-width: var(--size-prose); color: var(--color-text-muted); font-size: var(--font-size-lg); }
-  .about-header img { width: 100%; height: auto; aspect-ratio: 4 / 3; border-radius: var(--radius-lg); object-fit: cover; }
-  .story { display: grid; max-width: 54rem; gap: var(--space-6); color: var(--color-text-muted); font-family: var(--font-display); font-size: var(--font-size-lg); }
-  .story aside { display: grid; margin-block-start: var(--space-4); padding: var(--space-8); border-radius: var(--radius-lg); background: var(--color-surface); gap: var(--space-3); color: var(--color-text); font-family: var(--font-sans); font-size: var(--font-size-base); }
-  .story aside h2 { font-size: var(--font-size-lg); }
-  .profile-section { display: grid; gap: var(--space-8); }
-  .profile-section > header { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: var(--space-6); }
-  .section-number { color: var(--color-accent); font-family: var(--font-mono); font-size: var(--font-size-sm); }
-  .timeline, .education { display: grid; margin: 0; padding: 0; list-style: none; }
+  .about-page { font-size: clamp(1.05rem, 1rem + .25vw, 1.25rem); }
+  .about-hero, .section-band { padding: var(--space-section) var(--space-page); }
+  .about-hero { display: grid; max-width: var(--size-wide); margin-inline: auto; gap: var(--space-10); }
+  .hero-copy { display: grid; align-content: center; gap: var(--space-6); }
+  .hero-copy h1 { max-width: 13ch; font-size: var(--font-size-3xl); }
+  .hero-copy > p:not(.eyebrow) { max-width: var(--size-prose); }
+  .hero-copy > p:last-child { color: var(--color-ink-muted); }
+  figure { min-height: 34rem; overflow: hidden; background: var(--color-surface-strong); }
+  figure :global(picture), figure :global(img) { width: 100%; height: 100%; }
+  figure :global(img) { object-fit: cover; object-position: center top; }
+  .section-band > * { max-width: var(--size-content); margin-inline: auto; }
+  .section-intro, .record > header, .education > header, .languages > header { display: grid; gap: var(--space-4); }
+  .section-intro > p:last-child { max-width: var(--size-prose); color: var(--color-ink-muted); }
+  .career { display: grid; background: var(--color-surface); gap: var(--space-12); }
+  .career-path { display: grid; margin-block-start: var(--space-10); padding: 0; gap: var(--space-4); list-style: none; }
+  .career-path li { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); padding-block: var(--space-5); border-block-start: var(--border-width) solid var(--color-border); align-items: center; gap: var(--space-5); }
+  .career-path svg { color: var(--color-green); }
+  .career-path li > div { display: grid; gap: var(--space-1); }
+  .career-path h3 { font-size: var(--font-size-md); }
+  .career-path p { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .career-path li > span { position: absolute; inset-inline-start: .55rem; inset-block-end: -1.1rem; color: var(--color-green); transform: rotate(90deg); }
+  .principles { display: grid; background: var(--color-canvas); gap: var(--space-12); }
+  .principles ul { display: grid; margin-block-start: var(--space-10); padding: 0; list-style: none; }
+  .principles li { display: grid; padding-block: var(--space-8); border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-4); }
+  .principles svg { color: var(--color-green-deep); }
+  .principles p { max-width: 32ch; color: var(--color-ink-muted); }
+  .record { display: grid; background: var(--color-surface-strong); gap: var(--space-10); }
+  .timeline, .education ol { display: grid; margin-block-start: var(--space-8); padding: 0; list-style: none; }
   .timeline li, .education li { display: grid; padding-block: var(--space-5); border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-3); }
-  h3 { font-size: var(--font-size-md); }
-  .organization, .education li div p { color: var(--color-accent); }
-  .period, .description, .profile-pair li, dd { color: var(--color-text-muted); }
-  .description { max-width: var(--size-prose); }
-  .profile-pair { display: grid; gap: var(--space-12); }
-  .profile-pair section { display: grid; align-content: start; gap: var(--space-4); }
-  .profile-pair ul { display: grid; margin: 0; padding: 0; gap: var(--space-2); list-style: none; }
-  .profile-pair dl { display: grid; gap: var(--space-5); }
-  .profile-pair dl div { display: grid; gap: var(--space-1); }
-  dt { font-weight: var(--font-weight-medium); }
-  dd { margin: 0; }
-  .contact-cta { display: flex; padding: var(--space-8); border-radius: var(--radius-lg); background: var(--color-text); color: var(--color-background); gap: var(--space-4); justify-content: space-between; flex-wrap: wrap; text-decoration: none; }
-  .contact-cta:hover { color: var(--color-surface); }
-  @media (min-width: 48rem) {
-    .about-header { grid-template-columns: minmax(0, 1.2fr) minmax(18rem, .8fr); align-items: center; }
-    .timeline li { grid-template-columns: minmax(0, 1fr) auto; }
-    .timeline .description { grid-column: 1 / -1; }
-    .education li { grid-template-columns: minmax(0, 1fr) auto; }
-    .profile-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .timeline li > div, .education li > div { display: grid; gap: var(--space-1); }
+  .timeline h3, .education h3 { font-size: var(--font-size-md); }
+  .timeline li > div p, .education li > div p, .period { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .education { display: grid; background: var(--color-canvas); gap: var(--space-10); }
+  .personal { display: grid; background: var(--color-surface); gap: var(--space-12); }
+  .personal ul { display: grid; margin-block-start: var(--space-8); padding: 0; gap: var(--space-8); list-style: none; }
+  .personal li { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--space-5); }
+  .personal svg { color: var(--color-green); }
+  .personal li > div { display: grid; gap: var(--space-2); }
+  .personal h3 { font-size: var(--font-size-md); }
+  .personal p { color: var(--color-ink-muted); }
+  .languages { display: grid; background: var(--color-canvas); gap: var(--space-10); }
+  .primary-languages { display: grid; margin-block-start: var(--space-8); padding: 0; list-style: none; }
+  .primary-languages li { padding-block: var(--space-4); border-block-start: var(--border-width) solid var(--color-border); font-family: var(--font-heading); font-weight: var(--font-weight-medium); }
+  .languages > p { margin-block-start: var(--space-6); color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+
+  @media (min-width: 50rem) {
+    .about-hero { grid-template-columns: minmax(0, 1.1fr) minmax(22rem, .9fr); align-items: stretch; }
+    figure { min-height: 50rem; }
+    .career-path { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); }
+    .career-path li { grid-template-columns: 1fr; align-content: start; }
+    .career-path li > span { inset: 1.5rem -1.1rem auto auto; transform: none; }
+    .principles ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .principles li { padding-inline: var(--space-8); border-inline-start: var(--border-width) solid var(--color-border); border-block-start: 0; }
+    .principles li:first-child { padding-inline-start: 0; border-inline-start: 0; }
+    .timeline li { grid-template-columns: 10rem minmax(0, 1fr); }
+    .education ol, .personal ul, .primary-languages { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-12); }
   }
 </style>

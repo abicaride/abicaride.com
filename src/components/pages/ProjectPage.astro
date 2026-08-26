@@ -1,8 +1,9 @@
 ---
-import { render, type CollectionEntry } from 'astro:content';
 import { Picture } from 'astro:assets';
+import { render, type CollectionEntry } from 'astro:content';
 import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ImaginartCaseStudy from '../case-studies/ImaginartCaseStudy.astro';
 import ProjectGallery from '../ProjectGallery.astro';
 import ProjectMetadata from '../ProjectMetadata.astro';
 import ProjectMetrics from '../ProjectMetrics.astro';
@@ -11,66 +12,54 @@ interface Props { locale: Locale; project: CollectionEntry<'projects'>; alternat
 const { locale, project, alternatePath } = Astro.props;
 const copy = ui[locale];
 const { Content } = await render(project);
+const isImaginart = project.data.translationKey === 'imaginart-b2b-content';
 ---
 
-<BaseLayout title={project.data.title} description={project.data.description} locale={locale} alternatePath={alternatePath}>
-  <article class="project-shell">
-    <a class="back-link" href={getLocalizedPath(locale, 'projects')}><span aria-hidden="true">← </span>{copy.project.back}</a>
-    <header class="project-header">
-      <ProjectMetadata
-        locale={locale}
-        category={project.data.category}
-        year={project.data.year}
-        company={project.data.company}
-        client={project.data.client}
-        role={project.data.role}
-        period={project.data.period}
-      />
-      <h1>{project.data.title}</h1>
-      <p class="lede">{project.data.description}</p>
-      <ul class="tags" aria-label={locale === 'en' ? 'Topics' : 'Temas'}>{project.data.tags.map((tag) => <li>{tag}</li>)}</ul>
-    </header>
-    <figure class="project-image">
-      <Picture
-        src={project.data.image.src}
-        formats={['avif', 'webp']}
-        fallbackFormat="jpg"
-        widths={[480, 720, 960, 1200]}
-        sizes="(min-width: 78rem) 1184px, calc(100vw - 32px)"
-        quality={75}
-        alt={project.data.image.alt}
-        loading="eager"
-        decoding="async"
-        fetchpriority="high"
-      />
-    </figure>
-    <div class="project-body"><Content /></div>
-    <ProjectMetrics locale={locale} metrics={project.data.metrics} />
-    <ProjectGallery locale={locale} gallery={project.data.gallery} />
-    {project.data.externalUrl && (
-      <aside class="project-link">
-        <p>{locale === 'en' ? 'Want to see the source material?' : '¿Quieres ver el material original?'}</p>
-        <a class="arrow-link" href={project.data.externalUrl} target="_blank" rel="noreferrer">{project.data.externalLabel ?? copy.project.visit}</a>
-      </aside>
-    )}
-  </article>
+<BaseLayout title={project.data.title} description={project.data.description} locale={locale} alternatePath={alternatePath} showBackToTop>
+  {isImaginart ? (
+    <ImaginartCaseStudy locale={locale} />
+  ) : (
+    <article class="project-shell" data-back-to-top-anchor>
+      <a class="back-link" href={getLocalizedPath(locale, 'projects')}><span aria-hidden="true">← </span>{copy.project.back}</a>
+      <header class="project-header">
+        <ProjectMetadata locale={locale} category={project.data.category} year={project.data.year} company={project.data.company} client={project.data.client} role={project.data.role} period={project.data.period} />
+        <h1>{project.data.title}</h1>
+        <p class="lede">{project.data.description}</p>
+        {project.data.tags.length > 0 && <ul class="tags" aria-label={locale === 'en' ? 'Topics' : 'Temas'}>{project.data.tags.map((tag) => <li>{tag}</li>)}</ul>}
+      </header>
+      <figure class="project-image">
+        <Picture src={project.data.image.src} formats={['avif', 'webp']} fallbackFormat="jpg" widths={[480, 720, 960, 1200, 1440]} sizes="(min-width: 80rem) 1280px, calc(100vw - 40px)" quality={78} alt={project.data.image.alt} loading="eager" decoding="async" fetchpriority="high" />
+      </figure>
+      <div class="body-wrap"><div class="project-body"><Content /></div></div>
+      <ProjectMetrics locale={locale} metrics={project.data.metrics} />
+      <ProjectGallery locale={locale} gallery={project.data.gallery} />
+      {project.data.externalUrl && (
+        <aside class="project-link">
+          <p>{locale === 'en' ? 'Want to see the source material?' : '¿Quieres ver el material original?'}</p>
+          <a class="arrow-link" href={project.data.externalUrl} target="_blank" rel="noreferrer">{project.data.externalLabel ?? copy.project.visit}</a>
+        </aside>
+      )}
+    </article>
+  )}
 </BaseLayout>
 
 <style>
-  .project-shell { display: grid; max-width: var(--size-content); margin-inline: auto; padding: var(--space-section) var(--space-page) var(--space-24); gap: var(--space-8); }
-  .back-link { justify-self: start; }
-  .project-header { display: grid; max-width: 60rem; gap: var(--space-5); }
+  .project-shell { display: grid; max-width: var(--size-content); margin-inline: auto; padding: var(--space-section) var(--space-page); gap: var(--space-10); }
+  .back-link { justify-self: start; color: var(--color-green-deep); font-family: var(--font-heading); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); text-decoration: none; }
+  .project-header { display: grid; max-width: 64rem; gap: var(--space-5); }
   .project-header h1 { font-size: var(--font-size-2xl); overflow-wrap: anywhere; }
-  .lede { max-width: var(--size-prose); color: var(--color-text-muted); font-size: var(--font-size-lg); }
-  .tags { display: flex; padding: 0; gap: var(--space-2); flex-wrap: wrap; list-style: none; }
-  .tags li { padding: var(--space-1) var(--space-3); border: var(--border-width) solid var(--color-border); border-radius: var(--radius-pill); color: var(--color-text-muted); font-size: var(--font-size-sm); }
-  .project-image { margin: var(--space-4) 0; }
-  .project-image img { width: 100%; height: auto; max-height: 46rem; border-radius: var(--radius-lg); background: var(--color-surface); object-fit: cover; }
-  .project-body { display: grid; max-width: var(--size-prose); gap: var(--space-4); }
-  .project-body :global(h2) { margin-block-start: var(--space-8); }
-  .project-body :global(h3) { margin-block-start: var(--space-6); }
-  .project-body :global(ul), .project-body :global(ol) { display: grid; padding-inline-start: var(--space-6); gap: var(--space-2); }
+  .lede { max-width: var(--size-prose); color: var(--color-ink-muted); font-size: var(--font-size-lg); }
+  .tags { display: flex; margin: 0; padding: var(--space-4) 0 0; border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-2) var(--space-4); flex-wrap: wrap; list-style: none; }
+  .tags li { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .tags li:not(:last-child)::after { content: '·'; margin-inline-start: var(--space-4); color: var(--color-green); }
+  .project-image { margin-block: var(--space-6); }
+  .project-image :global(img) { width: 100%; height: auto; max-height: 50rem; background: var(--color-surface); object-fit: cover; }
+  .body-wrap { margin-inline: calc(-1 * var(--space-page)); padding: var(--space-section) var(--space-page); background: var(--color-surface); }
+  .project-body { display: grid; max-width: var(--size-prose); margin-inline: auto; gap: var(--space-5); font-size: clamp(1.05rem, 1rem + .25vw, 1.25rem); }
+  .project-body :global(h2) { margin-block-start: var(--space-10); }
+  .project-body :global(h3) { margin-block-start: var(--space-8); }
+  .project-body :global(ul), .project-body :global(ol) { display: grid; padding-inline-start: var(--space-6); gap: var(--space-3); }
   .project-body :global(a) { overflow-wrap: anywhere; }
-  .project-link { display: grid; max-width: var(--size-prose); margin-block-start: var(--space-4); padding: var(--space-8); border-radius: var(--radius-lg); background: var(--color-surface); gap: var(--space-3); }
+  .project-link { display: grid; max-width: var(--size-prose); margin-block-start: var(--space-6); padding-block: var(--space-8); border-block: var(--border-width) solid var(--color-border); gap: var(--space-3); }
   .project-link .arrow-link { justify-self: start; }
 </style>

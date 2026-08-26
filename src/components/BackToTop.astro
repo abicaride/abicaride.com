@@ -1,0 +1,52 @@
+---
+interface Props { label: string; }
+const { label } = Astro.props;
+---
+
+<button class="back-to-top" type="button" aria-label={label} title={label} data-back-to-top hidden>↑</button>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-back-to-top]');
+  const anchor = document.querySelector('[data-back-to-top-anchor]') ?? document.querySelector('main > :first-child');
+
+  if (button && anchor) {
+    const observer = new IntersectionObserver(([entry]) => {
+      button.hidden = entry.isIntersecting;
+    }, { threshold: 0.08 });
+
+    observer.observe(anchor);
+    button.addEventListener('click', () => {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+  }
+</script>
+
+<style>
+  .back-to-top {
+    position: fixed;
+    z-index: 15;
+    inset-inline-end: max(var(--space-page), 1rem);
+    inset-block-end: max(var(--space-page), 1rem);
+    display: grid;
+    width: 3.5rem;
+    height: 3.5rem;
+    padding: 0;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-canvas) 94%, transparent);
+    box-shadow: 0 0.5rem 2rem color-mix(in srgb, var(--color-ink) 12%, transparent);
+    color: var(--color-green-deep);
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    place-items: center;
+  }
+
+  .back-to-top:hover { background: var(--color-surface); }
+  .back-to-top[hidden] { display: none; }
+
+  @media (max-width: 40rem) {
+    .back-to-top { width: 3rem; height: 3rem; inset-block-end: 5rem; }
+  }
+</style>

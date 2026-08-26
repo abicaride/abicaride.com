@@ -1,125 +1,68 @@
 ---
-import {
-  getLocalizedPath,
-  languageNames,
-  switchLocalePath,
-  ui,
-  type Locale,
-} from '../i18n/config';
+import { getLocalizedPath, switchLocalePath, ui, type Locale } from '../i18n/config';
 
 interface Props {
   locale: Locale;
   currentPath: string;
   alternatePath?: string;
   currentLocalePath?: string;
+  variant?: 'default' | 'overlay';
 }
 
-const { locale, currentPath, alternatePath, currentLocalePath } = Astro.props;
+const { locale, currentPath, alternatePath, currentLocalePath, variant = 'default' } = Astro.props;
 const copy = ui[locale];
 const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 const languagePath = alternatePath ?? switchLocalePath(currentPath, otherLocale);
 const normalizePath = (path: string) => path.replace(/\/+$/, '') || '/';
 const normalizedCurrentPath = normalizePath(currentPath);
-
+const homePath = getLocalizedPath(locale);
 const navigation = [
-  { label: copy.nav.home, href: getLocalizedPath(locale) },
+  { label: copy.nav.home, href: homePath },
   { label: copy.nav.projects, href: getLocalizedPath(locale, 'projects') },
   { label: copy.nav.about, href: getLocalizedPath(locale, 'about') },
   { label: copy.nav.contact, href: getLocalizedPath(locale, 'contact') },
 ];
-
 const isActive = (href: string) => {
   const normalizedHref = normalizePath(href);
-
-  return normalizedHref === normalizePath(getLocalizedPath(locale))
-    ? normalizedCurrentPath === normalizedHref
-    : normalizedCurrentPath === normalizedHref || normalizedCurrentPath.startsWith(`${normalizedHref}/`);
+  return normalizedCurrentPath === normalizedHref || (normalizedHref !== normalizePath(homePath) && normalizedCurrentPath.startsWith(`${normalizedHref}/`));
 };
 ---
 
-<header class="site-header">
+<header class:list={['site-header', variant]}>
   <div class="header-inner">
     <a class="brand" href={getLocalizedPath(locale)}>{copy.siteName}</a>
-
-    <nav aria-label={copy.primaryNavigation}>
-      <ul class="nav-list">
-        {navigation.map((item) => (
-          <li>
-            <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
-              {item.label}
-            </a>
-          </li>
-        ))}
+    <nav class="primary-nav" aria-label={copy.primaryNavigation}>
+      <ul>
+        {navigation.map((item) => <li><a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a></li>)}
       </ul>
     </nav>
-
-    <nav aria-label={copy.languageNavigation}>
-      <ul class="language-list">
-        <li>
-          <a href={currentLocalePath ?? currentPath} lang={locale} aria-current="page">{languageNames[locale]}</a>
-        </li>
-        <li>
-          <a href={languagePath} lang={otherLocale} hreflang={otherLocale}>
-            {languageNames[otherLocale]}
-          </a>
-        </li>
-      </ul>
+    <nav class="language-nav" aria-label={copy.languageNavigation}>
+      <a href={currentLocalePath ?? currentPath} lang={locale} aria-current="page"><span class="visually-hidden">{locale === 'en' ? 'English' : 'Español'}</span>{locale.toUpperCase()}</a>
+      <span aria-hidden="true">/</span>
+      <a href={languagePath} lang={otherLocale} hreflang={otherLocale}><span class="visually-hidden">{otherLocale === 'en' ? 'English' : 'Español'}</span>{otherLocale.toUpperCase()}</a>
     </nav>
   </div>
 </header>
 
 <style>
-  .site-header {
-    border-block-end: var(--border-width) solid var(--color-border);
-    background: color-mix(in srgb, var(--color-background) 94%, transparent);
-  }
+  .site-header { position: relative; z-index: 10; border-block-end: var(--border-width) solid var(--color-border); background: var(--color-canvas); }
+  .site-header.overlay { position: absolute; inset: 0 0 auto; border-color: color-mix(in srgb, var(--color-canvas) 28%, transparent); background: transparent; }
+  .header-inner { display: flex; min-height: var(--size-header); max-width: var(--size-wide); margin-inline: auto; padding: var(--space-5) var(--space-page); align-items: center; gap: var(--space-4) var(--space-8); }
+  .brand { margin-inline-end: auto; color: var(--color-green-deep); font-family: var(--font-heading); font-size: clamp(1.35rem, 1.1rem + 0.8vw, 2rem); font-weight: var(--font-weight-medium); letter-spacing: var(--letter-spacing-tight); text-decoration: none; white-space: nowrap; }
+  ul { display: flex; margin: 0; padding: 0; align-items: center; gap: clamp(var(--space-4), 3vw, var(--space-8)); list-style: none; }
+  nav a { color: var(--color-green-deep); font-family: var(--font-heading); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); text-decoration: none; }
+  nav a:hover, nav a[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 0.12rem; text-underline-offset: 0.4rem; }
+  .language-nav { display: flex; align-items: center; gap: var(--space-2); color: var(--color-ink-muted); }
+  .language-nav a { font-size: var(--font-size-xs); letter-spacing: 0.04em; }
+  .overlay .brand { color: var(--color-green-deep); }
+  .overlay .primary-nav a, .overlay .language-nav, .overlay .language-nav a { color: var(--color-canvas); text-shadow: 0 1px 16px color-mix(in srgb, var(--color-green-deep) 78%, transparent); }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
-  .header-inner {
-    display: flex;
-    min-height: var(--size-header);
-    max-width: var(--size-content);
-    margin-inline: auto;
-    padding: var(--space-4) var(--space-page);
-    align-items: center;
-    gap: var(--space-4) var(--space-8);
-    flex-wrap: wrap;
-  }
-
-  .brand {
-    margin-inline-end: auto;
-    color: var(--color-text);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: var(--letter-spacing-tight);
-    text-decoration: none;
-  }
-
-  .nav-list,
-  .language-list {
-    display: flex;
-    margin: 0;
-    padding: 0;
-    gap: var(--space-3) var(--space-5);
-    flex-wrap: wrap;
-    list-style: none;
-  }
-
-  .language-list {
-    gap: var(--space-3);
-    font-size: var(--font-size-sm);
-  }
-
-  nav a {
-    color: var(--color-text-muted);
-    text-decoration: none;
-  }
-
-  nav a:hover {
-    color: var(--color-text);
-  }
-
-  a[aria-current='page'] {
-    color: var(--color-text);
-    font-weight: var(--font-weight-medium);
-    text-decoration-thickness: var(--focus-ring-width);
+  @media (max-width: 46rem) {
+    .header-inner { min-height: 5.5rem; align-items: flex-start; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+    .brand { font-size: 1.45rem; }
+    .primary-nav { order: 3; width: 100%; }
+    .primary-nav ul { justify-content: space-between; gap: var(--space-3); }
+    .language-nav { margin-block-start: 0.3rem; }
   }
 </style>

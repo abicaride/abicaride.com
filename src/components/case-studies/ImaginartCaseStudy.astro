@@ -1,0 +1,203 @@
+---
+import { imaginartCase } from '../../data/imaginartCase';
+import { getLocalizedPath, type Locale } from '../../i18n/config';
+import LineIcon from '../LineIcon.astro';
+
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const copy = imaginartCase[locale];
+---
+
+<article class="case-study">
+  <header class="case-hero" data-back-to-top-anchor>
+    <a class="back-link" href={getLocalizedPath(locale, 'projects')}><span aria-hidden="true">←</span> {copy.close.back}</a>
+    <div class="hero-copy">
+      <p class="eyebrow">{copy.hero.eyebrow}</p>
+      <h1>{copy.hero.title}</h1>
+      <p class="descriptor">{copy.hero.descriptor}</p>
+      <p class="role">{copy.hero.role}</p>
+    </div>
+    <p class="hero-intro">{copy.hero.introduction}</p>
+  </header>
+
+  <section class="collaboration story-section" aria-labelledby="collaboration-title">
+    <div class="section-copy">
+      <p class="eyebrow">{copy.collaboration.eyebrow}</p>
+      <h2 id="collaboration-title">{copy.collaboration.title}</h2>
+      <p>{copy.collaboration.introduction}</p>
+    </div>
+    <div class="collaboration-flow" role="group" aria-label={copy.collaboration.note}>
+      <div class="inputs">
+        <div class="diagram-node"><LineIcon name="structure"/><strong>{copy.collaboration.engineering}</strong><span>{copy.collaboration.engineeringDetail}</span></div>
+        <div class="diagram-node"><LineIcon name="people"/><strong>{copy.collaboration.sales}</strong><span>{copy.collaboration.salesDetail}</span></div>
+      </div>
+      <span class="flow-arrow" aria-hidden="true">→</span>
+      <div class="diagram-node central"><strong>{copy.collaboration.abilene}</strong><span>{copy.collaboration.abileneDetail}</span></div>
+      <span class="flow-arrow" aria-hidden="true">→</span>
+      <div class="diagram-node"><LineIcon name="honest"/><strong>{copy.collaboration.management}</strong><span>{copy.collaboration.managementDetail}</span></div>
+    </div>
+    <p class="diagram-note">{copy.collaboration.note}</p>
+  </section>
+
+  <section class="newsletter story-section" aria-labelledby="newsletter-title">
+    <header class="story-heading"><p class="story-number">{copy.newsletter.number}</p><div><p class="context">{copy.newsletter.context}</p><h2 id="newsletter-title">{copy.newsletter.title}</h2><p>{copy.newsletter.introduction}</p></div></header>
+    <div class="metric" aria-label={`${copy.newsletter.earlier} to ${copy.newsletter.revised}`}>
+      <strong>{copy.newsletter.earlier}</strong><span class="metric-line" aria-hidden="true"><i></i><i></i></span><strong>{copy.newsletter.revised}</strong>
+      <p>{copy.newsletter.delta}</p>
+    </div>
+    <div class="hierarchy-comparison">
+      <div><h3>{locale === 'en' ? 'Earlier' : 'Antes'}</h3><ol>{copy.newsletter.earlierSteps.map((step) => <li>{step}</li>)}</ol></div>
+      <span aria-hidden="true">→</span>
+      <div class="revised"><h3>{locale === 'en' ? 'Revised' : 'Revisado'}</h3><ol>{copy.newsletter.revisedSteps.map((step) => <li>{step}</li>)}</ol></div>
+    </div>
+    <p class="disclaimer">{copy.newsletter.disclaimer}</p>
+  </section>
+
+  <section class="turtle story-section" aria-labelledby="turtle-title">
+    <header class="story-heading"><p class="story-number">{copy.turtle.number}</p><div><p class="context">{copy.turtle.context}</p><h2 id="turtle-title">{copy.turtle.title}</h2><p>{copy.turtle.introduction}</p></div></header>
+    <div class="transformation-flow">
+      <div class="flow-stage"><LineIcon name="structure"/><strong>{copy.turtle.input}</strong></div><span aria-hidden="true">→</span>
+      <div class="flow-stage central"><strong>{copy.turtle.work}</strong><ul>{copy.turtle.actions.map((action) => <li>{action}</li>)}</ul></div><span aria-hidden="true">→</span>
+      <div class="flow-stage"><LineIcon name="clear"/><strong>{copy.turtle.output}</strong></div>
+    </div>
+    <ul class="transformations">{copy.turtle.transformations.map((item) => <li>{item}</li>)}</ul>
+    <p class="takeaway">{copy.turtle.takeaway}</p>
+  </section>
+
+  <section class="event story-section" aria-labelledby="event-title">
+    <header class="story-heading"><p class="story-number">{copy.event.number}</p><div><p class="context">{copy.event.context}</p><h2 id="event-title">{copy.event.title}</h2><p>{copy.event.introduction}</p></div></header>
+    <div class="campaign-flow">
+      <ul>{copy.event.channels.map((channel) => <li><LineIcon name="event" size={26}/><span>{channel}</span></li>)}</ul>
+      <span aria-hidden="true">↓</span><strong>{copy.event.registration}</strong><span aria-hidden="true">↓</span><strong class="event-node">{copy.event.event}</strong>
+    </div>
+    <div class="ranges">
+      <div><span>{copy.event.usual}</span><strong>{copy.event.usualRange}</strong><i class="range usual" aria-hidden="true"></i></div>
+      <div><span>{copy.event.actual}</span><strong>{copy.event.actualRange}</strong><i class="range actual" aria-hidden="true"></i></div>
+    </div>
+    <p class="disclaimer">{copy.event.disclaimer}</p>
+    <p class="supporting-note">{copy.event.bilbao}</p>
+  </section>
+
+  <section class="catalogue story-section" aria-labelledby="catalogue-title">
+    <header class="story-heading"><p class="story-number">{copy.catalogue.number}</p><div><p class="context">{copy.catalogue.context}</p><h2 id="catalogue-title">{copy.catalogue.title}</h2><p>{copy.catalogue.introduction}</p></div></header>
+    <div class="catalogue-system">
+      <strong>{copy.catalogue.families}</strong><span aria-hidden="true">↓</span>
+      <div class="category-row"><span>{copy.catalogue.taxonomy}</span><span>{copy.catalogue.taxonomy}</span><span>{copy.catalogue.taxonomy}</span></div>
+      <span aria-hidden="true">↓</span>
+      <div class="product-structure"><h3>{copy.catalogue.structure}</h3><ul>{copy.catalogue.fields.map((field) => <li>{field}</li>)}</ul></div>
+    </div>
+    <p class="takeaway">{copy.catalogue.takeaway}</p>
+  </section>
+
+  <section class="lumens story-section" aria-labelledby="lumens-title">
+    <header class="story-heading"><p class="story-number">{copy.lumens.number}</p><div><p class="context">{copy.lumens.context}</p><h2 id="lumens-title">{copy.lumens.title}</h2><p>{copy.lumens.introduction}</p></div></header>
+    <div class="vertical-flow">
+      <strong>{copy.lumens.source}</strong><span aria-hidden="true">↓</span>
+      <div class="lumens-work"><h3>{copy.lumens.work}</h3><ul>{copy.lumens.actions.map((action) => <li>{action}</li>)}</ul></div>
+      <span aria-hidden="true">↓</span><strong>{copy.lumens.output}</strong>
+    </div>
+    <ul class="audience-questions">{copy.lumens.questions.map((question) => <li>{question}</li>)}</ul>
+    <p class="diagram-note">{copy.lumens.note}</p>
+  </section>
+
+  <section class="case-close" aria-labelledby="case-close-title">
+    <p class="eyebrow">{copy.close.eyebrow}</p><h2 id="case-close-title">{copy.close.title}</h2><p>{copy.close.text}</p>
+    <a class="arrow-link" href={getLocalizedPath(locale, 'projects')}>{copy.close.back}</a>
+  </section>
+</article>
+
+<style>
+  .case-study { font-size: clamp(1.05rem, 1rem + .25vw, 1.25rem); }
+  .case-hero, .story-section, .case-close { padding: var(--space-section) var(--space-page); }
+  .case-hero > *, .story-section > *, .case-close > * { width: 100%; min-width: 0; max-width: var(--size-content); margin-inline: auto; }
+  .case-hero { display: grid; min-height: 42rem; padding-block-start: var(--space-12); align-content: center; background: var(--color-canvas); gap: clamp(var(--space-10), 7vw, var(--space-20)); }
+  .back-link { justify-self: start; color: var(--color-green-deep); font-family: var(--font-heading); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); text-decoration: none; }
+  .hero-copy { display: grid; gap: var(--space-5); }
+  .hero-copy h1 { width: 100%; max-width: 16ch; font-size: clamp(2.65rem, 2.2rem + 2vw, 5rem); overflow-wrap: anywhere; text-wrap: wrap; }
+  .descriptor { max-width: 48rem; color: var(--color-ink-muted); font-size: var(--font-size-lg); }
+  .role, .context, .story-number { color: var(--color-green); font-family: var(--font-heading); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); letter-spacing: .05em; text-transform: uppercase; }
+  .hero-intro { max-width: var(--size-prose); padding-block-start: var(--space-8); border-block-start: var(--border-width) solid var(--color-border); font-size: var(--font-size-lg); }
+  .story-section { display: grid; gap: clamp(var(--space-10), 7vw, var(--space-20)); }
+  .collaboration, .turtle, .lumens { background: var(--color-surface); }
+  .event { background: var(--color-canvas); }
+  .catalogue { background: var(--color-surface-strong); }
+  .section-copy { display: grid; max-width: 62rem !important; gap: var(--space-5); }
+  .section-copy > p:last-child, .story-heading > div > p:last-child { max-width: var(--size-prose); color: var(--color-ink-muted); }
+  .story-heading { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: var(--space-5); }
+  .story-heading > div { display: grid; gap: var(--space-4); }
+  .story-heading h2 { max-width: 18ch; font-size: clamp(2.25rem, 1.7rem + 2.1vw, 4rem); }
+  .collaboration-flow { display: grid; align-items: center; gap: var(--space-5); }
+  .inputs { display: grid; gap: var(--space-4); }
+  .diagram-node, .flow-stage { display: grid; min-height: 9rem; padding: var(--space-6); border: var(--border-width) solid var(--color-border); align-content: center; justify-items: start; gap: var(--space-3); }
+  .diagram-node svg, .flow-stage svg { color: var(--color-green); }
+  .diagram-node strong, .flow-stage strong { font-family: var(--font-heading); font-size: var(--font-size-md); }
+  .diagram-node span { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .central { border-color: var(--color-green-deep); background: var(--color-canvas); }
+  .flow-arrow { color: var(--color-green); font-family: var(--font-heading); font-size: 2rem; text-align: center; transform: rotate(90deg); }
+  .diagram-note, .disclaimer { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .metric { display: grid; width: 100%; min-width: 0; grid-template-columns: auto minmax(2rem, 1fr) auto; align-items: center; gap: var(--space-3); }
+  .metric strong { color: var(--color-green-deep); font-family: var(--font-heading); font-size: clamp(2.2rem, 1.8rem + 3vw, 6rem); letter-spacing: var(--letter-spacing-tight); }
+  .metric-line { position: relative; display: block; height: .2rem; background: var(--color-border); }
+  .metric-line i { position: absolute; top: 50%; width: 1rem; height: 1rem; border-radius: 50%; background: var(--color-green-deep); transform: translateY(-50%); }
+  .metric-line i:first-child { left: 0; } .metric-line i:last-child { right: 0; }
+  .metric p { grid-column: 1 / -1; color: var(--color-burgundy); font-family: var(--font-heading); font-weight: var(--font-weight-semibold); }
+  .hierarchy-comparison { display: grid; align-items: center; gap: var(--space-6); }
+  .hierarchy-comparison > div { padding-block-start: var(--space-5); border-block-start: var(--border-width) solid var(--color-border); }
+  .hierarchy-comparison h3 { margin-block-end: var(--space-5); }
+  .hierarchy-comparison ol { display: grid; padding: 0; gap: var(--space-2); list-style-position: inside; color: var(--color-ink-muted); }
+  .hierarchy-comparison .revised { border-color: var(--color-green); }
+  .hierarchy-comparison > span { color: var(--color-green); font-size: 2rem; text-align: center; transform: rotate(90deg); }
+  .transformation-flow { display: grid; align-items: stretch; gap: var(--space-4); }
+  .transformation-flow > span { align-self: center; color: var(--color-green); font-size: 2rem; text-align: center; transform: rotate(90deg); }
+  .flow-stage ul, .lumens-work ul { display: flex; margin: 0; padding: 0; gap: var(--space-2) var(--space-4); flex-wrap: wrap; list-style: none; color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .transformations { display: grid; margin: 0; padding: 0; border-block-start: var(--border-width) solid var(--color-border); list-style: none; }
+  .transformations li { padding-block: var(--space-4); border-block-end: var(--border-width) solid var(--color-border); }
+  .takeaway { color: var(--color-green-deep); font-family: var(--font-heading); font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); }
+  .campaign-flow { display: grid; justify-items: center; gap: var(--space-4); }
+  .campaign-flow ul { display: grid; width: 100%; margin: 0; padding: 0; gap: var(--space-3); list-style: none; }
+  .campaign-flow li { display: flex; padding: var(--space-4); border-block-start: var(--border-width) solid var(--color-border); align-items: center; gap: var(--space-3); }
+  .campaign-flow svg { color: var(--color-green); }
+  .campaign-flow > strong { min-width: 12rem; padding: var(--space-4); border: var(--border-width) solid var(--color-green); text-align: center; }
+  .campaign-flow .event-node { background: var(--color-green-deep); color: var(--color-canvas); }
+  .ranges { display: grid; gap: var(--space-8); }
+  .ranges > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: var(--space-3); }
+  .ranges span { color: var(--color-ink-muted); font-size: var(--font-size-sm); text-transform: uppercase; }
+  .ranges strong { color: var(--color-green-deep); font-family: var(--font-heading); font-size: var(--font-size-xl); }
+  .range { grid-column: 1 / -1; display: block; height: .25rem; background: var(--color-green); }
+  .range.usual { width: 56%; } .range.actual { width: 88%; background: var(--color-green-deep); }
+  .supporting-note { max-width: var(--size-prose) !important; padding-inline-start: var(--space-5); border-inline-start: .2rem solid var(--color-green-soft); color: var(--color-ink-muted); }
+  .catalogue-system { display: grid; justify-items: center; gap: var(--space-4); text-align: center; }
+  .catalogue-system > strong, .product-structure { width: min(100%, 48rem); padding: var(--space-5); border: var(--border-width) solid var(--color-green); background: var(--color-canvas); }
+  .category-row { display: grid; width: 100%; gap: var(--space-3); }
+  .category-row span { padding: var(--space-4); border: var(--border-width) solid var(--color-border); background: var(--color-surface); font-size: var(--font-size-sm); }
+  .product-structure h3 { margin-block-end: var(--space-4); font-size: var(--font-size-md); }
+  .product-structure ul { display: flex; margin: 0; padding: 0; gap: var(--space-2) var(--space-4); flex-wrap: wrap; justify-content: center; list-style: none; color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .vertical-flow { display: grid; justify-items: center; gap: var(--space-4); text-align: center; }
+  .vertical-flow > strong, .lumens-work { width: min(100%, 42rem); padding: var(--space-5); border: var(--border-width) solid var(--color-border); background: var(--color-canvas); }
+  .lumens-work { border-color: var(--color-green-deep); }
+  .lumens-work h3 { margin-block-end: var(--space-4); }
+  .lumens-work ul { justify-content: center; }
+  .audience-questions { display: grid; margin: 0; padding: 0; gap: var(--space-3); list-style: none; }
+  .audience-questions li { padding-block: var(--space-4); border-block-start: var(--border-width) solid var(--color-border); font-family: var(--font-heading); font-weight: var(--font-weight-medium); }
+  .case-close { display: grid; background: var(--color-canvas); gap: var(--space-5); }
+  .case-close h2 { max-width: 18ch; font-size: var(--font-size-2xl); }
+  .case-close > p:not(.eyebrow) { max-width: var(--size-prose); color: var(--color-ink-muted); }
+  .case-close .arrow-link { justify-self: start; margin-inline: max(var(--space-page), calc((100vw - var(--size-content)) / 2)); }
+
+  @media (min-width: 48rem) {
+    .case-hero { grid-template-columns: minmax(0, 1.4fr) minmax(20rem, .6fr); }
+    .case-hero .back-link { grid-column: 1 / -1; }
+    .hero-intro { align-self: end; }
+    .hero-copy h1 { font-size: var(--font-size-3xl); }
+    .metric { grid-template-columns: auto minmax(4rem, 1fr) auto; gap: var(--space-4); }
+    .collaboration-flow { grid-template-columns: minmax(0, .8fr) auto minmax(0, 1.1fr) auto minmax(0, .8fr); }
+    .flow-arrow, .hierarchy-comparison > span, .transformation-flow > span { transform: none; }
+    .hierarchy-comparison { grid-template-columns: 1fr auto 1fr; }
+    .transformation-flow { grid-template-columns: 1fr auto 1.15fr auto 1fr; }
+    .campaign-flow ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .campaign-flow li { display: grid; justify-items: center; text-align: center; }
+    .ranges { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .category-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .audience-questions { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-8); }
+  }
+</style>

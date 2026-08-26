@@ -6,8 +6,8 @@ routeSlug: cartas-publicadas
 translationKey: published-letters
 category: Escritura editorial
 year: 2018
-featured: true
-order: 2
+featured: false
+order: 6
 draft: false
 image:
   src: ../../../assets/images/projects/published-letters.jpg

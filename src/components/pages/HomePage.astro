@@ -1,126 +1,118 @@
 ---
 import { getCollection } from 'astro:content';
 import { Picture } from 'astro:assets';
+import heroImage from '../../assets/images/abilene-hero-v2.png';
+import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectPreview from '../ProjectPreview.astro';
-import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
-import portraitImage from '../../assets/images/abilene-portrait.jpg';
-import outdoorsImage from '../../assets/images/abilene-outdoors.jpg';
 
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const copy = ui[locale];
-const selectedProjects = (await getCollection('projects', ({ data }) => data.locale === locale && data.featured && !data.draft))
-  .sort((a, b) => a.data.order - b.data.order);
+const projects = (await getCollection('projects', ({ data }) => data.locale === locale && data.featured && !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const leadProject = projects.find((project) => project.data.translationKey === 'imaginart-b2b-content');
+const secondaryProjects = ['cognitive-biases', 'error-messages']
+  .map((key) => projects.find((project) => project.data.translationKey === key))
+  .filter((project): project is NonNullable<typeof project> => Boolean(project));
 ---
 
-<BaseLayout title={copy.home.title} description={copy.siteDescription} locale={locale}>
-  <div class="home-shell">
-    <section class="hero" aria-labelledby="page-title">
+<BaseLayout title={copy.home.title} description={copy.siteDescription} locale={locale} headerVariant="overlay" showBackToTop>
+  <section class="hero" aria-labelledby="page-title" data-back-to-top-anchor>
+    <Picture
+      class="hero-picture"
+      src={heroImage}
+      formats={['avif', 'webp']}
+      fallbackFormat="png"
+      widths={[640, 900, 1200, 1600, 2048]}
+      sizes="100vw"
+      quality={82}
+      alt={copy.home.heroAlt}
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+    />
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="hero-inner">
       <div class="hero-copy">
-        <p class="eyebrow">{copy.home.eyebrow}</p>
-        <h1 id="page-title">{copy.home.title}</h1>
-        <p class="lede">{copy.home.introduction}</p>
-        <div class="hero-links">
-          <a class="arrow-link" href={getLocalizedPath(locale, 'projects')}>{copy.home.projectsLink}</a>
-          <a href={getLocalizedPath(locale, 'contact')}>{copy.home.contactLink}</a>
+        <h1 id="page-title">{copy.home.heroHeading}</h1>
+        <p class="role">{copy.home.title}</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="mailto:abicaride@gmail.com">{copy.home.contactLink}<span aria-hidden="true">→</span></a>
+          <a class="button button-secondary" href="#selected-work">{copy.home.projectsLink}<span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <figure class="hero-image">
-        <Picture
-          src={portraitImage}
-          formats={['avif', 'webp']}
-          fallbackFormat="jpg"
-          widths={[320, 480, 640, 720, 800, 960, 1200]}
-          sizes="(min-width: 78rem) 468px, (min-width: 52rem) 40vw, calc(100vw - 32px)"
-          quality={75}
-          alt={locale === 'en' ? 'Abilene standing in front of a waterfall surrounded by trees' : 'Abilene delante de una cascada rodeada de árboles'}
-          loading="eager"
-          decoding="async"
-          fetchpriority="high"
-        />
-      </figure>
-    </section>
+    </div>
+  </section>
 
-    <section class="perspective" aria-labelledby="foundation-title">
-      <p class="section-number" aria-hidden="true">01</p>
-      <div class="perspective-copy">
-        <h2 id="foundation-title">{copy.home.foundationTitle}</h2>
-        <p>{copy.home.foundationText}</p>
-        <a class="arrow-link" href={getLocalizedPath(locale, 'about')}>{copy.home.aboutLink}</a>
-      </div>
-    </section>
+  <div class="home-content">
+    {leadProject && (
+      <section class="lead-work" id="selected-work" aria-labelledby="lead-title">
+        <header class="section-heading">
+          <p class="eyebrow">{copy.home.leadEyebrow}</p>
+          <h2 id="lead-title">{copy.home.leadTitle}</h2>
+          <p>{copy.home.leadSummary}</p>
+        </header>
+        <ProjectPreview project={leadProject} locale={locale} variant="lead" />
+      </section>
+    )}
 
-    <section class="selected-work" aria-labelledby="selected-title">
-      <header class="section-header">
-        <div>
-          <p class="eyebrow">{copy.home.selectedEyebrow}</p>
-          <h2 id="selected-title">{copy.home.selectedTitle}</h2>
-        </div>
-        <p>{copy.home.selectedIntroduction}</p>
+    <section class="secondary-work" aria-labelledby="secondary-title">
+      <header class="section-heading compact-heading">
+        <p class="eyebrow">{copy.home.secondaryEyebrow}</p>
+        <h2 id="secondary-title">{copy.home.secondaryTitle}</h2>
       </header>
-      <div class="project-grid">
-        {selectedProjects.map((project, index) => <ProjectPreview project={project} locale={locale} wide={index === 0} />)}
+      <div class="secondary-grid">
+        {secondaryProjects.map((project) => <ProjectPreview project={project} locale={locale} variant="secondary" />)}
       </div>
       <a class="arrow-link all-work" href={getLocalizedPath(locale, 'projects')}>{copy.home.allProjectsLink}</a>
     </section>
-
-    <section class="personal" aria-labelledby="personal-title">
-      <Picture
-        src={outdoorsImage}
-        formats={['avif', 'webp']}
-        fallbackFormat="jpg"
-        widths={[320, 480, 640, 800, 960, 1200]}
-        sizes="(min-width: 78rem) 432px, (min-width: 45rem) 38vw, calc(100vw - 96px)"
-        quality={75}
-        alt={locale === 'en' ? 'Abilene smiling beside the waterfront' : 'Abilene sonriendo junto al paseo marítimo'}
-        loading="lazy"
-        decoding="async"
-      />
-      <div class="personal-copy">
-        <p class="eyebrow">{copy.home.personalEyebrow}</p>
-        <h2 id="personal-title">{copy.home.personalTitle}</h2>
-        <p>{copy.home.personalText}</p>
-        <a class="arrow-link" href={getLocalizedPath(locale, 'about')}>{copy.home.aboutLink}</a>
-      </div>
-    </section>
   </div>
+
+  <section class="about-intro" aria-labelledby="about-title">
+    <div>
+      <p class="eyebrow">{copy.home.aboutEyebrow}</p>
+      <h2 id="about-title">{copy.home.aboutTitle}</h2>
+    </div>
+    <div class="about-copy">
+      <p>{copy.home.aboutText}</p>
+      <a class="arrow-link" href={getLocalizedPath(locale, 'about')}>{copy.home.aboutLink}</a>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
-  .home-shell { display: grid; max-width: var(--size-content); margin-inline: auto; padding: var(--space-12) var(--space-page) var(--space-20); gap: var(--space-24); }
-  .hero { display: grid; gap: var(--space-8); }
-  .hero-copy { display: grid; align-content: center; gap: var(--space-6); }
-  h1 { max-width: 11ch; font-size: var(--font-size-hero); }
-  .lede { max-width: var(--size-prose); color: var(--color-text-muted); font-size: var(--font-size-lg); }
-  .hero-links { display: flex; align-items: center; gap: var(--space-4) var(--space-8); flex-wrap: wrap; }
-  .hero-image { margin: 0; }
-  .hero-image img { width: 100%; height: auto; max-height: 44rem; border-radius: var(--radius-lg); object-fit: cover; object-position: center 66%; }
-  .perspective { display: grid; padding-block-start: var(--space-8); border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-6); }
-  .section-number { color: var(--color-accent); font-family: var(--font-mono); font-size: var(--font-size-sm); }
-  .perspective-copy { display: grid; max-width: var(--size-prose); gap: var(--space-4); }
-  .perspective-copy p, .section-header > p, .personal-copy > p:not(.eyebrow) { color: var(--color-text-muted); font-size: var(--font-size-lg); }
-  .perspective-copy a, .personal-copy a { justify-self: start; }
-  .selected-work { display: grid; gap: var(--space-8); }
-  .section-header { display: grid; gap: var(--space-6); }
-  .section-header > div { display: grid; gap: var(--space-3); }
-  .section-header h2 { max-width: 18ch; }
-  .section-header > p { max-width: var(--size-prose); }
-  .project-grid { display: grid; gap: var(--space-12) var(--space-6); }
+  .hero { position: relative; min-height: 55rem; overflow: hidden; background: var(--color-canvas); }
+  .hero :global(.hero-picture) { position: absolute; inset: 0 auto auto 0; width: 100%; height: auto; object-fit: contain; object-position: center top; }
+  .hero-shade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 7rem, color-mix(in srgb, var(--color-canvas) 32%, transparent) 13rem, var(--color-canvas) 20rem, var(--color-canvas) 100%); }
+  .hero-inner { position: relative; z-index: 1; display: flex; min-height: inherit; max-width: var(--size-wide); margin-inline: auto; padding: 19rem var(--space-page) var(--space-16); align-items: flex-end; }
+  .hero-copy { display: grid; width: min(100%, 44rem); gap: var(--space-6); }
+  h1 { color: var(--color-green-deep); font-size: var(--font-size-hero); }
+  .role { color: var(--color-ink); font-family: var(--font-heading); font-size: var(--font-size-md); font-weight: var(--font-weight-medium); }
+  .hero-actions { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+  .home-content { display: grid; max-width: var(--size-content); margin-inline: auto; padding: var(--space-section) var(--space-page); gap: var(--space-section); }
+  .lead-work, .secondary-work { display: grid; gap: var(--space-10); }
+  .section-heading { display: grid; max-width: 54rem; gap: var(--space-4); }
+  .section-heading > p:last-child { max-width: var(--size-prose); color: var(--color-ink-muted); font-size: var(--font-size-md); }
+  .compact-heading { max-width: 48rem; }
+  .secondary-grid { display: grid; gap: var(--space-16) var(--space-8); }
   .all-work { justify-self: start; }
-  .personal { display: grid; align-items: center; gap: var(--space-8); padding: var(--space-8); border-radius: var(--radius-lg); background: var(--color-surface); }
-  .personal img { width: 100%; height: auto; aspect-ratio: 4 / 3; border-radius: var(--radius-md); object-fit: cover; }
-  .personal-copy { display: grid; gap: var(--space-4); }
-  @media (min-width: 45rem) {
-    .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .project-grid :global(article:first-child) { grid-column: 1 / -1; }
-    .personal { grid-template-columns: minmax(16rem, .8fr) minmax(0, 1.2fr); }
+  .about-intro { display: grid; padding: var(--space-section) max(var(--space-page), calc((100vw - var(--size-content)) / 2 + var(--space-page))); background: var(--color-surface); gap: var(--space-10); }
+  .about-intro > div { display: grid; align-content: start; gap: var(--space-4); }
+  .about-intro h2 { max-width: 18ch; }
+  .about-copy p { max-width: var(--size-prose); color: var(--color-ink-muted); font-size: var(--font-size-md); }
+  .about-copy .arrow-link { justify-self: start; }
+
+  @media (min-width: 48rem) {
+    .hero { min-height: clamp(48rem, 65vw, 58rem); }
+    .hero :global(.hero-picture) { inset: 0; height: 100%; object-fit: cover; object-position: 58% center; }
+    .hero-shade { background: linear-gradient(90deg, color-mix(in srgb, var(--color-canvas) 96%, transparent) 0%, color-mix(in srgb, var(--color-canvas) 84%, transparent) 32%, transparent 66%); }
+    .hero-inner { padding-block-start: calc(var(--size-header) + var(--space-16)); align-items: center; }
+    .hero-copy { width: min(52%, 45rem); }
+    .secondary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .about-intro { grid-template-columns: minmax(0, .9fr) minmax(20rem, 1.1fr); gap: var(--space-16); }
   }
-  @media (min-width: 52rem) {
-    .home-shell { padding-block-start: var(--space-16); }
-    .hero { min-height: 42rem; grid-template-columns: minmax(0, 1.2fr) minmax(18rem, .8fr); align-items: stretch; }
-    .hero-image img { height: 100%; }
-    .perspective { grid-template-columns: 1fr 3fr; }
-    .section-header { grid-template-columns: minmax(0, 1.3fr) minmax(18rem, .7fr); align-items: end; }
+
+  @media (min-width: 80rem) {
+    .hero :global(.hero-picture) { object-position: center; }
   }
 </style>

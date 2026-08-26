@@ -6,7 +6,7 @@ routeSlug: meta-descriptions
 translationKey: meta-descriptions
 category: UX writing exercise
 featured: false
-order: 9
+order: 10
 draft: false
 image:
   src: ../../../assets/images/projects/meta-descriptions.jpg

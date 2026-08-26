@@ -6,56 +6,58 @@ import { getLocalizedPath, ui, type Locale } from '../i18n/config';
 interface Props {
   project: CollectionEntry<'projects'>;
   locale: Locale;
-  compact?: boolean;
-  wide?: boolean;
+  variant?: 'lead' | 'secondary' | 'compact';
 }
 
-const { project, locale, compact = false, wide = false } = Astro.props;
+const { project, locale, variant = 'secondary' } = Astro.props;
 const copy = ui[locale];
-const sizes = wide
-  ? '(min-width: 78rem) 1184px, calc(100vw - 64px)'
-  : '(min-width: 78rem) 580px, (min-width: 45rem) calc(50vw - 44px), calc(100vw - 32px)';
+const href = getLocalizedPath(locale, `projects/${project.data.routeSlug}`);
+const sizes = variant === 'lead'
+  ? '(min-width: 80rem) 720px, (min-width: 50rem) 55vw, calc(100vw - 40px)'
+  : '(min-width: 80rem) 608px, (min-width: 48rem) calc(50vw - 56px), calc(100vw - 40px)';
 ---
 
-<article class:list={['project-preview', { compact }]}>
-  <a class="image-link" href={getLocalizedPath(locale, `projects/${project.data.routeSlug}`)} tabindex="-1" aria-hidden="true">
-    <Picture
-      src={project.data.image.src}
-      formats={['avif', 'webp']}
-      fallbackFormat="jpg"
-      widths={[320, 480, 640, 800, 960, 1200]}
-      sizes={sizes}
-      quality={75}
-      alt=""
-      loading="lazy"
-      decoding="async"
-    />
-  </a>
+<article class:list={['project-preview', variant]}>
+  {variant !== 'compact' && (
+    <a class="image-link" href={href} tabindex="-1" aria-hidden="true">
+      <Picture src={project.data.image.src} formats={['avif', 'webp']} fallbackFormat="jpg" widths={[360, 540, 720, 960, 1200, 1440]} sizes={sizes} quality={78} alt="" loading="lazy" decoding="async" />
+    </a>
+  )}
   <div class="preview-copy">
     <p class="project-meta">
       <span>{project.data.category}</span>
+      {project.data.company && <><span aria-hidden="true">·</span><span>{project.data.company}</span></>}
       {project.data.year && <><span aria-hidden="true">·</span><span>{project.data.year}</span></>}
     </p>
-    <h3><a href={getLocalizedPath(locale, `projects/${project.data.routeSlug}`)}>{project.data.title}</a></h3>
-    <p class="description">{project.data.description}</p>
-    <a class="arrow-link" href={getLocalizedPath(locale, `projects/${project.data.routeSlug}`)}>{copy.projects.readProject}</a>
+    <h3><a href={href}>{project.data.title}</a></h3>
+    {variant !== 'compact' && <p class="description">{project.data.description}</p>}
+    <a class="arrow-link" href={href}>{copy.projects.readProject}</a>
   </div>
 </article>
 
 <style>
-  .project-preview { display: grid; gap: var(--space-5); }
-  .image-link { overflow: hidden; border-radius: var(--radius-md); background: var(--color-surface); }
-  img { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; transition: transform 300ms ease; }
-  .project-preview:hover img { transform: scale(1.015); }
-  .preview-copy { display: grid; gap: var(--space-3); }
-  .project-meta { display: flex; color: var(--color-accent); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); gap: var(--space-2); }
-  h3 { font-family: var(--font-display); font-size: var(--font-size-xl); font-weight: var(--font-weight-regular); }
-  h3 a { color: var(--color-text); text-decoration: none; }
-  h3 a:hover { color: var(--color-accent); }
-  .description { color: var(--color-text-muted); }
+  .project-preview { display: grid; min-width: 0; gap: var(--space-6); }
+  .image-link { overflow: hidden; background: var(--color-surface); }
+  .image-link :global(img) { width: 100%; height: 100%; aspect-ratio: 16 / 10; object-fit: cover; transition: transform 300ms ease; }
+  .project-preview:hover .image-link :global(img) { transform: scale(1.012); }
+  .preview-copy { display: grid; align-content: start; gap: var(--space-4); }
+  .project-meta { display: flex; color: var(--color-green); font-family: var(--font-heading); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); gap: var(--space-2); flex-wrap: wrap; letter-spacing: .04em; text-transform: uppercase; }
+  h3 { font-size: clamp(1.65rem, 1.3rem + 1vw, 2.7rem); }
+  h3 a { color: var(--color-ink); text-decoration: none; }
+  h3 a:hover { color: var(--color-green-deep); text-decoration: underline; text-underline-offset: .16em; }
+  .description { max-width: 58ch; color: var(--color-ink-muted); font-size: var(--font-size-md); }
   .arrow-link { justify-self: start; font-size: var(--font-size-sm); }
-  .compact { padding-block: var(--space-5); border-block-start: var(--border-width) solid var(--color-border); }
-  .compact .image-link { display: none; }
-  .compact h3 { font-size: var(--font-size-lg); }
-  @media (prefers-reduced-motion: reduce) { img { transition: none; } }
+  .lead { padding-block: clamp(var(--space-8), 6vw, var(--space-16)); border-block: var(--border-width) solid var(--color-border); }
+  .lead h3 { font-size: clamp(2.2rem, 1.5rem + 2.5vw, 4rem); }
+  .compact { padding-block: var(--space-6); border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-3); }
+  .compact h3 { font-size: clamp(1.25rem, 1.1rem + .4vw, 1.65rem); }
+  .compact .preview-copy { grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: var(--space-3) var(--space-6); }
+  .compact .project-meta { grid-column: 1 / -1; }
+
+  @media (min-width: 50rem) {
+    .lead { grid-template-columns: minmax(0, 1.2fr) minmax(18rem, .8fr); align-items: center; gap: clamp(var(--space-8), 6vw, var(--space-16)); }
+    .lead .image-link :global(img) { aspect-ratio: 4 / 3; }
+  }
+
+  @media (prefers-reduced-motion: reduce) { .image-link :global(img) { transition: none; } }
 </style>

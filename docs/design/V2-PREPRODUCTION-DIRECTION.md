@@ -1,10 +1,10 @@
-# V2 — Clean Organic Editorial, refined pre-production direction
+# V2 — Clean Organic Editorial, production direction
 
-> **Status:** Approved art direction after Abilene's final visual review.
+> **Status:** Approved and implemented in the Astro production system.
 >
 > This is a refinement of Clean Organic Editorial, not another competing
 > direction. A/B/C/D remain exploration history. The visual exploration phase
-> is closed; this document does not authorize Astro implementation yet.
+> is closed; this document records the design decisions behind V2.
 
 ## Public naming
 
@@ -95,9 +95,8 @@ LinkedIn and CV must not compete with these actions in the hero.
 
 ## Photography and portrait treatment
 
-The approved working hero image is `AbileneHero.png`, currently supplied from
-the local Downloads folder and imported into the Figma Explorations page. It is
-not committed to the repository. The image already provides the intended
+The approved hero source is `AbileneHero.png`, imported for production as
+`src/assets/images/abilene-hero-v2.png`. The image provides the intended
 realistic, calm, welcoming, professional and human plant environment, with warm
 daylight, soft depth of field, pale architectural surfaces and real greenery.
 The left side receives only the restrained tonal treatment needed for readable
@@ -153,8 +152,8 @@ and actions.
 | Token | Value | Intended role |
 | --- | --- | --- |
 | `--color-canvas` | `#F7F3EA` | Primary warm-cream background |
-| `--color-surface` | `#EEECE6` | Subtle section contrast |
-| `--color-surface-strong` | `#E2DFD6` | Stronger neutral separation, sparingly |
+| `--color-surface` | `#ECE8DE` | Subtle section contrast |
+| `--color-surface-strong` | `#DED9CE` | Stronger neutral separation, sparingly |
 | `--color-ink` | `#20241F` | Main text |
 | `--color-ink-muted` | `#62665E` | Supporting text |
 | `--color-green-deep` | `#103A20` | Primary identity, typography, hero CTA, important links/icons |
@@ -182,7 +181,7 @@ system. Do not introduce bright red, coral or orange-red.
 
 Create section contrast through warm neutral tonal changes, for example:
 
-`#F7F3EA` → `#EEECE6` → `#F7F3EA` → `#E2DFD6`
+`#F7F3EA` → `#ECE8DE` → `#F7F3EA` → `#DED9CE`
 
 Use color primarily for icons, diagrams, links, CTAs, metrics and small visual
 details. The UI away from the hero should become calmer, not more colorful.
@@ -238,8 +237,8 @@ Accessible names are `Back to top` in English and `Volver arriba` in Spanish.
 The approved treatment is a compact warm-cream surface with a deep-green arrow
 and subtle border; it must remain quieter than the primary CTA.
 
-Future Astro implementation should use a tiny native-JavaScript enhancement,
-preferably `IntersectionObserver` against the hero. It must expose visible
+The Astro implementation uses a tiny native-JavaScript enhancement with
+`IntersectionObserver` against the first major section. It exposes visible
 keyboard focus, respect `prefers-reduced-motion`, and keep enough clearance from
 the analytics/cookie consent interface. No framework or new dependency is
 needed.
@@ -372,9 +371,9 @@ people is Abilene's motive and communication/writing is the professional tool:
 helping people understand what they need and find a useful way forward.
 
 The approved full-body portrait with red top, grey skirt and softly blurred
-organic background is the authoritative About photograph. It remains a
-Figma-only personal asset named `AbileneAbout`; do not generate, retouch or
-substitute another likeness. Use the full-body composition with meaningful
+organic background is the authoritative About photograph. It is stored for
+production as `src/assets/images/abilene-about-v2.png`; do not generate, retouch
+or substitute another likeness. Use the full-body composition with meaningful
 visual presence rather than a circular crop, corporate headshot or card.
 
 The narrative sequence is:
@@ -412,16 +411,16 @@ footer in a single readable flow. The back-to-top behavior remains shared and
 functional. First-person narrative and personal statements remain working copy
 until Abilene reviews the public voice.
 
-## Production sequence and stop condition
+## Production implementation
 
-The visual exploration phase is closed. Do not create another visual direction.
+The visual exploration phase is closed. V2 is implemented through shared Astro
+tokens and components rather than literal Figma coordinates. Responsive image
+crops, continuous type scaling and shared spacing were normalized for one
+cohesive production system. The three warm neutral values above are the final
+production surfaces; they supersede slightly lighter provisional values in
+earlier frames.
 
-Next, only when explicitly requested:
-
-1. finalize production Foundations and tokens;
-2. design final Homepage desktop;
-3. design final Homepage mobile;
-4. design final imaginArt desktop;
-5. design final imaginArt mobile;
-6. review production screens;
-7. implement the approved screens within the existing Astro architecture.
+The imaginArt case uses one intentional bespoke Astro renderer and typed
+bilingual data because its diagrams have a story-specific grammar. Its Content
+Collection entries still own routing, metadata and project previews. No generic
+page-builder or CMS schema extension was introduced.

@@ -6,6 +6,20 @@ interface ArchitectureStep {
   description: string;
 }
 
+type FigmaFileKey = 'foundations' | 'website' | 'moodboard';
+
+interface FigmaResource {
+  key: FigmaFileKey;
+  name: string;
+  description: string;
+}
+
+export const figmaFileUrls: Record<FigmaFileKey, string> = {
+  foundations: 'https://www.figma.com/design/2yrZXRDGo95taZ1J3VOPxx/Abi-Website-Foundations',
+  website: 'https://www.figma.com/design/qzSb1nHDgRm21LNLkCjaFT/Abi-Personal-Website',
+  moodboard: 'https://www.figma.com/board/PxH3eYTrRg5f2g8UenwGtP/Abi-Website-Moodboard',
+};
+
 interface ArchitectureCopy {
   title: string;
   description: string;
@@ -14,6 +28,9 @@ interface ArchitectureCopy {
   introduction: string;
   flowTitle: string;
   flow: ArchitectureStep[];
+  figmaTitle: string;
+  figmaText: string;
+  figmaResources: FigmaResource[];
   maintenanceTitle: string;
   maintenanceText: string;
   principlesTitle: string;
@@ -69,6 +86,26 @@ export const architectureCopy: Record<Locale, ArchitectureCopy> = {
         name: 'GitHub Pages',
         description:
           'The finished static website is published at abicaride.com, with no application server required.',
+      },
+    ],
+    figmaTitle: 'Explore the design workspace',
+    figmaText:
+      'The three Figma files are public, view-only references. They show how visual ideas move from inspiration and foundations into production-oriented page designs; the Astro repository remains the implementation source of truth.',
+    figmaResources: [
+      {
+        key: 'moodboard',
+        name: 'Abi Website Moodboard',
+        description: 'References, atmosphere and visual preferences.',
+      },
+      {
+        key: 'foundations',
+        name: 'Abi Website Foundations',
+        description: 'Foundations, reusable components and explorations.',
+      },
+      {
+        key: 'website',
+        name: 'Abi Personal Website',
+        description: 'Production-oriented homepage and case-study designs.',
       },
     ],
     maintenanceTitle: 'Implementation and maintenance',
@@ -131,6 +168,26 @@ export const architectureCopy: Record<Locale, ArchitectureCopy> = {
         name: 'GitHub Pages',
         description:
           'La web estática terminada se publica en abicaride.com sin necesitar un servidor de aplicaciones.',
+      },
+    ],
+    figmaTitle: 'Explora el espacio de diseño',
+    figmaText:
+      'Los tres archivos de Figma son referencias públicas de solo lectura. Muestran cómo las ideas visuales pasan de la inspiración y los fundamentos a los diseños de páginas orientados a producción; el repositorio Astro sigue siendo la fuente de verdad de la implementación.',
+    figmaResources: [
+      {
+        key: 'moodboard',
+        name: 'Abi Website Moodboard',
+        description: 'Referencias, atmósfera y preferencias visuales.',
+      },
+      {
+        key: 'foundations',
+        name: 'Abi Website Foundations',
+        description: 'Fundamentos, componentes reutilizables y exploraciones.',
+      },
+      {
+        key: 'website',
+        name: 'Abi Personal Website',
+        description: 'Diseños de portada y casos de estudio orientados a producción.',
       },
     ],
     maintenanceTitle: 'Implementación y mantenimiento',

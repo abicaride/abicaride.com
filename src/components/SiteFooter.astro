@@ -1,10 +1,7 @@
 ---
 import { getLocalizedPath, ui, type Locale } from '../i18n/config';
 
-interface Props {
-  locale: Locale;
-}
-
+interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const copy = ui[locale];
 const currentYear = new Date().getFullYear();
@@ -14,76 +11,41 @@ const architecturePath = getLocalizedPath(locale, locale === 'en' ? 'architectur
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div class="footer-copy">
-      <p class="footer-name">{copy.siteName}</p>
-      <p>{copy.footer.note}</p>
-      <a
-        class="build-note"
-        href={architecturePath}
-        aria-label={copy.footer.buildDetails}
-        title={copy.footer.buildDetails}
-      >
-        <span aria-hidden="true">{copy.footer.buildNote} →</span>
-      </a>
+    <div class="contact-close">
+      <p class="footer-eyebrow">{copy.footer.eyebrow}</p>
+      <h2>{copy.footer.heading}</h2>
+      <a class="email" href="mailto:abicaride@gmail.com">abicaride@gmail.com <span aria-hidden="true">→</span></a>
     </div>
-    <div class="footer-meta">
-      <a href="mailto:abicaride@gmail.com">abicaride@gmail.com</a>
+    <div class="utility">
+      <div class="identity"><p class="footer-name">{copy.siteName}</p><p>{copy.footer.profession}</p></div>
       <div class="footer-links">
         <a href={privacyPath}>{copy.footer.privacy}</a>
         <a href={privacyPath} data-cookie-settings>{copy.footer.cookieSettings}</a>
       </div>
-      <p>© {currentYear}. {copy.footer.rights}</p>
+      <a class="build-note" href={architecturePath} aria-label={copy.footer.buildDetails} title={copy.footer.buildDetails}>{copy.footer.buildNote} <span aria-hidden="true">→</span></a>
+      <p>© {currentYear} {copy.siteName}. {copy.footer.rights}</p>
     </div>
   </div>
 </footer>
 
 <style>
-  .site-footer {
-    border-block-start: var(--border-width) solid var(--color-border);
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
-  }
+  .site-footer { background: var(--color-burgundy); color: var(--color-canvas); }
+  .footer-inner { max-width: var(--size-wide); margin-inline: auto; padding: clamp(5rem, 10vw, 9rem) var(--space-page) var(--space-12); }
+  .contact-close { display: grid; max-width: 58rem; gap: var(--space-6); padding-block-end: clamp(5rem, 10vw, 8rem); }
+  .footer-eyebrow { font-family: var(--font-heading); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; }
+  h2 { color: var(--color-canvas); font-size: clamp(2.5rem, 2rem + 3vw, 5rem); }
+  .email { width: fit-content; color: var(--color-canvas); font-family: var(--font-heading); font-size: clamp(1.15rem, 1rem + 0.55vw, 1.55rem); font-weight: var(--font-weight-semibold); text-decoration: none; }
+  .email:hover { color: var(--color-burgundy-tint); }
+  .utility { display: grid; padding-block-start: var(--space-10); border-block-start: var(--border-width) solid color-mix(in srgb, var(--color-burgundy-tint) 58%, transparent); gap: var(--space-8); color: color-mix(in srgb, var(--color-canvas) 86%, transparent); font-size: var(--font-size-sm); }
+  .identity { display: grid; gap: var(--space-1); }
+  .footer-name { color: var(--color-canvas); font-family: var(--font-heading); font-weight: var(--font-weight-semibold); }
+  .footer-links { display: flex; gap: var(--space-3) var(--space-5); flex-wrap: wrap; }
+  .utility a { color: inherit; }
+  .utility a:hover { color: var(--color-canvas); }
+  .build-note { max-width: 28rem; text-decoration-style: dotted; }
 
-  .footer-inner {
-    display: flex;
-    max-width: var(--size-content);
-    margin-inline: auto;
-    padding: var(--space-8) var(--space-page);
-    gap: var(--space-2) var(--space-8);
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-
-  .footer-copy,
-  .footer-meta {
-    display: grid;
-    gap: var(--space-1);
-  }
-
-  .footer-name {
-    color: var(--color-text);
-    font-family: var(--font-display);
-    font-size: var(--font-size-lg);
-  }
-
-  .build-note {
-    width: fit-content;
-    color: var(--color-text-muted);
-    text-decoration-style: dotted;
-  }
-
-  .build-note:hover {
-    color: var(--color-accent-strong);
-    text-decoration-style: solid;
-  }
-
-  .footer-meta {
-    justify-items: start;
-  }
-
-  .footer-links {
-    display: flex;
-    gap: var(--space-2) var(--space-4);
-    flex-wrap: wrap;
+  @media (min-width: 56rem) {
+    .utility { grid-template-columns: 1.1fr .8fr 1.4fr .8fr; align-items: start; }
+    .utility > p:last-child { text-align: end; }
   }
 </style>

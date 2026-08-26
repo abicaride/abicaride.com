@@ -5,8 +5,8 @@ locale: es
 routeSlug: galaekian-green-life
 translationKey: galaekian-green-life
 category: Proyecto personal
-featured: true
-order: 1
+featured: false
+order: 5
 draft: false
 image:
   src: ../../../assets/images/projects/galaekian-green-life.jpg

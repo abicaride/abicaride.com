@@ -22,7 +22,9 @@ proprietary CMS or client-side UI framework.
 
 - 🚀 Astro with static output
 - 🧩 Strict TypeScript configuration
+- 🎨 Figma for design exploration and production-oriented page designs
 - 🎨 Native CSS and CSS custom properties
+- 🔤 Self-hosted Inter and Montserrat typography
 - 🗂️ Astro Content Collections with Markdown and frontmatter
 - 🌍 English and Spanish locale-prefixed routes
 - 🖼️ Astro's responsive image pipeline
@@ -33,6 +35,17 @@ proprietary CMS or client-side UI framework.
 Astro is the only production dependency. Pages CMS is an external editorial
 interface for English and Spanish projects; it adds no Astro runtime dependency.
 A separate Writing collection remains planned and is not implemented.
+
+## 🎨 Public design workspace
+
+The Figma workspace is available as three public, view-only files:
+
+- [Abi Website Moodboard](https://www.figma.com/board/PxH3eYTrRg5f2g8UenwGtP/Abi-Website-Moodboard) — references and visual preferences
+- [Abi Website Foundations](https://www.figma.com/design/2yrZXRDGo95taZ1J3VOPxx/Abi-Website-Foundations) — foundations, components and explorations
+- [Abi Personal Website](https://www.figma.com/design/qzSb1nHDgRm21LNLkCjaFT/Abi-Personal-Website) — production-oriented page designs
+
+Figma communicates visual intention; this Astro repository remains the
+implementation and production source of truth.
 
 ## 🛠️ Getting started
 
@@ -122,6 +135,11 @@ The static output is written to `dist/`.
 Case studies are paired English and Spanish Markdown entries under
 `src/content/projects/`. The content collection validates their metadata at
 build time while the Markdown body remains the main narrative.
+
+Most projects use the shared Markdown renderer. The imaginArt lead case keeps
+the same collection-owned route and metadata while using a small bespoke Astro
+renderer for its original diagrams; this is intentionally not a page-builder or
+CMS schema expansion.
 
 When adding a project:
 

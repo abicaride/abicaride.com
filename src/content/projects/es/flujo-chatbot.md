@@ -6,7 +6,7 @@ routeSlug: flujo-chatbot
 translationKey: chatbot-flow
 category: Ejercicio de UX writing
 featured: false
-order: 8
+order: 9
 draft: false
 image:
   src: ../../../assets/images/projects/chatbot-flow.jpg
