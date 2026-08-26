@@ -44,6 +44,13 @@ const alternatePath = getLocalizedPath(otherLocale, otherLocale === 'en' ? 'priv
         <a href={Astro.url.pathname} data-cookie-settings>{ui[locale].footer.cookieSettings}</a>
       </section>
       <section>
+        <h2>{copy.contactFormTitle}</h2>
+        <p>{copy.contactFormText}</p>
+        <a href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noreferrer">
+          {copy.formspreePrivacy}<span aria-hidden="true"> ↗</span>
+        </a>
+      </section>
+      <section>
         <h2>{copy.providerTitle}</h2>
         <p>{copy.providerText} <a href="mailto:abicaride@gmail.com">abicaride@gmail.com</a>.</p>
         <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">

@@ -5640,7 +5640,7 @@ function createAboutDesktop(parent, x, y, photoHash) {
     x,
     y,
     width: 1440,
-    height: 7230,
+    height: 7370,
     fill: FINAL_COLOR.canvas,
   });
 
@@ -5653,7 +5653,7 @@ function createAboutDesktop(parent, x, y, photoHash) {
   createAboutHeader(hero);
   addFinalLabel(hero, "ABOUT", 80, 190, 240);
   addFinalHeading(hero, {
-    characters: "I help people find the way to do what they want.",
+    characters: "I help users find the clearest path to what they need in digital products.",
     fontSize: 58,
     lineHeight: 69,
     width: 640,
@@ -5666,7 +5666,7 @@ function createAboutDesktop(parent, x, y, photoHash) {
     lineHeight: 33,
     width: 620,
     x: 80,
-    y: 480,
+    y: 560,
   });
   addFinalBody(hero, {
     characters: "I wear a lot of hats, but I don’t do things halfway. Whether I’m structuring technical information, writing a campaign or thinking through a user experience, I care about making it useful and getting it right.",
@@ -5674,8 +5674,21 @@ function createAboutDesktop(parent, x, y, photoHash) {
     lineHeight: 33,
     width: 620,
     x: 80,
-    y: 760,
+    y: 800,
   });
+  const cvAction = createPill(hero, {
+    label: "Download CV ↓",
+    x: 80,
+    y: 1000,
+    width: 220,
+    height: 58,
+    fill: FINAL_COLOR.canvas,
+    stroke: FINAL_COLOR.greenDeep,
+    color: FINAL_COLOR.greenDeep,
+    fontSize: 16,
+    lineHeight: 24,
+  });
+  cvAction.name = "Download CV — secondary action";
   const photo = createCanvasFrame(hero, {
     name: `About portrait — full body — ${FINAL_ABOUT_PHOTO}`,
     x: 790,
@@ -5786,9 +5799,9 @@ function createAboutDesktop(parent, x, y, photoHash) {
   });
 
   const experience = createCaseBand(page, {
-    name: "04 Experience — compact editorial timeline",
+    name: "04 Experience — continuous editorial timeline",
     y: 2800,
-    height: 1240,
+    height: 1380,
     fill: CASE_COLOR.surfaceStrong,
   });
   addFinalLabel(experience, "EXPERIENCE", 80, 72, 260);
@@ -5810,38 +5823,48 @@ function createAboutDesktop(parent, x, y, photoHash) {
     y: 145,
   });
   const roles = [
-    ["2023–present", "imaginArt", "Content, communications and marketing"],
-    ["2020–2021", "Federación Pantalla", "Communication and community"],
-    ["2019–2021", "Ailanto", "Content, ecommerce and customer care"],
-    ["2017–2019", "Ethic Investors", "Administration and commercial content"],
-    ["2011–2019", "Caprichos de Casa Import", "E-commerce manager · Administration, sales and business operations"],
+    ["2023–present", "imaginArt", "Content, communications and marketing", "B2B communication strategy, campaigns, events, web content, SEO and user experience work."],
+    ["2020–2021", "Federación Pantalla", "Communication and community", "Social content, newsletters, press materials, live events and internal communication."],
+    ["2019–2021", "Ailanto", "Content, ecommerce and customer care", "Corporate copy, ecommerce design support, weekly newsletters and customer service."],
+    ["2017–2019", "Ethic Investors", "Administration and commercial content", "Executive support, official documentation and content for property and crowdfunding offers."],
+    ["2011–2019", "Caprichos de Casa Import", "E-commerce manager · Administration, sales and business operations", "Online catalogue maintenance, promotions, newsletters and support for the store redesign and relaunch."],
   ];
-  roles.forEach(([period, company, role], index) => {
-    const rowY = 330 + index * 165;
-    createRule(experience, { x: 80, y: rowY, width: 1280, color: FINAL_COLOR.border });
-    addFinalLabel(experience, period, 80, rowY + 35, 220);
+  createRule(experience, { x: 290, y: 360, width: 2, height: 840, color: FINAL_COLOR.greenDeep });
+  roles.forEach(([period, company, role, scope], index) => {
+    const rowY = 320 + index * 205;
+    addFinalLabel(experience, period, 80, rowY + 34, 180);
+    createEllipse(experience, { name: `Timeline node — ${company}`, x: 283, y: rowY + 36, width: 16, height: 16, fill: FINAL_COLOR.greenDeep, stroke: FINAL_COLOR.surfaceStrong, strokeWeight: 3 });
     addFinalHeading(experience, {
       characters: company,
       fontSize: index === 0 ? 30 : 26,
       lineHeight: 38,
-      width: 420,
-      x: 330,
-      y: rowY + 28,
+      width: 930,
+      x: 340,
+      y: rowY + 20,
     });
     addFinalBody(experience, {
       characters: role,
       fontSize: 18,
       lineHeight: 29,
+      color: FINAL_COLOR.ink,
+      width: 930,
+      x: 340,
+      y: rowY + 65,
+    });
+    addFinalBody(experience, {
+      characters: scope,
+      fontSize: 15,
+      lineHeight: 24,
       color: FINAL_COLOR.inkMuted,
-      width: 520,
-      x: 820,
-      y: rowY + 34,
+      width: 930,
+      x: 340,
+      y: rowY + 103,
     });
   });
 
   const education = createCaseBand(page, {
     name: "05 Education — compact supporting context",
-    y: 4040,
+    y: 4180,
     height: 720,
     fill: CASE_COLOR.canvas,
   });
@@ -5879,7 +5902,7 @@ function createAboutDesktop(parent, x, y, photoHash) {
 
   const personal = createCaseBand(page, {
     name: "06 A little more about me",
-    y: 4760,
+    y: 4900,
     height: 960,
     fill: CASE_COLOR.surface,
   });
@@ -5924,7 +5947,7 @@ function createAboutDesktop(parent, x, y, photoHash) {
 
   const languages = createCaseBand(page, {
     name: "07 Languages — compact",
-    y: 5720,
+    y: 5860,
     height: 660,
     fill: CASE_COLOR.canvas,
   });
@@ -5957,8 +5980,8 @@ function createAboutDesktop(parent, x, y, photoHash) {
     y: 465,
   });
 
-  createFinalContactFooter(page, 6380);
-  createAboutBackToTop(page, 1304, 6210);
+  createFinalContactFooter(page, 6520);
+  createAboutBackToTop(page, 1304, 6350);
 
   return page;
 }
@@ -6007,19 +6030,21 @@ function createAboutMobile(parent, x, y, photoHash) {
     x,
     y,
     width: 390,
-    height: 8400,
+    height: 8620,
     fill: FINAL_COLOR.canvas,
   });
   addFinalHeading(page, { characters: "Abilene Caride", fontSize: 25, lineHeight: 31, width: 240, x: 28, y: 30 });
   addFinalBody(page, { characters: "Menu", font: FONT.montserratMedium, fontSize: 14, lineHeight: 22, color: FINAL_COLOR.greenDeep, width: 70, x: 310, y: 35 });
   addFinalLabel(page, "ABOUT", 28, 125, 180);
-  addFinalHeading(page, { characters: "I help people find the way to do what they want.", fontSize: 43, lineHeight: 52, width: 334, x: 28, y: 170 });
-  addFinalBody(page, { characters: "Helping is the thread running through my work. I want people to understand what they need and find their way forward.\n\nProfessionally, I do that through words.", fontSize: 18, lineHeight: 30, width: 334, x: 28, y: 410 });
+  addFinalHeading(page, { characters: "I help users find the clearest path to what they need in digital products.", fontSize: 40, lineHeight: 49, width: 334, x: 28, y: 170 });
+  addFinalBody(page, { characters: "Helping is the thread running through my work. I want people to understand what they need and find their way forward.\n\nProfessionally, I do that through words.", fontSize: 18, lineHeight: 30, width: 334, x: 28, y: 460 });
   addFinalBody(page, { characters: "I wear a lot of hats, but I don’t do things halfway. I care about making communication useful and getting it right.", fontSize: 18, lineHeight: 30, width: 334, x: 28, y: 690 });
-  const photo = createCanvasFrame(page, { name: `About portrait — mobile — ${FINAL_ABOUT_PHOTO}`, x: 0, y: 930, width: 390, height: 570, fill: FINAL_COLOR.surfaceStrong, clipsContent: true });
+  const mobileCvAction = createPill(page, { label: "Download CV ↓", x: 28, y: 850, width: 200, height: 54, fill: FINAL_COLOR.canvas, stroke: FINAL_COLOR.greenDeep, color: FINAL_COLOR.greenDeep, fontSize: 15, lineHeight: 23 });
+  mobileCvAction.name = "Download CV — mobile secondary action";
+  const photo = createCanvasFrame(page, { name: `About portrait — mobile — ${FINAL_ABOUT_PHOTO}`, x: 0, y: 950, width: 390, height: 570, fill: FINAL_COLOR.surfaceStrong, clipsContent: true });
   applyImageFill(photo, photoHash, "FIT");
 
-  const path = createCanvasFrame(page, { name: "Mobile — How I got here", x: 0, y: 1500, width: 390, height: 1000, fill: CASE_COLOR.surface });
+  const path = createCanvasFrame(page, { name: "Mobile — How I got here", x: 0, y: 1520, width: 390, height: 1000, fill: CASE_COLOR.surface });
   addFinalLabel(path, "HOW I GOT HERE", 28, 55, 250);
   addFinalHeading(path, { characters: "Words became the way I could be more useful.", fontSize: 34, lineHeight: 43, width: 334, x: 28, y: 100 });
   const pathItems = [
@@ -6036,7 +6061,7 @@ function createAboutMobile(parent, x, y, photoHash) {
     if (index < pathItems.length - 1) createRule(path, { x: 46, y: itemY + 92, width: 2, height: 42, color: FINAL_COLOR.green });
   });
 
-  const principles = createCanvasFrame(page, { name: "Mobile — How I work", x: 0, y: 2500, width: 390, height: 1100, fill: CASE_COLOR.canvas });
+  const principles = createCanvasFrame(page, { name: "Mobile — How I work", x: 0, y: 2520, width: 390, height: 1100, fill: CASE_COLOR.canvas });
   addFinalLabel(principles, "HOW I WORK", 28, 55, 220);
   addFinalHeading(principles, { characters: "Clear. Honest. Practical.", fontSize: 36, lineHeight: 45, width: 334, x: 28, y: 100 });
   const principleItems = [
@@ -6052,30 +6077,32 @@ function createAboutMobile(parent, x, y, photoHash) {
     if (index < 2) createRule(principles, { x: 28, y: itemY + 195, width: 334, color: FINAL_COLOR.border });
   });
 
-  const experience = createCanvasFrame(page, { name: "Mobile — Experience", x: 0, y: 3600, width: 390, height: 1300, fill: CASE_COLOR.surfaceStrong });
+  const experience = createCanvasFrame(page, { name: "Mobile — Experience · continuous timeline", x: 0, y: 3620, width: 390, height: 1500, fill: CASE_COLOR.surfaceStrong });
   addFinalLabel(experience, "EXPERIENCE", 28, 55, 220);
   addFinalHeading(experience, { characters: "A broad profile, built deliberately.", fontSize: 34, lineHeight: 43, width: 334, x: 28, y: 100 });
   const roles = [
-    ["2023–present", "imaginArt", "Content, communications and marketing"],
-    ["2020–2021", "Federación Pantalla", "Communication and community"],
-    ["2019–2021", "Ailanto", "Content, ecommerce and customer care"],
-    ["2017–2019", "Ethic Investors", "Administration and commercial content"],
-    ["2011–2019", "Caprichos de Casa Import", "E-commerce manager · Administration, sales and business operations"],
+    ["2023–present", "imaginArt", "Content, communications and marketing", "B2B communication strategy, campaigns, events, web content, SEO and user experience work."],
+    ["2020–2021", "Federación Pantalla", "Communication and community", "Social content, newsletters, press materials, live events and internal communication."],
+    ["2019–2021", "Ailanto", "Content, ecommerce and customer care", "Corporate copy, ecommerce design support, weekly newsletters and customer service."],
+    ["2017–2019", "Ethic Investors", "Administration and commercial content", "Executive support, official documentation and content for property and crowdfunding offers."],
+    ["2011–2019", "Caprichos de Casa Import", "E-commerce manager · Administration, sales and business operations", "Online catalogue maintenance, promotions, newsletters and support for the store redesign and relaunch."],
   ];
-  roles.forEach(([period, company, role], index) => {
-    const rowY = 300 + index * 180;
-    createRule(experience, { x: 28, y: rowY, width: 334, color: FINAL_COLOR.border });
-    addFinalLabel(experience, period, 28, rowY + 24, 160);
-    addFinalHeading(experience, { characters: company, fontSize: 22, lineHeight: 29, width: 330, x: 28, y: rowY + 62 });
-    addFinalBody(experience, { characters: role, fontSize: 14, lineHeight: 23, color: FINAL_COLOR.inkMuted, width: 330, x: 28, y: rowY + 105 });
+  createRule(experience, { x: 47, y: 310, width: 2, height: 1040, color: FINAL_COLOR.greenDeep });
+  roles.forEach(([period, company, role, scope], index) => {
+    const rowY = 285 + index * 230;
+    createEllipse(experience, { name: `Mobile timeline node — ${company}`, x: 40, y: rowY + 25, width: 16, height: 16, fill: FINAL_COLOR.greenDeep, stroke: FINAL_COLOR.surfaceStrong, strokeWeight: 3 });
+    addFinalLabel(experience, period, 76, rowY + 18, 220);
+    addFinalHeading(experience, { characters: company, fontSize: 22, lineHeight: 29, width: 286, x: 76, y: rowY + 54 });
+    addFinalBody(experience, { characters: role, font: FONT.montserratMedium, fontSize: 14, lineHeight: 23, color: FINAL_COLOR.ink, width: 286, x: 76, y: rowY + 93 });
+    addFinalBody(experience, { characters: scope, fontSize: 12, lineHeight: 20, color: FINAL_COLOR.inkMuted, width: 286, x: 76, y: rowY + 142 });
   });
 
-  const education = createCanvasFrame(page, { name: "Mobile — Education", x: 0, y: 4900, width: 390, height: 700, fill: CASE_COLOR.canvas });
+  const education = createCanvasFrame(page, { name: "Mobile — Education", x: 0, y: 5120, width: 390, height: 700, fill: CASE_COLOR.canvas });
   addFinalLabel(education, "EDUCATION", 28, 55, 220);
   addFinalHeading(education, { characters: "Learning that explains the path.", fontSize: 33, lineHeight: 42, width: 334, x: 28, y: 100 });
   addFinalBody(education, { characters: "Postgraduate in UX Writing\nProficiency English Certificate - Cambridge C2 (2024)\nDegree in Communication\nAdministration and Finance", fontSize: 18, lineHeight: 52, width: 334, x: 28, y: 270 });
 
-  const personal = createCanvasFrame(page, { name: "Mobile — A little more about me", x: 0, y: 5600, width: 390, height: 1000, fill: CASE_COLOR.surface });
+  const personal = createCanvasFrame(page, { name: "Mobile — A little more about me", x: 0, y: 5820, width: 390, height: 1000, fill: CASE_COLOR.surface });
   addFinalLabel(personal, "A LITTLE MORE ABOUT ME", 28, 55, 300);
   addFinalHeading(personal, { characters: "Where the work comes from.", fontSize: 34, lineHeight: 43, width: 334, x: 28, y: 100 });
   const personalItems = [
@@ -6090,14 +6117,14 @@ function createAboutMobile(parent, x, y, photoHash) {
     addFinalBody(personal, { characters: body, fontSize: 18, lineHeight: 30, width: 275, x: 90, y: itemY - 2 });
   });
 
-  const languages = createCanvasFrame(page, { name: "Mobile — Languages", x: 0, y: 6600, width: 390, height: 600, fill: CASE_COLOR.canvas });
+  const languages = createCanvasFrame(page, { name: "Mobile — Languages", x: 0, y: 6820, width: 390, height: 600, fill: CASE_COLOR.canvas });
   addFinalLabel(languages, "LANGUAGES", 28, 55, 220);
   addFinalHeading(languages, { characters: "Different ways of listening.", fontSize: 33, lineHeight: 42, width: 334, x: 28, y: 100 });
   addFinalBody(languages, { characters: "Spanish · native\nGalician · native\nEnglish · C2\nCatalan · B1", font: FONT.montserratMedium, fontSize: 18, lineHeight: 40, width: 334, x: 28, y: 250 });
   addFinalBody(languages, { characters: "Sign language · Portuguese · Korean", fontSize: 14, lineHeight: 23, color: FINAL_COLOR.inkMuted, width: 334, x: 28, y: 455 });
 
-  createAboutMobileFooter(page, 7200);
-  const control = createAboutBackToTop(page, 306, 7040);
+  createAboutMobileFooter(page, 7420);
+  const control = createAboutBackToTop(page, 306, 7260);
   control.resize(48, 48);
   return page;
 }

@@ -22,6 +22,12 @@ const additionalLanguages = profile.languages.slice(4);
         <h1>{copy.about.heading}</h1>
         <p>{copy.about.introduction}</p>
         <p>{copy.about.story}</p>
+        <div class="cv-action-row">
+          <a class="button button-secondary" href="/cv/Abilene-Caride-CV-EN.pdf" download>
+            {copy.about.cvLabel}
+          </a>
+          {copy.about.cvNote && <span>{copy.about.cvNote}</span>}
+        </div>
       </div>
       <figure>
         <Picture src={aboutImage} formats={['avif', 'webp']} fallbackFormat="png" widths={[420, 640, 840, 1080]} sizes="(min-width: 80rem) 560px, (min-width: 50rem) 44vw, calc(100vw - 40px)" quality={82} alt={copy.about.heroAlt} loading="eager" decoding="async" fetchpriority="high" />
@@ -47,7 +53,16 @@ const additionalLanguages = profile.languages.slice(4);
     <section class="record section-band" aria-labelledby="experience-title">
       <header><p class="eyebrow">{copy.about.experienceTitle}</p><h2 id="experience-title">{copy.about.experienceIntro}</h2></header>
       <ol class="timeline">
-        {profile.experience.map((item) => <li><p class="period">{item.period}</p><div><h3>{item.organization}</h3><p>{item.title}</p></div></li>)}
+        {profile.experience.map((item) => (
+          <li>
+            <p class="period">{item.period}</p>
+            <div class="timeline-entry">
+              <h3>{item.organization}</h3>
+              <p class="role">{item.title}</p>
+              {item.description && <p class="scope">{item.description}</p>}
+            </div>
+          </li>
+        ))}
       </ol>
     </section>
 
@@ -76,9 +91,11 @@ const additionalLanguages = profile.languages.slice(4);
   .about-hero, .section-band { padding: var(--space-section) var(--space-page); }
   .about-hero { display: grid; max-width: var(--size-wide); margin-inline: auto; gap: var(--space-10); }
   .hero-copy { display: grid; align-content: center; gap: var(--space-6); }
-  .hero-copy h1 { max-width: 13ch; font-size: var(--font-size-3xl); }
+  .hero-copy h1 { max-width: 17ch; font-size: var(--font-size-2xl); }
   .hero-copy > p:not(.eyebrow) { max-width: var(--size-prose); }
-  .hero-copy > p:last-child { color: var(--color-ink-muted); }
+  .hero-copy > p:last-of-type { color: var(--color-ink-muted); }
+  .cv-action-row { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; }
+  .cv-action-row span { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
   figure { min-height: 34rem; overflow: hidden; background: var(--color-surface-strong); }
   figure :global(picture), figure :global(img) { width: 100%; height: 100%; }
   figure :global(img) { object-fit: cover; object-position: center top; }
@@ -100,10 +117,16 @@ const additionalLanguages = profile.languages.slice(4);
   .principles p { max-width: 32ch; color: var(--color-ink-muted); }
   .record { display: grid; background: var(--color-surface-strong); gap: var(--space-10); }
   .timeline, .education ol { display: grid; margin-block-start: var(--space-8); padding: 0; list-style: none; }
-  .timeline li, .education li { display: grid; padding-block: var(--space-5); border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-3); }
-  .timeline li > div, .education li > div { display: grid; gap: var(--space-1); }
+  .timeline { position: relative; gap: var(--space-12); }
+  .timeline::before { position: absolute; inset: .65rem auto .65rem .55rem; width: .125rem; background: var(--color-green-deep); content: ''; }
+  .timeline li { position: relative; display: grid; padding-inline-start: var(--space-10); gap: var(--space-2); }
+  .timeline li::before { position: absolute; z-index: 1; inset-block-start: .55rem; inset-inline-start: .18rem; width: .875rem; height: .875rem; border: .1875rem solid var(--color-surface-strong); border-radius: 50%; background: var(--color-green-deep); content: ''; }
+  .timeline-entry, .education li > div { display: grid; gap: var(--space-2); }
+  .timeline .role { color: var(--color-ink); font-family: var(--font-heading); font-weight: var(--font-weight-medium); }
+  .timeline .scope { max-width: var(--size-prose); color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .education li { display: grid; padding-block: var(--space-5); border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-3); }
   .timeline h3, .education h3 { font-size: var(--font-size-md); }
-  .timeline li > div p, .education li > div p, .period { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .education li > div p, .period { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
   .education { display: grid; background: var(--color-canvas); gap: var(--space-10); }
   .personal { display: grid; background: var(--color-surface); gap: var(--space-12); }
   .personal ul { display: grid; margin-block-start: var(--space-8); padding: 0; gap: var(--space-8); list-style: none; }
@@ -126,7 +149,10 @@ const additionalLanguages = profile.languages.slice(4);
     .principles ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .principles li { padding-inline: var(--space-8); border-inline-start: var(--border-width) solid var(--color-border); border-block-start: 0; }
     .principles li:first-child { padding-inline-start: 0; border-inline-start: 0; }
-    .timeline li { grid-template-columns: 10rem minmax(0, 1fr); }
+    .timeline { --timeline-date: 10rem; --timeline-gap: 4rem; gap: var(--space-16); }
+    .timeline::before { inset-inline-start: calc(var(--timeline-date) + (var(--timeline-gap) / 2)); }
+    .timeline li { grid-template-columns: var(--timeline-date) minmax(0, 1fr); padding-inline-start: 0; column-gap: var(--timeline-gap); }
+    .timeline li::before { inset-inline-start: calc(var(--timeline-date) + (var(--timeline-gap) / 2) - .375rem); }
     .education ol, .personal ul, .primary-languages { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-12); }
   }
 </style>

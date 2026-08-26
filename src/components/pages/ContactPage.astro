@@ -1,36 +1,150 @@
 ---
-import { ui, type Locale } from '../../i18n/config';
+import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LineIcon from '../LineIcon.astro';
 
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const copy = ui[locale];
+const privacyPath = getLocalizedPath(locale, locale === 'en' ? 'privacy' : 'privacidad');
 ---
 
 <BaseLayout title={copy.contact.title} description={copy.contact.description} locale={locale}>
-  <section class="contact-shell" aria-labelledby="contact-title">
-    <div class="contact-intro">
+  <article class="contact-page">
+    <header class="contact-intro">
       <p class="eyebrow">{copy.contact.eyebrow}</p>
-      <h1 id="contact-title">{copy.contact.heading}</h1>
+      <h1>{copy.contact.heading}</h1>
       <p>{copy.contact.introduction}</p>
-    </div>
-    <div class="contact-actions">
-      <a class="email-action" href="mailto:abicaride@gmail.com"><span>{copy.contact.emailLabel}</span><strong>abicaride@gmail.com</strong><span aria-hidden="true">→</span></a>
-      <a class="secondary-action" href="https://www.linkedin.com/in/abilene-caride/" target="_blank" rel="noreferrer">{copy.contact.linkedinLabel}<span aria-hidden="true">↗</span></a>
-    </div>
-    <p class="location">{copy.contact.location}</p>
-  </section>
+    </header>
+
+    <section class="contact-details" aria-labelledby="contact-details-title">
+      <header>
+        <p class="eyebrow">{copy.contact.detailsEyebrow}</p>
+        <h2 id="contact-details-title">{copy.contact.detailsTitle}</h2>
+      </header>
+      <address>
+        <dl>
+          <div>
+            <dt><LineIcon name="mail" size={28} /><span>{copy.contact.emailLabel}</span></dt>
+            <dd><a href="mailto:abicaride@gmail.com">abicaride@gmail.com</a></dd>
+          </div>
+          <div>
+            <dt><LineIcon name="location" size={28} /><span>{copy.contact.locationLabel}</span></dt>
+            <dd>{copy.contact.location}</dd>
+          </div>
+          <div>
+            <dt><LineIcon name="linkedin" size={28} /><span>{copy.contact.linkedinLabel}</span></dt>
+            <dd>
+              <a href="https://www.linkedin.com/in/abilene-caride/" target="_blank" rel="noreferrer">
+                {copy.contact.linkedinAction}<span aria-hidden="true"> ↗</span>
+              </a>
+            </dd>
+          </div>
+          <div>
+            <dt><LineIcon name="download" size={28} /><span>{copy.contact.cvLabel}</span></dt>
+            <dd class="cv-detail">
+              <a href="/cv/Abilene-Caride-CV-EN.pdf" download>{copy.contact.cvAction}</a>
+              {'cvNote' in copy.contact && <span>{copy.contact.cvNote}</span>}
+            </dd>
+          </div>
+        </dl>
+      </address>
+    </section>
+
+    <section class="contact-form-section" aria-labelledby="contact-form-title">
+      <header>
+        <p class="eyebrow">{copy.contact.formEyebrow}</p>
+        <h2 id="contact-form-title">{copy.contact.formTitle}</h2>
+      </header>
+      <form
+        action="https://formspree.io/f/mgaewvdw"
+        method="POST"
+        data-contact-form
+        data-submitting-label={copy.contact.submitting}
+      >
+        <div class="form-field">
+          <label for={`contact-name-${locale}`}>{copy.contact.fields.name}</label>
+          <input id={`contact-name-${locale}`} name="name" type="text" autocomplete="name" required />
+        </div>
+        <div class="form-field">
+          <label for={`contact-email-${locale}`}>{copy.contact.fields.email}</label>
+          <input id={`contact-email-${locale}`} name="email" type="email" autocomplete="email" required />
+        </div>
+        <div class="form-field">
+          <label for={`contact-message-${locale}`}>{copy.contact.fields.message}</label>
+          <textarea id={`contact-message-${locale}`} name="message" rows="7" required></textarea>
+        </div>
+        <div class="form-honeypot" aria-hidden="true">
+          <label for={`contact-gotcha-${locale}`}>Leave this field empty</label>
+          <input id={`contact-gotcha-${locale}`} name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <button class="button button-primary" type="submit" data-submit-button>{copy.contact.submit}</button>
+        <p class="form-status" role="status" aria-live="polite" tabindex="-1" hidden data-form-status></p>
+        <a class="privacy-link" href={privacyPath}>{ui[locale].footer.privacy}</a>
+      </form>
+    </section>
+  </article>
 </BaseLayout>
 
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+
+  if (form) {
+    const submitButton = form.querySelector<HTMLButtonElement>('[data-submit-button]');
+    const status = form.querySelector<HTMLElement>('[data-form-status]');
+    const initialLabel = submitButton?.textContent ?? '';
+
+    form.addEventListener('submit', () => {
+      if (!submitButton || !status) return;
+      submitButton.disabled = true;
+      submitButton.textContent = form.dataset.submittingLabel ?? initialLabel;
+      form.setAttribute('aria-busy', 'true');
+      status.textContent = form.dataset.submittingLabel ?? initialLabel;
+      status.dataset.state = 'submitting';
+      status.hidden = false;
+    });
+
+    window.addEventListener('pageshow', () => {
+      if (!submitButton || !status) return;
+      submitButton.disabled = false;
+      submitButton.textContent = initialLabel;
+      form.removeAttribute('aria-busy');
+      status.hidden = true;
+    });
+  }
+</script>
+
 <style>
-  .contact-shell { display: grid; min-height: 42rem; max-width: var(--size-content); margin-inline: auto; padding: var(--space-section) var(--space-page); align-content: center; gap: var(--space-12); }
-  .contact-intro { display: grid; max-width: 54rem; gap: var(--space-5); }
+  .contact-page { display: grid; max-width: var(--size-content); margin-inline: auto; padding: var(--space-section) var(--space-page) var(--space-24); gap: var(--space-section); }
+  .contact-intro, .contact-details > header, .contact-form-section > header { display: grid; max-width: 54rem; gap: var(--space-5); }
   h1 { max-width: 16ch; font-size: var(--font-size-3xl); }
   .contact-intro > p:last-child { max-width: var(--size-prose); color: var(--color-ink-muted); font-size: var(--font-size-md); }
-  .contact-actions { display: grid; border-block-start: var(--border-width) solid var(--color-border); }
-  .email-action { display: grid; grid-template-columns: minmax(0, 1fr) auto; padding-block: var(--space-6); border-block-end: var(--border-width) solid var(--color-border); align-items: center; gap: var(--space-3); color: var(--color-green-deep); text-decoration: none; }
-  .email-action > span:first-child { grid-column: 1 / -1; color: var(--color-ink-muted); font-size: var(--font-size-sm); }
-  .email-action strong { overflow-wrap: anywhere; font-family: var(--font-heading); font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.75rem); }
-  .secondary-action { display: flex; padding-block: var(--space-5); border-block-end: var(--border-width) solid var(--color-border); justify-content: space-between; color: var(--color-ink); font-family: var(--font-heading); font-weight: var(--font-weight-medium); text-decoration: none; }
-  .location { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .contact-details, .contact-form-section { display: grid; gap: var(--space-10); }
+  address { max-width: var(--size-narrow); font-style: normal; }
+  dl { margin: 0; }
+  dl > div { display: grid; padding-block: var(--space-6); border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-3); }
+  dt { display: flex; align-items: center; gap: var(--space-3); color: var(--color-green); font-family: var(--font-heading); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); }
+  dt :global(svg) { flex: 0 0 auto; color: var(--color-green-deep); }
+  dd { margin: 0; color: var(--color-ink); font-size: var(--font-size-md); overflow-wrap: anywhere; }
+  dd a { display: inline-flex; min-height: 2.75rem; align-items: center; color: var(--color-green-deep); font-family: var(--font-heading); font-weight: var(--font-weight-medium); }
+  .cv-detail { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; }
+  .cv-detail span { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  form { position: relative; display: grid; max-width: var(--size-narrow); gap: var(--space-6); }
+  .form-field { display: grid; gap: var(--space-2); }
+  label { font-family: var(--font-heading); font-weight: var(--font-weight-medium); }
+  input, textarea { width: 100%; border: var(--border-width) solid var(--color-ink-muted); border-radius: var(--radius-sm); background: var(--color-canvas); color: var(--color-ink); }
+  input { min-height: 3.5rem; padding: .75rem var(--space-4); }
+  textarea { min-height: 12rem; padding: var(--space-4); resize: vertical; }
+  input:hover, textarea:hover { border-color: var(--color-green-deep); }
+  .button { width: fit-content; border: 0; cursor: pointer; }
+  .button:disabled { cursor: wait; opacity: .7; transform: none; }
+  .form-status { max-width: var(--size-prose); padding-inline-start: var(--space-4); border-inline-start: .25rem solid var(--color-green); }
+  .form-status[data-state='error'] { border-color: var(--color-burgundy); }
+  .privacy-link { justify-self: start; color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .form-honeypot { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  @media (min-width: 56rem) {
+    dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-12); }
+    .contact-form-section { grid-template-columns: minmax(18rem, .7fr) minmax(0, 1.3fr); align-items: start; column-gap: var(--space-16); }
+  }
 </style>

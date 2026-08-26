@@ -613,7 +613,7 @@ const approvedFoundationsText = approvedFoundationsNodes
   .join("\n");
 for (const expected of [
   "V2 — Current production foundations",
-  "Design release 2.1.7",
+  "Design release 2.1.8",
   "Inter for headings",
   "Montserrat Regular",
   "--color-canvas",
@@ -1026,7 +1026,8 @@ const aboutText = aboutNodes
   .join("\n");
 for (const expected of [
   "About — Final pre-production",
-  "I help people find the way to do what they want.",
+  "I help users find the clearest path to what they need in digital products.",
+  "Download CV ↓",
   "Professionally, I do that through words.",
   "Administration",
   "Communication",
@@ -1059,14 +1060,14 @@ assert.ok(!aboutText.includes("Cambridge English C2"));
 const aboutDesktop = aboutNodes.find((node) => node.type === "FRAME" && node.name === "About — Final pre-production");
 const aboutMobile = aboutNodes.find((node) => node.type === "FRAME" && node.name === "About — Final pre-production — Mobile");
 assert.equal(aboutDesktop.width, 1440);
-assert.equal(aboutDesktop.height, 7230);
+assert.equal(aboutDesktop.height, 7370);
 assert.equal(aboutMobile.width, 390);
-assert.equal(aboutMobile.height, 8400);
+assert.equal(aboutMobile.height, 8620);
 const aboutPhoto = aboutNodes.find((node) => node.name === "About portrait — full body — AbileneAbout");
 assert.equal(aboutPhoto.fills[0].type, "IMAGE");
 assert.equal(aboutPhoto.fills[0].imageHash, "approved-about-photo-hash");
 assert.equal(aboutPhoto.fills[0].scaleMode, "FIT");
-assert.equal(aboutNodes.filter((node) => node.type === "ELLIPSE").length, 0);
+assert.equal(aboutNodes.filter((node) => node.type === "ELLIPSE").length, 10);
 const aboutBody = aboutNodes.find((node) => node.type === "TEXT" && node.characters.startsWith("Helping is the thread"));
 assert.equal(aboutBody.fontName.family, "Montserrat");
 assert.equal(aboutBody.fontSize, 20);
@@ -1099,7 +1100,7 @@ const currentComponentsText = currentComponentsNodes
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Design release 2.1.7",
+  "Design release 2.1.8",
   "Home",
   "Get in touch",
   "View my work",
