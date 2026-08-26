@@ -1,5 +1,5 @@
 {
-  "version": "2.1.8",
+  "version": "2.1.9",
   "status": "CURRENT",
   "name": "Clean Organic Editorial",
   "sourceOfTruth": "Astro repository",
@@ -27,6 +27,7 @@
     "homepage": "Abi Personal Website / 01 — Homepage",
     "caseStudies": "Abi Personal Website / 02 — Case Studies",
     "about": "Abi Personal Website / 03 — About + Archive",
+    "contact": "Abi Personal Website / 03 — About + Archive",
     "moodboard": "Abi Website Moodboard"
   }
 }

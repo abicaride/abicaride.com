@@ -81,6 +81,9 @@ source Git commit and repository source-of-truth statement.
   production case-study reference, including the public evidence caveats.
 - **Publish current About snapshot** creates or replaces editable desktop and
   mobile references with the packaged About portrait.
+- **Publish current Contact snapshot** creates or replaces editable desktop and
+  mobile Contact references on the shared About + Archive page. The separate
+  managed root preserves the current About, approved references and archives.
 - **Prepare this Foundations page for public viewing** removes only the known
   Figma starter tutorial, obsolete workspace-intro frames and the redundant
   top-level hero-reference import from the three Foundations pages. It also
@@ -105,6 +108,7 @@ Use the commands only in these destinations:
 | Abi Personal Website | `01 — Homepage` | Publish current Homepage snapshot |
 | Abi Personal Website | `02 — Case Studies` | Publish current imaginArt snapshot |
 | Abi Personal Website | `03 — About + Archive` | Publish current About snapshot |
+| Abi Personal Website | `03 — About + Archive` | Publish current Contact snapshot |
 
 Existing plugin-generated final directions remain `[APPROVED]` references.
 Older A/B/C/D, wireframe and reframing commands remain available under
@@ -131,8 +135,8 @@ of the release path.
 
 5. Import or refresh `manifest.json` in Figma Desktop.
 6. Open the exact target page and run the relevant **Publish current** command.
-7. Run the Homepage, imaginArt and About production snapshot commands in the
-   appropriate Personal Website pages.
+7. Run the Homepage, imaginArt, About and Contact production snapshot commands
+   in the appropriate Personal Website pages.
 8. Verify the generated output visually before treating the release as
    synchronized. Check the status/release label, the represented content,
    separation beyond the existing rightmost canvas item and the survival of all

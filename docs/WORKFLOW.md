@@ -237,6 +237,7 @@ Figma access without putting credentials in the repository or CI.
 | Abi Personal Website | `01 — Homepage` | Publish current Homepage snapshot |
 | Abi Personal Website | `02 — Case Studies` | Publish current imaginArt snapshot |
 | Abi Personal Website | `03 — About + Archive` | Publish current About snapshot |
+| Abi Personal Website | `03 — About + Archive` | Publish current Contact snapshot |
 
 5. Visually verify the generated release label, page content, right-edge
    placement and separation from `[APPROVED]`, `[ARCHIVE]` and untagged manual

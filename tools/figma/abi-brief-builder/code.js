@@ -7,7 +7,7 @@
  */
 
 const PLUGIN_DATA_KEY = "abi-website-brief-builder";
-const PLUGIN_VERSION = "9";
+const PLUGIN_VERSION = "10";
 const RELEASE_DATA_KEY = `${PLUGIN_DATA_KEY}:release`;
 const INSERTION_GAP = 400;
 
@@ -32,6 +32,7 @@ const GENERATED_KIND = {
   currentHomepage: "v2-current-homepage-snapshot",
   currentImaginart: "v2-current-imaginart-snapshot",
   currentAbout: "v2-current-about-snapshot",
+  currentContact: "v2-current-contact-snapshot",
 };
 
 const PUBLIC_FOUNDATIONS_LAYOUT = {
@@ -357,6 +358,7 @@ function releaseStatusForKind(kind) {
       GENERATED_KIND.currentHomepage,
       GENERATED_KIND.currentImaginart,
       GENERATED_KIND.currentAbout,
+      GENERATED_KIND.currentContact,
       GENERATED_KIND.moodboard,
     ].includes(kind)
   ) {
@@ -613,6 +615,12 @@ function createRule(parent, options) {
 const LINE_ICON_PATHS = {
   email:
     '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/>',
+  location:
+    '<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
+  linkedin:
+    '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 10v7M8 7v.01M12 17v-4a3 3 0 0 1 6 0v4M12 10v7"/>',
+  download:
+    '<path d="M12 3v12m0 0 5-5m-5 5-5-5"/><path d="M5 21h14"/>',
   transform:
     '<path d="M4 7h12"/><path d="m13 4 3 3-3 3"/><path d="M20 17H8"/><path d="m11 14-3 3 3 3"/>',
   event:
@@ -6129,6 +6137,288 @@ function createAboutMobile(parent, x, y, photoHash) {
   return page;
 }
 
+function createContactField(parent, options) {
+  addFinalBody(parent, {
+    characters: options.label,
+    font: FONT.montserratMedium,
+    fontSize: options.labelSize || 16,
+    lineHeight: options.labelLineHeight || 24,
+    width: options.width,
+    x: options.x,
+    y: options.y,
+  });
+  const field = createCanvasFrame(parent, {
+    name: `Contact form field — ${options.label}`,
+    x: options.x,
+    y: options.y + (options.labelOffset || 40),
+    width: options.width,
+    height: options.height,
+    fill: FINAL_COLOR.canvas,
+    stroke: FINAL_COLOR.inkMuted,
+    radius: 4,
+  });
+  return field;
+}
+
+function createContactDesktop(parent, x, y) {
+  const page = createCanvasFrame(parent, {
+    name: "Contact — desktop · current production snapshot",
+    x,
+    y,
+    width: 1440,
+    height: 3600,
+    fill: FINAL_COLOR.canvas,
+  });
+
+  createAboutHeader(page);
+  createRule(page, { x: 80, y: 112, width: 1280, color: FINAL_COLOR.border });
+  addFinalLabel(page, "LET’S TALK", 80, 185, 260);
+  const heading = addFinalHeading(page, {
+    characters: "Have a project, a role or an idea worth talking about?",
+    fontSize: 102,
+    lineHeight: 110,
+    width: 900,
+    x: 80,
+    y: 230,
+  });
+  heading.name = "Contact H1 — desktop · 10px reduction";
+  addFinalBody(page, {
+    characters: "Here are the simplest ways to get in touch.",
+    fontSize: 20,
+    lineHeight: 33,
+    color: FINAL_COLOR.inkMuted,
+    width: 620,
+    x: 80,
+    y: 690,
+  });
+
+  const details = createCanvasFrame(page, {
+    name: "Contact details — desktop",
+    x: 0,
+    y: 850,
+    width: 1440,
+    height: 800,
+    fill: CASE_COLOR.surface,
+  });
+  addFinalLabel(details, "CONTACT DETAILS", 80, 70, 300);
+  addFinalHeading(details, {
+    characters: "Choose the channel that works best for you.",
+    fontSize: 48,
+    lineHeight: 59,
+    width: 900,
+    x: 80,
+    y: 120,
+  });
+  const detailItems = [
+    ["email", "EMAIL", "abicaride@gmail.com"],
+    ["location", "LOCATION", "Poblenou (22@), Barcelona, Spain"],
+    ["linkedin", "LINKEDIN", "View Abilene Caride’s profile  ↗"],
+    ["download", "CV", "Download CV"],
+  ];
+  detailItems.forEach(([icon, label, value], index) => {
+    const column = index % 2;
+    const row = Math.floor(index / 2);
+    const itemX = 80 + column * 660;
+    const itemY = 350 + row * 205;
+    createRule(details, { x: itemX, y: itemY, width: 580, color: FINAL_COLOR.border });
+    createLineIcon(details, { icon, x: itemX, y: itemY + 30, size: 28, strokeWidth: 1.9 });
+    addFinalLabel(details, label, itemX + 48, itemY + 32, 220);
+    addFinalBody(details, {
+      characters: value,
+      font: FONT.montserratMedium,
+      fontSize: 18,
+      lineHeight: 29,
+      color: FINAL_COLOR.greenDeep,
+      width: 520,
+      x: itemX,
+      y: itemY + 88,
+    });
+  });
+
+  const form = createCanvasFrame(page, {
+    name: "Contact form — desktop",
+    x: 0,
+    y: 1650,
+    width: 1440,
+    height: 1100,
+    fill: CASE_COLOR.canvas,
+  });
+  addFinalLabel(form, "CONTACT FORM", 80, 85, 260);
+  addFinalHeading(form, {
+    characters: "Send a message now.",
+    fontSize: 48,
+    lineHeight: 59,
+    width: 460,
+    x: 80,
+    y: 135,
+  });
+  createContactField(form, { label: "Name", x: 650, y: 100, width: 690, height: 58 });
+  createContactField(form, { label: "Email", x: 650, y: 285, width: 690, height: 58 });
+  createContactField(form, { label: "Message", x: 650, y: 470, width: 690, height: 280 });
+  const submit = createPill(form, {
+    label: "Send message →",
+    x: 650,
+    y: 850,
+    width: 220,
+    height: 58,
+    fill: FINAL_COLOR.greenDeep,
+    stroke: FINAL_COLOR.greenDeep,
+    color: FINAL_COLOR.canvas,
+    fontSize: 16,
+    lineHeight: 24,
+  });
+  submit.name = "Send message — primary action";
+  addFinalBody(form, {
+    characters: "Privacy & cookies",
+    fontSize: 14,
+    lineHeight: 23,
+    color: FINAL_COLOR.inkMuted,
+    width: 260,
+    x: 650,
+    y: 950,
+  });
+
+  createFinalContactFooter(page, 2750);
+  createAboutBackToTop(page, 1304, 2600);
+  return page;
+}
+
+function createContactMobile(parent, x, y) {
+  const page = createCanvasFrame(parent, {
+    name: "Contact — mobile · current production snapshot",
+    x,
+    y,
+    width: 390,
+    height: 4340,
+    fill: FINAL_COLOR.canvas,
+  });
+  addFinalHeading(page, {
+    characters: "Abilene Caride",
+    fontSize: 25,
+    lineHeight: 31,
+    width: 240,
+    x: 28,
+    y: 30,
+  });
+  addFinalBody(page, {
+    characters: "Menu",
+    font: FONT.montserratMedium,
+    fontSize: 14,
+    lineHeight: 22,
+    color: FINAL_COLOR.greenDeep,
+    width: 70,
+    x: 310,
+    y: 35,
+  });
+  addFinalLabel(page, "LET’S TALK", 28, 125, 180);
+  const heading = addFinalHeading(page, {
+    characters: "Have a project, a role or an idea worth talking about?",
+    fontSize: 40,
+    lineHeight: 49,
+    width: 334,
+    x: 28,
+    y: 170,
+  });
+  heading.name = "Contact H1 — mobile · 10px reduction";
+  addFinalBody(page, {
+    characters: "Here are the simplest ways to get in touch.",
+    fontSize: 18,
+    lineHeight: 30,
+    color: FINAL_COLOR.inkMuted,
+    width: 334,
+    x: 28,
+    y: 410,
+  });
+
+  const details = createCanvasFrame(page, {
+    name: "Contact details — mobile",
+    x: 0,
+    y: 530,
+    width: 390,
+    height: 1130,
+    fill: CASE_COLOR.surface,
+  });
+  addFinalLabel(details, "CONTACT DETAILS", 28, 55, 260);
+  addFinalHeading(details, {
+    characters: "Choose the channel that works best for you.",
+    fontSize: 34,
+    lineHeight: 43,
+    width: 334,
+    x: 28,
+    y: 100,
+  });
+  const detailItems = [
+    ["email", "EMAIL", "abicaride@gmail.com"],
+    ["location", "LOCATION", "Poblenou (22@), Barcelona, Spain"],
+    ["linkedin", "LINKEDIN", "View Abilene Caride’s profile  ↗"],
+    ["download", "CV", "Download CV"],
+  ];
+  detailItems.forEach(([icon, label, value], index) => {
+    const itemY = 300 + index * 200;
+    createRule(details, { x: 28, y: itemY, width: 334, color: FINAL_COLOR.border });
+    createLineIcon(details, { icon, x: 28, y: itemY + 26, size: 28, strokeWidth: 1.9 });
+    addFinalLabel(details, label, 74, itemY + 28, 200);
+    addFinalBody(details, {
+      characters: value,
+      font: FONT.montserratMedium,
+      fontSize: 16,
+      lineHeight: 26,
+      color: FINAL_COLOR.greenDeep,
+      width: 334,
+      x: 28,
+      y: itemY + 82,
+    });
+  });
+
+  const form = createCanvasFrame(page, {
+    name: "Contact form — mobile",
+    x: 0,
+    y: 1660,
+    width: 390,
+    height: 1480,
+    fill: CASE_COLOR.canvas,
+  });
+  addFinalLabel(form, "CONTACT FORM", 28, 60, 240);
+  addFinalHeading(form, {
+    characters: "Send a message now.",
+    fontSize: 34,
+    lineHeight: 43,
+    width: 334,
+    x: 28,
+    y: 105,
+  });
+  createContactField(form, { label: "Name", x: 28, y: 250, width: 334, height: 56, labelSize: 15 });
+  createContactField(form, { label: "Email", x: 28, y: 430, width: 334, height: 56, labelSize: 15 });
+  createContactField(form, { label: "Message", x: 28, y: 610, width: 334, height: 300, labelSize: 15 });
+  const submit = createPill(form, {
+    label: "Send message →",
+    x: 28,
+    y: 1040,
+    width: 210,
+    height: 56,
+    fill: FINAL_COLOR.greenDeep,
+    stroke: FINAL_COLOR.greenDeep,
+    color: FINAL_COLOR.canvas,
+    fontSize: 15,
+    lineHeight: 23,
+  });
+  submit.name = "Send message — mobile primary action";
+  addFinalBody(form, {
+    characters: "Privacy & cookies",
+    fontSize: 14,
+    lineHeight: 23,
+    color: FINAL_COLOR.inkMuted,
+    width: 260,
+    x: 28,
+    y: 1140,
+  });
+
+  createAboutMobileFooter(page, 3140);
+  const control = createAboutBackToTop(page, 306, 2990);
+  control.resize(48, 48);
+  return page;
+}
+
 async function buildAboutPreproduction() {
   if (figma.editorType !== "figma") {
     throw new Error("The final About direction can only be created in Figma Design.");
@@ -6328,6 +6618,53 @@ async function publishCurrentAbout() {
   figma.currentPage.selection = [section];
   figma.viewport.scrollAndZoomIntoView([section]);
   closeWithMessage(`Published the editable About snapshot from design release ${ABI_DESIGN_RELEASE.version}.`);
+}
+
+async function publishCurrentContact() {
+  if (figma.editorType !== "figma") {
+    throw new Error("The Contact snapshot can only be published in Figma Design.");
+  }
+  requireExpectedFile(EXPECTED_FILES.personal);
+  const pageName = normalizeName(figma.currentPage.name);
+  if (!pageName.includes("about") && !pageName.includes("archive")) {
+    throw new Error(`Open the About + Archive page before publishing Contact. Current page: “${figma.currentPage.name}”.`);
+  }
+
+  const placement = productionSnapshotPlacement(GENERATED_KIND.currentContact);
+  await loadSynthesisFonts();
+  const section = createSection(
+    "Contact — production snapshot",
+    placement.point,
+    2350,
+    4850,
+    CASE_COLOR.surface,
+    GENERATED_KIND.currentContact,
+  );
+  populateSectionSafely(section, () => {
+    addFinalHeading(section, {
+      characters: "Contact — current production snapshot",
+      fontSize: 42,
+      lineHeight: 52,
+      width: 1100,
+      x: 150,
+      y: 70,
+    });
+    addFinalBody(section, {
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/ContactPage.astro, localized production copy and production tokens. The H1 reflects the implemented 10px reduction at desktop and mobile sizes.`,
+      fontSize: 18,
+      lineHeight: 29,
+      color: FINAL_COLOR.inkMuted,
+      width: 1750,
+      x: 150,
+      y: 135,
+    });
+    createContactDesktop(section, 150, 330);
+    createContactMobile(section, 1790, 330);
+  });
+  placement.existing?.remove();
+  figma.currentPage.selection = [section];
+  figma.viewport.scrollAndZoomIntoView([section]);
+  closeWithMessage(`Published the editable Contact snapshot from design release ${ABI_DESIGN_RELEASE.version}.`);
 }
 
 async function buildMoodboard() {
@@ -6771,6 +7108,9 @@ async function run() {
         break;
       case "publish-current-about":
         await publishCurrentAbout();
+        break;
+      case "publish-current-contact":
+        await publishCurrentContact();
         break;
       case "build-imaginart-wireframe":
         await buildImaginartWireframe();

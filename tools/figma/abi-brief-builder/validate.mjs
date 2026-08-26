@@ -11,6 +11,7 @@ const pluginSource = fs.readFileSync(new URL("./dist/code.js", import.meta.url),
 
 assert.match(pluginSource, /case "organize-status-labels"/);
 assert.match(pluginSource, /case "prepare-public-foundations-page"/);
+assert.match(pluginSource, /case "publish-current-contact"/);
 assert.match(pluginSource, /\[ARCHIVE\] V1 — Current Baseline/);
 assert.match(pluginSource, /\[APPROVED\] imaginArt — Final Direction/);
 assert.match(pluginSource, /ABI_DESIGN_VECTORS/);
@@ -613,7 +614,7 @@ const approvedFoundationsText = approvedFoundationsNodes
   .join("\n");
 for (const expected of [
   "V2 — Current production foundations",
-  "Design release 2.1.8",
+  "Design release 2.1.9",
   "Inter for headings",
   "Montserrat Regular",
   "--color-canvas",
@@ -1100,7 +1101,7 @@ const currentComponentsText = currentComponentsNodes
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Design release 2.1.8",
+  "Design release 2.1.9",
   "Home",
   "Get in touch",
   "View my work",
@@ -1292,6 +1293,64 @@ assert.ok(currentAboutNodes.some((node) => node.name === "About — desktop · c
 assert.ok(currentAboutNodes.some((node) => node.name === "About — mobile · current production snapshot"));
 const currentAboutPhoto = currentAboutNodes.find((node) => node.name === "About portrait — full body — AbileneAbout");
 assert.equal(currentAboutPhoto.fills[0].imageHash, "packaged-production-image");
+
+const currentContact = createFigma({
+  editorType: "figma",
+  fileName: "Abi Personal Website",
+  pageName: "03 — About + Archive",
+  command: "publish-current-contact",
+});
+const currentContactBlocker = new MockNode("SECTION", currentContact.currentPage);
+currentContactBlocker.name = "Existing About snapshot";
+currentContactBlocker.x = 3000;
+currentContactBlocker.y = 0;
+currentContactBlocker.resize(2350, 9000);
+currentContact.currentPage.children.push(currentContactBlocker);
+await execute(currentContact);
+assert.equal(currentContact.notifications.at(-1).error, false);
+assert.equal(generatedSections(currentContact).length, 1);
+const currentContactSection = generatedSections(currentContact)[0];
+assert.equal(currentContactSection.name, "[CURRENT] Contact — production snapshot");
+assert.equal(currentContactSection.x, 5750, "Contact snapshot must clear the existing About canvas");
+assert.equal(currentContactSection.height, 4850);
+const currentContactNodes = allNodes(currentContactSection);
+const currentContactText = currentContactNodes
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const expected of [
+  "Contact — current production snapshot",
+  "Have a project, a role or an idea worth talking about?",
+  "Choose the channel that works best for you.",
+  "Poblenou (22@), Barcelona, Spain",
+  "View Abilene Caride’s profile",
+  "Download CV",
+  "Send a message now.",
+  "Send message →",
+  "Privacy & cookies",
+]) {
+  assert.ok(currentContactText.includes(expected), `Missing current Contact content: ${expected}`);
+}
+const currentContactDesktop = currentContactNodes.find(
+  (node) => node.name === "Contact — desktop · current production snapshot",
+);
+const currentContactMobile = currentContactNodes.find(
+  (node) => node.name === "Contact — mobile · current production snapshot",
+);
+assert.equal(currentContactDesktop.width, 1440);
+assert.equal(currentContactDesktop.height, 3600);
+assert.equal(currentContactMobile.width, 390);
+assert.equal(currentContactMobile.height, 4340);
+const contactDesktopHeading = currentContactNodes.find(
+  (node) => node.name === "Contact H1 — desktop · 10px reduction",
+);
+const contactMobileHeading = currentContactNodes.find(
+  (node) => node.name === "Contact H1 — mobile · 10px reduction",
+);
+assert.equal(contactDesktopHeading.fontSize, 102);
+assert.equal(contactMobileHeading.fontSize, 40);
+await execute(currentContact);
+assert.equal(generatedSections(currentContact).length, 1, "A Contact rerun must not duplicate content");
 
 const wrongFile = createFigma({
   editorType: "figjam",

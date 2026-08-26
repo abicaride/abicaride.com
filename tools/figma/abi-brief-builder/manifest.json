@@ -34,6 +34,10 @@
       "command": "publish-current-about"
     },
     {
+      "name": "Publish current Contact snapshot",
+      "command": "publish-current-contact"
+    },
+    {
       "name": "Prepare this Foundations page for public viewing",
       "command": "prepare-public-foundations-page"
     },
