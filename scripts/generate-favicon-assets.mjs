@@ -6,8 +6,22 @@ import sharp from 'sharp';
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(scriptDirectory, '..');
 const publicDirectory = path.join(repositoryRoot, 'public');
+const markPath = path.join(repositoryRoot, 'src', 'assets', 'brand', 'abilene-mark.svg');
 const sourcePath = path.join(publicDirectory, 'favicon.svg');
-const svg = await fs.readFile(sourcePath);
+const markSvg = await fs.readFile(markPath, 'utf8');
+const markContent = markSvg.match(/<svg[^>]*>([\s\S]*?)<\/svg>/)?.[1]?.trim();
+
+if (!markContent) {
+  throw new Error('Could not extract the approved mark from src/assets/brand/abilene-mark.svg.');
+}
+
+const svg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" role="img" aria-label="Abilene Caride">
+  <rect width="500" height="500" rx="96" fill="#F7F3EA"/>
+  ${markContent}
+</svg>
+`);
+
+await fs.writeFile(sourcePath, svg);
 
 async function renderPng(size) {
   return sharp(svg, { density: 384 })
@@ -59,4 +73,4 @@ await Promise.all([
   ),
 ]);
 
-console.log('Generated favicon.ico, 16px, 32px and 180px favicon assets from public/favicon.svg.');
+console.log('Generated the self-contained favicon composition and browser assets from src/assets/brand/abilene-mark.svg.');

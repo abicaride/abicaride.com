@@ -14,6 +14,7 @@ const assetPaths = {
 };
 const vectorPaths = {
   favicon: path.join(repositoryRoot, "public/favicon.svg"),
+  brandMark: path.join(repositoryRoot, "src/assets/brand/abilene-mark.svg"),
 };
 const outputDirectory = path.join(toolDirectory, "dist");
 const outputPath = path.join(outputDirectory, "code.js");
@@ -99,5 +100,5 @@ fs.mkdirSync(outputDirectory, { recursive: true });
 fs.writeFileSync(outputPath, `${header}${source}`, "utf8");
 
 console.log(
-  `Packaged Abi Figma design release ${release.version} from ${commit} (${requiredTokens.length} production tokens, ${Object.keys(assets).length} production images, ${Object.keys(vectors).length} production vector).`,
+  `Packaged Abi Figma design release ${release.version} from ${commit} (${requiredTokens.length} production tokens, ${Object.keys(assets).length} production images, ${Object.keys(vectors).length} production vectors).`,
 );

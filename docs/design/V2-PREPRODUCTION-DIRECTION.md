@@ -250,9 +250,11 @@ rather than introducing a parallel footer. The final burgundy region
 is the deliberate full stop of the page and has two layers:
 
 1. a spacious contact close led by the email address;
-2. utility metadata preserving Abilene Caride, privacy, cookie settings,
-   copyright, and the architecture/build note where product strategy retains
-   it.
+2. an editorial utility system with clearly labelled identity, privacy,
+   language and architecture/build groups;
+3. a quiet copyright close, with the existing fixed back-to-top control
+   remaining visually available at the bottom-right while the footer is in
+   view.
 
 Working contact copy, pending final public-copy approval:
 
@@ -261,12 +263,15 @@ Working contact copy, pending final public-copy approval:
 - ES: `HABLEMOS` — `¿Tienes un proyecto, una idea o simplemente quieres
   saludar?` — `abicaride@gmail.com →`.
 
-Use warm-cream typography, strong hierarchy and generous whitespace. Preserve
-the original playful architecture-link copy exactly in production:
-`Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.` and
-`Hecha con 🚀 Astro, ✍️ Pages CMS, 🤖 Codex y mucho ❤️.` Do not use a card grid
-or decorative ellipses. Legal, privacy and consent controls must not be removed
-for visual minimalism.
+Use warm-cream typography, strong hierarchy and generous whitespace. Privacy
+information and the cookie-settings action remain separate: the former is a
+normal link; the latter uses a subtle settings cue and dotted link treatment.
+Repeat the accessible EN/ES switch at the end of the page so changing language
+does not require returning to the header. Preserve the original playful
+architecture-link copy exactly in production: `Made with 🎨 Figma, 🚀 Astro,
+✍️ Pages CMS, 🤖 Codex and lots of ❤️.` and `Hecha con 🎨 Figma, 🚀 Astro, ✍️
+Pages CMS, 🤖 Codex y mucho ❤️.` Do not use a card grid or decorative ellipses.
+Legal, privacy and consent controls must not be removed for visual minimalism.
 
 ## Responsive intent
 
@@ -276,7 +281,8 @@ for visual minimalism.
 - The back-to-top control uses a smaller footprint, remains bottom-right and
   never obscures content or cookie consent.
 - In the footer, the contact CTA comes first and comfortably spaced utility
-  links follow; do not force the desktop utility layout into tiny columns.
+  groups follow. Stack those groups with subtle separators on narrow screens;
+  do not force the desktop columns into the mobile layout.
 
 ## imaginArt visual direction
 

@@ -85,6 +85,7 @@ for (const file of htmlFiles) {
   const canonicals = matches(html, /<link\s+rel="canonical"\s+href="([^"]+)"/gi);
   const descriptions = matches(html, /<meta\s+name="description"\s+content="([^"]*)"/gi);
   const h1Count = matches(html, /<h1\b/gi).length;
+  const isLocalizedPage = route.startsWith('/en/') || route.startsWith('/es/');
 
   for (const requiredIconLink of [
     'href="/favicon.svg"',
@@ -96,6 +97,25 @@ for (const file of htmlFiles) {
 
   if (h1Count !== 1) errors.push(`${source}: expected one h1, found ${h1Count}`);
   if (descriptions.length !== 1) errors.push(`${source}: expected one meta description, found ${descriptions.length}`);
+  if (isLocalizedPage) {
+    if (!html.includes('class="brand-watermark"')) {
+      errors.push(`${source}: missing the shared footer brand-mark watermark`);
+    }
+    if (!/class="brand-watermark"[\s\S]{0,10000}?aria-hidden="true"/i.test(html)) {
+      errors.push(`${source}: footer brand-mark watermark is not decorative`);
+    }
+    for (const requiredFooterClass of [
+      'class="identity-mark"',
+      'class="utility-groups"',
+      'class="cookie-settings"',
+      'class="locale-links"',
+      'class="utility-meta"',
+    ]) {
+      if (!html.includes(requiredFooterClass)) {
+        errors.push(`${source}: missing structured footer element ${requiredFooterClass}`);
+      }
+    }
+  }
 
   if (isNoIndex) {
     if (canonicals.length) errors.push(`${source}: noindex page unexpectedly has a canonical`);

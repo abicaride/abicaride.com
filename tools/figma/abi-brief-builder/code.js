@@ -645,6 +645,8 @@ const LINE_ICON_PATHS = {
     '<path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/>',
   spark:
     '<path d="M12 2l1.5 6.5L20 10l-6.5 1.5L12 18l-1.5-6.5L4 10l6.5-1.5L12 2Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/>',
+  settings:
+    '<path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M10 14v6"/>',
 };
 
 function createLineIcon(parent, options) {
@@ -670,6 +672,24 @@ function createBrandMark(parent, options) {
   mark.resize(options.size, options.size);
   mark.x = options.x;
   mark.y = options.y;
+  return mark;
+}
+
+function footerWatermarkOpacity() {
+  const value = Number.parseFloat(ABI_DESIGN_TOKENS["--opacity-footer-watermark"] || "0.07");
+  return Number.isFinite(value) ? value : 0.07;
+}
+
+function createTransparentBrandMark(parent, options) {
+  const color = options.color || FINAL_COLOR.canvas;
+  const svg = ABI_DESIGN_VECTORS.brandMark.replace(/#103A20/gi, color);
+  const mark = figma.createNodeFromSvg(svg);
+  parent.appendChild(mark);
+  mark.name = options.name || "Decorative Abilene brand-mark watermark";
+  mark.resize(options.size, options.size);
+  mark.x = options.x;
+  mark.y = options.y;
+  mark.opacity = options.opacity ?? footerWatermarkOpacity();
   return mark;
 }
 
@@ -3547,6 +3567,12 @@ function createFinalContactFooter(parent, y) {
     height: 850,
     fill: FINAL_COLOR.burgundy,
   });
+  createTransparentBrandMark(footer, {
+    name: "Footer watermark — desktop · approved transparent brand mark",
+    x: 950,
+    y: 20,
+    size: 520,
+  });
   addFinalBody(footer, {
     characters: "LET’S TALK",
     font: FONT.montserratMedium,
@@ -3577,41 +3603,105 @@ function createFinalContactFooter(parent, y) {
     y: 356,
   });
   createRule(footer, { x: 80, y: 535, width: 1280, color: FINAL_COLOR.burgundyTint });
-  addFinalBody(footer, {
-    characters: "Abilene Caride\nContent strategy · Communications · Business",
-    fontSize: 14,
-    lineHeight: 24,
-    color: FINAL_COLOR.surface,
-    width: 390,
+  createTransparentBrandMark(footer, {
+    name: "Footer identity mark — desktop · approved transparent brand mark",
     x: 80,
-    y: 610,
+    y: 602,
+    size: 58,
+    opacity: 1,
+  });
+  addFinalHeading(footer, {
+    characters: "Abilene Caride",
+    fontSize: 18,
+    lineHeight: 26,
+    color: FINAL_COLOR.canvas,
+    width: 280,
+    x: 158,
+    y: 606,
   });
   addFinalBody(footer, {
-    characters: "Privacy · Cookie settings",
+    characters: "Content strategy · Communications · Business",
+    fontSize: 13,
+    lineHeight: 22,
+    color: FINAL_COLOR.surface,
+    width: 280,
+    x: 158,
+    y: 643,
+  });
+  for (const separatorX of [450, 720, 880]) {
+    const separator = createRule(footer, { x: separatorX, y: 580, width: 1, height: 145, color: FINAL_COLOR.burgundyTint });
+    separator.opacity = 0.42;
+  }
+  addFinalBody(footer, {
+    characters: "PRIVACY",
+    font: FONT.montserratMedium,
+    fontSize: 12,
+    lineHeight: 20,
+    color: FINAL_COLOR.canvas,
+    width: 210,
+    x: 485,
+    y: 580,
+  });
+  addFinalBody(footer, {
+    characters: "Privacy & cookies\nCookie settings",
+    fontSize: 14,
+    lineHeight: 42,
+    color: FINAL_COLOR.surface,
+    width: 210,
+    x: 485,
+    y: 620,
+  });
+  createLineIcon(footer, { icon: "settings", x: 650, y: 672, size: 18, strokeWidth: 1.5, color: FINAL_COLOR.surface });
+  addFinalBody(footer, {
+    characters: "LANGUAGE",
+    font: FONT.montserratMedium,
+    fontSize: 12,
+    lineHeight: 20,
+    color: FINAL_COLOR.canvas,
+    width: 130,
+    x: 755,
+    y: 580,
+  });
+  addFinalBody(footer, {
+    characters: "EN     ES",
+    font: FONT.montserratMedium,
     fontSize: 14,
     lineHeight: 24,
     color: FINAL_COLOR.surface,
-    width: 260,
-    x: 520,
-    y: 610,
+    width: 120,
+    x: 755,
+    y: 622,
+  });
+  createRule(footer, { x: 755, y: 654, width: 24, height: 2, color: FINAL_COLOR.canvas });
+  addFinalBody(footer, {
+    characters: "HOW IT’S MADE",
+    font: FONT.montserratMedium,
+    fontSize: 12,
+    lineHeight: 20,
+    color: FINAL_COLOR.canvas,
+    width: 380,
+    x: 915,
+    y: 580,
   });
   addFinalBody(footer, {
     characters: "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →",
     fontSize: 14,
     lineHeight: 24,
     color: FINAL_COLOR.surface,
-    width: 350,
-    x: 800,
-    y: 610,
+    width: 390,
+    x: 915,
+    y: 620,
   });
+  const metaDivider = createRule(footer, { x: 80, y: 760, width: 1280, color: FINAL_COLOR.burgundyTint });
+  metaDivider.opacity = 0.42;
   addFinalBody(footer, {
-    characters: "© 2026 Abilene Caride",
-    fontSize: 14,
+    characters: "© 2026 Abilene Caride. All rights reserved.",
+    fontSize: 13,
     lineHeight: 24,
     color: FINAL_COLOR.surface,
-    width: 220,
-    x: 1160,
-    y: 610,
+    width: 420,
+    x: 80,
+    y: 796,
   });
   return footer;
 }
@@ -3677,7 +3767,7 @@ async function publishCurrentComponents() {
     "V2 — Current implemented components",
     placement.point,
     1740,
-    3380,
+    4500,
     FINAL_COLOR.surface,
     GENERATED_KIND.currentComponents,
   );
@@ -3907,8 +3997,20 @@ async function publishCurrentComponents() {
       y: 78,
     });
 
-    addFinalLabel(section, "FOOTER", 150, 2140, 240);
+    addFinalLabel(section, "FOOTER · DESKTOP", 150, 2140, 300);
     createFinalContactFooter(section, 2200).x = 150;
+    addFinalLabel(section, "FOOTER · MOBILE", 150, 3100, 300);
+    const mobileFooter = createAboutMobileFooter(section, 3160);
+    mobileFooter.x = 150;
+    addFinalBody(section, {
+      characters: "The same transparent brand mark becomes smaller and more cropped on narrow screens. It remains decorative, low-opacity and clear of email, privacy, cookie settings and build information.",
+      fontSize: 18,
+      lineHeight: 30,
+      color: FINAL_COLOR.inkMuted,
+      width: 780,
+      x: 620,
+      y: 3260,
+    });
   });
 
   placement.existing?.remove();
@@ -5736,17 +5838,35 @@ function createAboutMobileFooter(parent, y) {
     x: 0,
     y,
     width: 390,
-    height: 1100,
+    height: 1200,
     fill: FINAL_COLOR.burgundy,
+  });
+  createTransparentBrandMark(footer, {
+    name: "Footer watermark — mobile · approved transparent brand mark",
+    x: 210,
+    y: 300,
+    size: 270,
   });
   addFinalBody(footer, { characters: "LET’S TALK", font: FONT.montserratMedium, fontSize: 13, lineHeight: 21, color: FINAL_COLOR.canvas, width: 310, x: 28, y: 65 });
   addFinalHeading(footer, { characters: "Have a project, an idea,\nor just want to say hello?", fontSize: 38, lineHeight: 48, color: FINAL_COLOR.canvas, width: 330, x: 28, y: 120 });
   addFinalBody(footer, { characters: "abicaride@gmail.com  →", font: FONT.montserratMedium, fontSize: 19, lineHeight: 30, color: FINAL_COLOR.canvas, width: 330, x: 28, y: 330 });
-  createRule(footer, { x: 28, y: 480, width: 334, color: FINAL_COLOR.burgundyTint });
-  addFinalBody(footer, { characters: "Abilene Caride\nContent strategy · Communications · Business", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 320, x: 28, y: 540 });
-  addFinalBody(footer, { characters: "Privacy · Cookie settings", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 300, x: 28, y: 650 });
-  addFinalBody(footer, { characters: "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 320, x: 28, y: 720 });
-  addFinalBody(footer, { characters: "© 2026 Abilene Caride", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 250, x: 28, y: 850 });
+  createRule(footer, { x: 28, y: 450, width: 334, color: FINAL_COLOR.burgundyTint });
+  createTransparentBrandMark(footer, { name: "Footer identity mark — mobile · approved transparent brand mark", x: 28, y: 490, size: 46, opacity: 1 });
+  addFinalHeading(footer, { characters: "Abilene Caride", fontSize: 17, lineHeight: 25, color: FINAL_COLOR.canvas, width: 260, x: 92, y: 492 });
+  addFinalBody(footer, { characters: "Content strategy · Communications · Business", fontSize: 12, lineHeight: 21, color: FINAL_COLOR.surface, width: 270, x: 92, y: 526 });
+  createRule(footer, { x: 28, y: 610, width: 334, color: FINAL_COLOR.burgundyTint });
+  addFinalBody(footer, { characters: "PRIVACY", font: FONT.montserratMedium, fontSize: 11, lineHeight: 19, color: FINAL_COLOR.canvas, width: 220, x: 28, y: 650 });
+  addFinalBody(footer, { characters: "Privacy & cookies\nCookie settings", fontSize: 13, lineHeight: 40, color: FINAL_COLOR.surface, width: 250, x: 28, y: 686 });
+  createLineIcon(footer, { icon: "settings", x: 160, y: 733, size: 17, strokeWidth: 1.5, color: FINAL_COLOR.surface });
+  createRule(footer, { x: 28, y: 780, width: 334, color: FINAL_COLOR.burgundyTint });
+  addFinalBody(footer, { characters: "LANGUAGE", font: FONT.montserratMedium, fontSize: 11, lineHeight: 19, color: FINAL_COLOR.canvas, width: 220, x: 28, y: 820 });
+  addFinalBody(footer, { characters: "EN     ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 150, x: 28, y: 855 });
+  createRule(footer, { x: 28, y: 885, width: 22, height: 2, color: FINAL_COLOR.canvas });
+  createRule(footer, { x: 28, y: 925, width: 334, color: FINAL_COLOR.burgundyTint });
+  addFinalBody(footer, { characters: "HOW IT’S MADE", font: FONT.montserratMedium, fontSize: 11, lineHeight: 19, color: FINAL_COLOR.canvas, width: 220, x: 28, y: 962 });
+  addFinalBody(footer, { characters: "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 330, x: 28, y: 998 });
+  createRule(footer, { x: 28, y: 1105, width: 334, color: FINAL_COLOR.burgundyTint });
+  addFinalBody(footer, { characters: "© 2026 Abilene Caride. All rights reserved.", fontSize: 12, lineHeight: 21, color: FINAL_COLOR.surface, width: 320, x: 28, y: 1138 });
   return footer;
 }
 
@@ -5756,7 +5876,7 @@ function createAboutMobile(parent, x, y, photoHash) {
     x,
     y,
     width: 390,
-    height: 8300,
+    height: 8400,
     fill: FINAL_COLOR.canvas,
   });
   addFinalHeading(page, { characters: "Abilene Caride", fontSize: 25, lineHeight: 31, width: 240, x: 28, y: 30 });
@@ -5867,7 +5987,7 @@ async function buildAboutPreproduction() {
     "About — Final pre-production",
     placement.point,
     2350,
-    8800,
+    9000,
     CASE_COLOR.surface,
     GENERATED_KIND.aboutPreproduction,
   );
@@ -6015,7 +6135,7 @@ async function publishCurrentAbout() {
     "About — production snapshot",
     placement.point,
     2350,
-    8800,
+    9000,
     CASE_COLOR.surface,
     GENERATED_KIND.currentAbout,
   );

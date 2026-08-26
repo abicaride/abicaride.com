@@ -74,6 +74,9 @@ source Git commit and repository source-of-truth statement.
   content questions.
 - **Publish current Homepage snapshot** creates or replaces the editable
   production Homepage reference with the packaged hero image.
+- The shared footer reference includes its contact close, approved brand-mark
+  watermark, identity signature, labelled privacy/language/build utilities and
+  stacked mobile treatment.
 - **Publish current imaginArt snapshot** creates or replaces the editable
   production case-study reference, including the public evidence caveats.
 - **Publish current About snapshot** creates or replaces editable desktop and
@@ -142,10 +145,10 @@ separate from normal publication because it removes a small exact allowlist of
 historical starter/intro layers and rearranges named top-level references.
 
 Packaging embeds the current Git commit, literal production color tokens, the
-production favicon vector and the two production portrait images into
-`dist/code.js`. Checking out an older commit, repackaging and republishing
-provides a reproducible rollback path; Figma version history is a second safety
-net.
+production favicon and transparent brand-mark vectors, and the two production
+portrait images into `dist/code.js`. Checking out an older commit, repackaging
+and republishing provides a reproducible rollback path; Figma version history is
+a second safety net.
 
 ## Safety model
 

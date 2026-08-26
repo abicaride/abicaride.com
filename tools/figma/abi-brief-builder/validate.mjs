@@ -14,6 +14,7 @@ assert.match(pluginSource, /case "prepare-public-foundations-page"/);
 assert.match(pluginSource, /\[ARCHIVE\] V1 — Current Baseline/);
 assert.match(pluginSource, /\[APPROVED\] imaginArt — Final Direction/);
 assert.match(pluginSource, /ABI_DESIGN_VECTORS/);
+assert.match(pluginSource, /brandMark/);
 
 function estimateTextHeight(node) {
   if (!node.characters || !node.width) return 10;
@@ -612,7 +613,7 @@ const approvedFoundationsText = approvedFoundationsNodes
   .join("\n");
 for (const expected of [
   "V2 — Current production foundations",
-  "Design release 2.1.4",
+  "Design release 2.1.6",
   "Inter for headings",
   "Montserrat Regular",
   "--color-canvas",
@@ -719,7 +720,10 @@ for (const expected of [
   "Error Messages",
   "Back to top / Volver arriba",
   "LET’S TALK",
-  "Privacy · Cookie settings",
+  "Privacy & cookies",
+  "Cookie settings",
+  "LANGUAGE",
+  "HOW IT’S MADE",
   "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
   "Content strategy · Communications · Business",
   "PALETTE HIERARCHY · DURABLE RULE",
@@ -887,7 +891,10 @@ for (const expected of [
   "~125",
   "approximate recalled attendance ranges",
   "LET’S TALK",
-  "Privacy · Cookie settings",
+  "Privacy & cookies",
+  "Cookie settings",
+  "LANGUAGE",
+  "HOW IT’S MADE",
   "docs/content/case-study-imaginart.md",
   "Abilene",
 ]) {
@@ -954,7 +961,9 @@ const collaborationManagement = publicCaseNodes.find(
 assert.ok(collaborationEngineering.x < collaborationAbilene.x);
 assert.ok(collaborationAbilene.x < collaborationManagement.x);
 assert.equal(collaborationAbilene.width, 320);
-const storyIcons = publicCaseNodes.filter((node) => node.name?.startsWith("Icon —"));
+const storyIcons = publicCaseNodes.filter(
+  (node) => node.name?.startsWith("Icon —") && node.name !== "Icon — settings",
+);
 assert.equal(storyIcons.length, 6);
 for (const icon of storyIcons) {
   assert.equal(icon.width, 32);
@@ -1009,7 +1018,7 @@ assert.equal(aboutPreproduction.currentPage.name, "03 — About + Archive");
 assert.equal(generatedSections(aboutPreproduction).length, 1);
 const aboutSection = generatedSections(aboutPreproduction)[0];
 assert.equal(aboutSection.width, 2350);
-assert.equal(aboutSection.height, 8800);
+assert.equal(aboutSection.height, 9000);
 const aboutNodes = allNodes(aboutSection);
 const aboutText = aboutNodes
   .filter((node) => node.type === "TEXT")
@@ -1052,7 +1061,7 @@ const aboutMobile = aboutNodes.find((node) => node.type === "FRAME" && node.name
 assert.equal(aboutDesktop.width, 1440);
 assert.equal(aboutDesktop.height, 7230);
 assert.equal(aboutMobile.width, 390);
-assert.equal(aboutMobile.height, 8300);
+assert.equal(aboutMobile.height, 8400);
 const aboutPhoto = aboutNodes.find((node) => node.name === "About portrait — full body — AbileneAbout");
 assert.equal(aboutPhoto.fills[0].type, "IMAGE");
 assert.equal(aboutPhoto.fills[0].imageHash, "approved-about-photo-hash");
@@ -1083,13 +1092,14 @@ assert.equal(generatedSections(currentComponents).length, 1);
 const currentComponentsSection = generatedSections(currentComponents)[0];
 assert.equal(currentComponentsSection.name, "[CURRENT] V2 — Current implemented components");
 assert.equal(currentComponentsSection.width, 1740);
-assert.equal(currentComponentsSection.height, 3380);
-const currentComponentsText = allNodes(currentComponentsSection)
+assert.equal(currentComponentsSection.height, 4500);
+const currentComponentsNodes = allNodes(currentComponentsSection);
+const currentComponentsText = currentComponentsNodes
   .filter((node) => node.type === "TEXT")
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Design release 2.1.4",
+  "Design release 2.1.6",
   "Home",
   "Get in touch",
   "View my work",
@@ -1098,10 +1108,32 @@ for (const expected of [
   "Accept",
   "Reject",
   "BACK TO TOP",
+  "PRIVACY",
+  "Privacy & cookies",
+  "Cookie settings",
+  "LANGUAGE",
+  "EN     ES",
+  "HOW IT’S MADE",
   "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
 ]) {
   assert.ok(currentComponentsText.includes(expected), `Missing current Components content: ${expected}`);
 }
+const footerWatermarks = currentComponentsNodes.filter((node) =>
+  node.name.startsWith("Footer watermark —"),
+);
+assert.equal(footerWatermarks.length, 2);
+assert.ok(footerWatermarks.some((node) => node.name.includes("desktop")));
+assert.ok(footerWatermarks.some((node) => node.name.includes("mobile")));
+assert.ok(footerWatermarks.every((node) => node.opacity === 0.07));
+const footerIdentityMarks = currentComponentsNodes.filter((node) =>
+  node.name.startsWith("Footer identity mark —"),
+);
+assert.equal(footerIdentityMarks.length, 2);
+assert.ok(footerIdentityMarks.every((node) => node.opacity === 1));
+assert.equal(
+  currentComponentsNodes.filter((node) => node.name === "Icon — settings").length,
+  2,
+);
 await execute(currentComponents);
 assert.equal(generatedSections(currentComponents).length, 1);
 assert.equal(currentComponents.notifications.at(-1).error, false);
@@ -1177,6 +1209,11 @@ for (const expected of [
 const currentHero = currentHomepageNodes.find((node) => node.name.includes("Hero — full-bleed"));
 assert.equal(currentHero.fills[0].type, "IMAGE");
 assert.equal(currentHero.fills[0].imageHash, "packaged-production-image");
+assert.ok(
+  currentHomepageNodes.some(
+    (node) => node.name === "Footer watermark — desktop · approved transparent brand mark",
+  ),
+);
 await execute(currentHomepage);
 assert.equal(generatedSections(currentHomepage).length, 1);
 

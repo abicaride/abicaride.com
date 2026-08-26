@@ -147,7 +147,11 @@ const structuredData = {
         {showBackToTop && <span class="back-to-top-trigger" data-back-to-top-trigger aria-hidden="true"></span>}
         <slot />
       </main>
-      <SiteFooter locale={locale} />
+      <SiteFooter
+        locale={locale}
+        currentLocalePath={currentLocalePath ?? currentPath}
+        alternateLocalePath={resolvedAlternatePath}
+      />
     </div>
     {showBackToTop && <BackToTop label={ui[locale].backToTop} />}
     <AnalyticsConsent locale={locale} />
