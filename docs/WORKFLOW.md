@@ -242,6 +242,20 @@ Figma access without putting credentials in the repository or CI.
    placement and separation from `[APPROVED]`, `[ARCHIVE]` and untagged manual
    work.
 
+When the public Foundations canvas itself needs tidying, use **Prepare this
+Foundations page for public viewing** once on each Foundations, Components and
+Explorations page. This bounded maintenance command removes only the documented
+Figma starter/intro allowlist, places current references at the origin and puts
+the approved Exploration before its archives. It also clears obsolete prototype
+start labels such as `Start here`. Because it deletes those known
+historical layers, run it only after an explicit cleanup request and verify all
+three pages immediately afterwards.
+
+The Foundations page is deliberately stricter than Components and
+Explorations: after confirming that its managed `[CURRENT]` section exists, the
+cleanup removes every other loose top-level object. This prevents Figma starter
+icons, text samples and imported source layers from expanding the public canvas.
+
 Each current command builds its replacement and then removes only its own
 tagged predecessor. That makes reruns repeatable, but it is still an external
 Figma write and should happen only after an explicit request to synchronize the

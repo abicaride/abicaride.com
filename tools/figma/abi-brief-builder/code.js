@@ -34,6 +34,40 @@ const GENERATED_KIND = {
   currentAbout: "v2-current-about-snapshot",
 };
 
+const PUBLIC_FOUNDATIONS_LAYOUT = {
+  foundations: {
+    pageName: "01 — Foundations",
+    currentKind: GENERATED_KIND.approvedFoundations,
+    removableNames: new Set([
+      "Start here",
+      "Workspace Intro — Foundations",
+      "[ARCHIVE] Workspace Intro — Foundations",
+      "hero-approved-reference.jpg",
+    ]),
+  },
+  components: {
+    pageName: "02 — Components",
+    currentKind: GENERATED_KIND.currentComponents,
+    removableNames: new Set([
+      "Workspace Intro — Components",
+      "[ARCHIVE] Workspace Intro — Components",
+    ]),
+  },
+  explorations: {
+    pageName: "03 — Explorations",
+    approvedName: "[APPROVED] Final Direction — Clean Organic Editorial — Pre-production",
+    removableNames: new Set([
+      "Workspace Intro — Explorations",
+      "[ARCHIVE] Workspace Intro — Explorations",
+    ]),
+    archiveOrder: [
+      "[ARCHIVE] D — Clean Organic Editorial",
+      "[ARCHIVE] V2 — Desktop Homepage Concepts",
+      "[ARCHIVE] V2 — Exploration Directions",
+    ],
+  },
+};
+
 const FINAL_HERO_PHOTO = "AbileneHero";
 const FINAL_ABOUT_PHOTO = "AbileneAbout";
 const FINAL_HERO_REFERENCE = "hero-approved-reference.jpg";
@@ -6238,6 +6272,91 @@ function organizeStatusLabels() {
   );
 }
 
+function exactPublicFoundationsPage() {
+  return Object.entries(PUBLIC_FOUNDATIONS_LAYOUT).find(
+    ([, config]) => figma.currentPage.name === config.pageName,
+  );
+}
+
+function isSafePublicCleanupNode(node, pageKey, config) {
+  if (config.removableNames.has(node.name)) return true;
+  return pageKey === "foundations" && /^(0[1-9]|1[01])$/.test(node.name);
+}
+
+function requireSingleManagedSection(kind, label) {
+  const managed = collectGenerated(figma.currentPage, kind);
+  if (managed.length !== 1) {
+    if (managed.length > 0) {
+      figma.currentPage.selection = managed;
+      figma.viewport.scrollAndZoomIntoView(managed);
+    }
+    throw new Error(
+      `Expected exactly one managed ${label} section on “${figma.currentPage.name}”; found ${managed.length}. Publish it before preparing the public canvas.`,
+    );
+  }
+  return managed[0];
+}
+
+function preparePublicFoundationsPage() {
+  if (figma.editorType !== "figma") {
+    throw new Error("Public Foundations cleanup can only run in Figma Design.");
+  }
+  requireExpectedFile(EXPECTED_FILES.foundations);
+
+  const pageEntry = exactPublicFoundationsPage();
+  if (!pageEntry) {
+    throw new Error(
+      `Open 01 — Foundations, 02 — Components or 03 — Explorations before running this command. Current page: “${figma.currentPage.name}”.`,
+    );
+  }
+
+  const [pageKey, config] = pageEntry;
+  let removed = figma.currentPage.children.filter((node) =>
+    isSafePublicCleanupNode(node, pageKey, config),
+  );
+  const removedFlowStarts = figma.currentPage.flowStartingPoints?.length || 0;
+
+  let arranged = [];
+  if (pageKey === "explorations") {
+    const approved = figma.currentPage.children.find(
+      (node) => node.name === config.approvedName,
+    );
+    if (!approved) {
+      throw new Error(
+        `Could not find “${config.approvedName}”. Organize status labels on this page first.`,
+      );
+    }
+
+    arranged = [approved];
+    for (const name of config.archiveOrder) {
+      const archive = figma.currentPage.children.find((node) => node.name === name);
+      if (archive) arranged.push(archive);
+    }
+  } else {
+    arranged = [requireSingleManagedSection(config.currentKind, pageKey)];
+  }
+
+  if (pageKey === "foundations") {
+    removed = figma.currentPage.children.filter((node) => !arranged.includes(node));
+  }
+
+  for (const node of removed) node.remove();
+  if (removedFlowStarts > 0) figma.currentPage.flowStartingPoints = [];
+
+  let nextX = 0;
+  for (const node of arranged) {
+    node.x = nextX;
+    node.y = 0;
+    nextX += node.width + INSERTION_GAP;
+  }
+
+  figma.currentPage.selection = arranged.slice(0, 1);
+  figma.viewport.scrollAndZoomIntoView(arranged.slice(0, 1));
+  closeWithMessage(
+    `Prepared ${config.pageName} for public viewing: removed ${removed.length} known starter/intro layer${removed.length === 1 ? "" : "s"}, cleared ${removedFlowStarts} prototype start label${removedFlowStarts === 1 ? "" : "s"} and arranged ${arranged.length} reference section${arranged.length === 1 ? "" : "s"}.`,
+  );
+}
+
 async function run() {
   try {
     switch (figma.command) {
@@ -6285,6 +6404,9 @@ async function run() {
         break;
       case "organize-status-labels":
         organizeStatusLabels();
+        break;
+      case "prepare-public-foundations-page":
+        preparePublicFoundationsPage();
         break;
       case "find-generated":
         findGenerated();

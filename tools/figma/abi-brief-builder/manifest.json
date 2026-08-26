@@ -34,6 +34,10 @@
       "command": "publish-current-about"
     },
     {
+      "name": "Prepare this Foundations page for public viewing",
+      "command": "prepare-public-foundations-page"
+    },
+    {
       "name": "Organize status labels on this page",
       "command": "organize-status-labels"
     },

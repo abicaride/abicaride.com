@@ -10,6 +10,7 @@ execFileSync(process.execPath, [fileURLToPath(new URL("./package.mjs", import.me
 const pluginSource = fs.readFileSync(new URL("./dist/code.js", import.meta.url), "utf8");
 
 assert.match(pluginSource, /case "organize-status-labels"/);
+assert.match(pluginSource, /case "prepare-public-foundations-page"/);
 assert.match(pluginSource, /\[ARCHIVE\] V1 — Current Baseline/);
 assert.match(pluginSource, /\[APPROVED\] imaginArt — Final Direction/);
 
@@ -158,6 +159,7 @@ class MockPage extends MockNode {
     super("PAGE", null);
     this.name = name;
     this.selection = [];
+    this.flowStartingPoints = [];
   }
 
   findAll(predicate) {
@@ -609,7 +611,7 @@ const approvedFoundationsText = approvedFoundationsNodes
   .join("\n");
 for (const expected of [
   "V2 — Current production foundations",
-  "Design release 2.1.1",
+  "Design release 2.1.2",
   "Inter for headings",
   "Montserrat Regular",
   "--color-canvas",
@@ -636,6 +638,34 @@ assert.equal(approvedFoundationsNodes.filter((node) => node.type === "ELLIPSE").
 await execute(approvedFoundations);
 assert.equal(generatedSections(approvedFoundations).length, 1);
 assert.equal(approvedFoundations.notifications.at(-1).error, false);
+const publicFoundationsSection = generatedSections(approvedFoundations)[0];
+
+for (const name of ["Start here", "01", "02", "11", "Workspace Intro — Foundations"]) {
+  const starter = new MockNode("FRAME", approvedFoundations.currentPage);
+  starter.name = name;
+  approvedFoundations.currentPage.children.push(starter);
+}
+const looseStarterObject = new MockNode("VECTOR", approvedFoundations.currentPage);
+looseStarterObject.name = "Loose starter icon sample";
+approvedFoundations.currentPage.children.push(looseStarterObject);
+publicFoundationsSection.x = 7033;
+publicFoundationsSection.y = 2841;
+approvedFoundations.currentPage.flowStartingPoints = [
+  { nodeId: "starter-flow", name: "Start here" },
+];
+approvedFoundations.command = "prepare-public-foundations-page";
+await execute(approvedFoundations);
+assert.equal(approvedFoundations.notifications.at(-1).error, false);
+assert.equal(publicFoundationsSection.x, 0);
+assert.equal(publicFoundationsSection.y, 0);
+assert.equal(approvedFoundations.currentPage.flowStartingPoints.length, 0);
+for (const removedName of ["Start here", "01", "02", "11", "Workspace Intro — Foundations", "hero-approved-reference.jpg"]) {
+  assert.ok(
+    !approvedFoundations.currentPage.children.some((node) => node.name === removedName),
+    `Public Foundations cleanup must remove ${removedName}`,
+  );
+}
+assert.ok(!approvedFoundations.currentPage.children.includes(looseStarterObject));
 
 const finalDirection = createFigma({
   editorType: "figma",
@@ -1043,7 +1073,7 @@ const currentComponentsText = allNodes(currentComponentsSection)
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Design release 2.1.1",
+  "Design release 2.1.2",
   "Home",
   "Get in touch",
   "View my work",
@@ -1059,6 +1089,50 @@ for (const expected of [
 await execute(currentComponents);
 assert.equal(generatedSections(currentComponents).length, 1);
 assert.equal(currentComponents.notifications.at(-1).error, false);
+const publicComponentsSection = generatedSections(currentComponents)[0];
+
+const componentsIntro = new MockNode("FRAME", currentComponents.currentPage);
+componentsIntro.name = "[ARCHIVE] Workspace Intro — Components";
+currentComponents.currentPage.children.push(componentsIntro);
+publicComponentsSection.x = 1560;
+currentComponents.command = "prepare-public-foundations-page";
+await execute(currentComponents);
+assert.equal(currentComponents.notifications.at(-1).error, false);
+assert.equal(publicComponentsSection.x, 0);
+assert.equal(publicComponentsSection.y, 0);
+assert.ok(!currentComponents.currentPage.children.includes(componentsIntro));
+
+const publicExplorations = createFigma({
+  editorType: "figma",
+  fileName: "Abi Website Foundations",
+  pageName: "03 — Explorations",
+  command: "prepare-public-foundations-page",
+});
+const explorationNodes = [
+  ["[ARCHIVE] Workspace Intro — Explorations", 900, 500],
+  ["[ARCHIVE] V2 — Exploration Directions", 1600, 1200],
+  ["[ARCHIVE] V2 — Desktop Homepage Concepts", 1800, 2400],
+  ["[ARCHIVE] D — Clean Organic Editorial", 1800, 3000],
+  ["[APPROVED] Final Direction — Clean Organic Editorial — Pre-production", 1800, 5360],
+].map(([name, width, height]) => {
+  const node = new MockNode("SECTION", publicExplorations.currentPage);
+  node.name = name;
+  node.resize(width, height);
+  publicExplorations.currentPage.children.push(node);
+  return node;
+});
+await execute(publicExplorations);
+assert.equal(publicExplorations.notifications.at(-1).error, false);
+assert.ok(!publicExplorations.currentPage.children.includes(explorationNodes[0]));
+assert.deepEqual(
+  explorationNodes.slice(1).map((node) => [node.name, node.x, node.y]),
+  [
+    ["[ARCHIVE] V2 — Exploration Directions", 6600, 0],
+    ["[ARCHIVE] V2 — Desktop Homepage Concepts", 4400, 0],
+    ["[ARCHIVE] D — Clean Organic Editorial", 2200, 0],
+    ["[APPROVED] Final Direction — Clean Organic Editorial — Pre-production", 0, 0],
+  ],
+);
 
 const currentHomepage = createFigma({
   editorType: "figma",

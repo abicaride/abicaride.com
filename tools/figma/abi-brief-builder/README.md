@@ -77,6 +77,19 @@ source Git commit and repository source-of-truth statement.
   production case-study reference, including the public evidence caveats.
 - **Publish current About snapshot** creates or replaces editable desktop and
   mobile references with the packaged About portrait.
+- **Prepare this Foundations page for public viewing** removes only the known
+  Figma starter tutorial, obsolete workspace-intro frames and the redundant
+  top-level hero-reference import from the three Foundations pages. It also
+  clears leftover prototype start labels such as `Start here`. It places
+  the current Foundations/Components reference at the origin and orders the
+  approved Exploration first, followed by its named archives. Run it once per
+  Foundations page after an explicit cleanup request.
+
+`01 — Foundations` is intentionally a single-reference page: once the managed
+`[CURRENT]` Foundations section exists, this maintenance command removes every
+other loose top-level object on that page. This catches the icons, text samples
+and image layers left behind by Figma's starter tutorial. Components and
+Explorations retain the narrower exact-name allowlists described above.
 
 Use the commands only in these destinations:
 
@@ -121,6 +134,12 @@ of the release path.
    separation beyond the existing rightmost canvas item and the survival of all
    untagged, `[APPROVED]` and `[ARCHIVE]` work.
 
+For a public-canvas cleanup, open each of `01 — Foundations`,
+`02 — Components` and `03 — Explorations`, run **Prepare this Foundations page
+for public viewing**, and visually verify each page. This command is deliberately
+separate from normal publication because it removes a small exact allowlist of
+historical starter/intro layers and rearranges named top-level references.
+
 Packaging embeds the current Git commit, literal production color tokens and
 the two production portrait images into `dist/code.js`. Checking out an older
 commit, repackaging and republishing provides a reproducible rollback path;
@@ -136,8 +155,12 @@ Figma version history is a second safety net.
 - Production snapshots recalculate their position against every visible
   top-level canvas item and sit beyond the rightmost edge, so archived,
   approved and manually arranged work cannot be covered by a release.
-- Untagged manual frames, references, comments and experiments are never
-  modified automatically.
+- Normal publishing commands never modify untagged manual frames, references,
+  comments or experiments. The explicit public-canvas cleanup command is the
+  sole exception: it removes its documented starter/intro allowlist on the
+  three exact Foundations pages, plus every loose top-level object other than
+  the managed `[CURRENT]` section on the intentionally single-reference
+  `01 — Foundations` page.
 - Historical exploration commands do not delete earlier work.
 - Figma Undo can reverse a local publisher execution immediately.
 - Personal photographs are packaged directly from the two repository-owned
