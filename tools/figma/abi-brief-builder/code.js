@@ -1,13 +1,14 @@
 /*
- * Abi Website Brief Builder
+ * Abi Website Design Publisher
  *
- * A deliberately small, local-only Figma development plugin. It creates the
- * V2 brief from Abi's source feedback without connecting to a server or
- * modifying unrelated nodes. Run it from Figma Desktop.
+ * A local-only Figma development plugin that publishes repository-owned design
+ * decisions into bounded, tagged Figma sections. It never connects to a server
+ * or modifies unrelated nodes. Run the packaged build from Figma Desktop.
  */
 
 const PLUGIN_DATA_KEY = "abi-website-brief-builder";
-const PLUGIN_VERSION = "7";
+const PLUGIN_VERSION = "9";
+const RELEASE_DATA_KEY = `${PLUGIN_DATA_KEY}:release`;
 const INSERTION_GAP = 400;
 
 const EXPECTED_FILES = {
@@ -27,6 +28,10 @@ const GENERATED_KIND = {
   imaginartPreproduction: "imaginart-final-preproduction-editorial",
   approvedFoundations: "v2-approved-production-foundations",
   aboutPreproduction: "about-final-preproduction-editorial",
+  currentComponents: "v2-current-components-reference",
+  currentHomepage: "v2-current-homepage-snapshot",
+  currentImaginart: "v2-current-imaginart-snapshot",
+  currentAbout: "v2-current-about-snapshot",
 };
 
 const FINAL_HERO_PHOTO = "AbileneHero";
@@ -60,18 +65,18 @@ const SYNTHESIS_COLOR = {
 };
 
 const FINAL_COLOR = {
-  canvas: "#F7F3EA",
-  surface: "#EEECE6",
-  surfaceStrong: "#E2DFD6",
-  ink: "#20241F",
-  inkMuted: "#62665E",
-  greenDeep: "#103A20",
-  green: "#34552E",
-  greenSoft: "#6F8A4F",
-  greenTint: "#DCE2D2",
-  burgundy: "#741A2A",
-  burgundyTint: "#EADBDD",
-  border: "#D3D0C7",
+  canvas: ABI_DESIGN_TOKENS["--color-canvas"],
+  surface: ABI_DESIGN_TOKENS["--color-surface"],
+  surfaceStrong: ABI_DESIGN_TOKENS["--color-surface-strong"],
+  ink: ABI_DESIGN_TOKENS["--color-ink"],
+  inkMuted: ABI_DESIGN_TOKENS["--color-ink-muted"],
+  greenDeep: ABI_DESIGN_TOKENS["--color-green-deep"],
+  green: ABI_DESIGN_TOKENS["--color-green"],
+  greenSoft: ABI_DESIGN_TOKENS["--color-green-soft"],
+  greenTint: ABI_DESIGN_TOKENS["--color-green-tint"],
+  burgundy: ABI_DESIGN_TOKENS["--color-burgundy"],
+  burgundyTint: ABI_DESIGN_TOKENS["--color-burgundy-tint"],
+  border: ABI_DESIGN_TOKENS["--color-border"],
   white: "#FFFFFF",
 };
 
@@ -184,10 +189,9 @@ const MOODBOARD = {
     },
   ],
   openQuestions: [
-    "final homepage positioning sentence",
-    "final selection/order of professional cases",
     "final Abilene review of public case-study voice",
-    "final processed hero photograph and realistic plant-environment composite",
+    "rights-cleared supporting imagery and gallery evidence for professional cases",
+    "future Writing collection and its first publishable material",
   ],
   photography: {
     note:
@@ -311,10 +315,46 @@ function generatedValue(kind) {
   return JSON.stringify({ kind, version: PLUGIN_VERSION });
 }
 
+function releaseStatusForKind(kind) {
+  if (
+    [
+      GENERATED_KIND.approvedFoundations,
+      GENERATED_KIND.currentComponents,
+      GENERATED_KIND.currentHomepage,
+      GENERATED_KIND.currentImaginart,
+      GENERATED_KIND.currentAbout,
+      GENERATED_KIND.moodboard,
+    ].includes(kind)
+  ) {
+    return "CURRENT";
+  }
+
+  if (
+    [
+      GENERATED_KIND.finalDirection,
+      GENERATED_KIND.imaginartPreproduction,
+      GENERATED_KIND.aboutPreproduction,
+    ].includes(kind)
+  ) {
+    return "APPROVED";
+  }
+
+  return "ARCHIVE";
+}
+
 function markGenerated(node, kind) {
   node.setPluginData(PLUGIN_DATA_KEY, generatedValue(kind));
+  node.setPluginData(
+    RELEASE_DATA_KEY,
+    JSON.stringify({
+      status: releaseStatusForKind(kind),
+      release: ABI_DESIGN_RELEASE.version,
+      commit: ABI_DESIGN_RELEASE.commit,
+      source: ABI_DESIGN_RELEASE.sourceOfTruth,
+    }),
+  );
   node.setRelaunchData({
-    "find-generated": "Find content created by Abi Website Brief Builder",
+    "find-generated": "Find content created by Abi Website Design Publisher",
   });
 }
 
@@ -420,6 +460,36 @@ function replacementPlacement(kind, historicalAnchorKind) {
   return { existing: null, point: insertionPoint(anchor) };
 }
 
+function pageEdgeInsertionPoint(excludedNode) {
+  const bounds = figma.currentPage.children
+    .filter((node) => node !== excludedNode && node.visible !== false)
+    .map((node) => node.absoluteRenderBounds || node.absoluteBoundingBox)
+    .filter((box) => box && box.width > 0 && box.height > 0);
+
+  if (bounds.length === 0) {
+    return insertionPoint(requireSingleAnchor());
+  }
+
+  return {
+    x: Math.round(Math.max(...bounds.map((box) => box.x + box.width)) + INSERTION_GAP),
+    y: Math.round(Math.min(...bounds.map((box) => box.y))),
+  };
+}
+
+function productionSnapshotPlacement(kind) {
+  const existing = collectGenerated(figma.currentPage, kind);
+  if (existing.length > 1) {
+    figma.currentPage.selection = existing;
+    figma.viewport.scrollAndZoomIntoView(existing);
+    throw new Error("More than one current production snapshot exists. Keep one before republishing.");
+  }
+  if (existing.length === 1) {
+    return { existing: existing[0], point: pageEdgeInsertionPoint(existing[0]) };
+  }
+
+  return { existing: null, point: pageEdgeInsertionPoint(null) };
+}
+
 async function loadFonts() {
   await Promise.all([
     figma.loadFontAsync(FONT.regular),
@@ -443,7 +513,7 @@ async function loadSynthesisFonts() {
 
 function createSection(name, point, width, height, fill, kind) {
   const section = figma.createSection();
-  section.name = `[ABI BRIEF] ${name}`;
+  section.name = `[${releaseStatusForKind(kind)}] ${name}`;
   section.x = point.x;
   section.y = point.y;
   section.resizeWithoutConstraints(width, height);
@@ -592,6 +662,22 @@ function findImageHashByName(fragment) {
     (fill) => fill && fill.type === "IMAGE" && fill.imageHash,
   );
   return imageFill?.imageHash || null;
+}
+
+function bundledImageHash(assetName) {
+  const asset = ABI_DESIGN_ASSETS[assetName];
+  if (!asset) throw new Error(`Packaged production image “${assetName}” is missing.`);
+  let bytes;
+  if (typeof figma.base64Decode === "function") {
+    bytes = figma.base64Decode(asset.base64);
+  } else {
+    const binary = atob(asset.base64);
+    bytes = new Uint8Array(binary.length);
+    for (let index = 0; index < binary.length; index += 1) {
+      bytes[index] = binary.charCodeAt(index);
+    }
+  }
+  return figma.createImage(bytes).hash;
 }
 
 function preferGeneratedAnchor(kind) {
@@ -3466,7 +3552,7 @@ function createFinalContactFooter(parent, y) {
     y: 610,
   });
   addFinalBody(footer, {
-    characters: "Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →",
+    characters: "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →",
     fontSize: 14,
     lineHeight: 24,
     color: FINAL_COLOR.surface,
@@ -3530,6 +3616,265 @@ function createTokenSwatch(parent, token, index, originY = 0) {
   return swatch;
 }
 
+async function publishCurrentComponents() {
+  if (figma.editorType !== "figma") {
+    throw new Error("The current Components reference can only be published in Figma Design.");
+  }
+  requireExpectedFile(EXPECTED_FILES.foundations);
+  if (!normalizeName(figma.currentPage.name).includes("components")) {
+    throw new Error(
+      `Open the Components page before running this command. Current page: “${figma.currentPage.name}”.`,
+    );
+  }
+
+  const placement = replacementPlacement(GENERATED_KIND.currentComponents);
+  await loadSynthesisFonts();
+  const section = createSection(
+    "V2 — Current implemented components",
+    placement.point,
+    1740,
+    3380,
+    FINAL_COLOR.surface,
+    GENERATED_KIND.currentComponents,
+  );
+
+  populateSectionSafely(section, () => {
+    addFinalHeading(section, {
+      characters: "V2 — Current implemented components",
+      fontSize: 48,
+      lineHeight: 58,
+      width: 1180,
+      x: 150,
+      y: 90,
+    });
+    addFinalBody(section, {
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nOnly patterns already reused by the Astro implementation belong here. This is a production reference, not a speculative UI library.`,
+      fontSize: 18,
+      lineHeight: 30,
+      color: FINAL_COLOR.inkMuted,
+      width: 1320,
+      x: 150,
+      y: 165,
+    });
+
+    addFinalLabel(section, "HEADER / NAVIGATION", 150, 330, 420);
+    const header = createCanvasFrame(section, {
+      name: "Header and localized navigation reference",
+      x: 150,
+      y: 390,
+      width: 1440,
+      height: 180,
+      fill: FINAL_COLOR.canvas,
+      stroke: FINAL_COLOR.border,
+    });
+    addFinalHeading(header, {
+      characters: "Abilene Caride",
+      fontSize: 32,
+      lineHeight: 40,
+      width: 330,
+      x: 64,
+      y: 62,
+    });
+    for (const [label, itemX] of [
+      ["Home", 850],
+      ["Work", 945],
+      ["About", 1040],
+      ["Contact", 1140],
+      ["ES", 1280],
+    ]) {
+      addFinalBody(header, {
+        characters: label,
+        font: FONT.montserratMedium,
+        fontSize: 15,
+        lineHeight: 24,
+        color: FINAL_COLOR.greenDeep,
+        width: 100,
+        x: itemX,
+        y: 76,
+      });
+    }
+
+    addFinalLabel(section, "BUTTONS", 150, 660, 260);
+    const buttonStage = createCanvasFrame(section, {
+      name: "Primary and secondary CTA reference",
+      x: 150,
+      y: 720,
+      width: 1440,
+      height: 250,
+      fill: FINAL_COLOR.canvas,
+      stroke: FINAL_COLOR.border,
+    });
+    createPill(buttonStage, {
+      label: "Get in touch  →",
+      x: 64,
+      y: 70,
+      width: 240,
+      height: 72,
+      fill: FINAL_COLOR.greenDeep,
+      stroke: FINAL_COLOR.greenDeep,
+      color: FINAL_COLOR.canvas,
+      fontSize: 18,
+      lineHeight: 28,
+    });
+    createPill(buttonStage, {
+      label: "View my work  →",
+      x: 330,
+      y: 70,
+      width: 250,
+      height: 72,
+      fill: FINAL_COLOR.canvas,
+      stroke: FINAL_COLOR.greenDeep,
+      color: FINAL_COLOR.greenDeep,
+      fontSize: 18,
+      lineHeight: 28,
+    });
+    addFinalBody(buttonStage, {
+      characters: "Deep green is the primary action color. Burgundy is reserved for the terminal/contact footer and rare supporting emphasis.",
+      fontSize: 17,
+      lineHeight: 28,
+      color: FINAL_COLOR.inkMuted,
+      width: 650,
+      x: 700,
+      y: 76,
+    });
+
+    addFinalLabel(section, "PROJECT PREVIEW", 150, 1060, 320);
+    const project = createCanvasFrame(section, {
+      name: "Project preview reference",
+      x: 150,
+      y: 1120,
+      width: 760,
+      height: 500,
+      fill: FINAL_COLOR.canvas,
+      stroke: FINAL_COLOR.border,
+    });
+    addFinalLabel(project, "SELECTED WORK", 48, 46, 260);
+    addFinalHeading(project, {
+      characters: "Making specialist B2B communication clearer",
+      fontSize: 38,
+      lineHeight: 48,
+      width: 640,
+      x: 48,
+      y: 105,
+    });
+    addFinalBody(project, {
+      characters: "imaginArt · Product content, editorial email and event communication",
+      fontSize: 17,
+      lineHeight: 29,
+      color: FINAL_COLOR.inkMuted,
+      width: 620,
+      x: 48,
+      y: 240,
+    });
+    createRule(project, { x: 48, y: 350, width: 664, color: FINAL_COLOR.border });
+    addFinalBody(project, {
+      characters: "View case study  ↗",
+      font: FONT.montserratMedium,
+      fontSize: 16,
+      lineHeight: 25,
+      color: FINAL_COLOR.greenDeep,
+      width: 260,
+      x: 48,
+      y: 390,
+    });
+
+    addFinalLabel(section, "ANALYTICS CONSENT", 990, 1060, 360);
+    const consent = createCanvasFrame(section, {
+      name: "Accessible analytics consent reference",
+      x: 990,
+      y: 1120,
+      width: 600,
+      height: 500,
+      fill: FINAL_COLOR.canvas,
+      stroke: FINAL_COLOR.border,
+      radius: 8,
+    });
+    addFinalHeading(consent, {
+      characters: "Analytics",
+      fontSize: 32,
+      lineHeight: 40,
+      width: 480,
+      x: 48,
+      y: 48,
+    });
+    addFinalBody(consent, {
+      characters: "We use Google Analytics to understand how this website is used and improve it.",
+      fontSize: 17,
+      lineHeight: 29,
+      width: 490,
+      x: 48,
+      y: 120,
+    });
+    createPill(consent, {
+      label: "Accept",
+      x: 48,
+      y: 320,
+      width: 180,
+      height: 62,
+      fill: FINAL_COLOR.greenDeep,
+      stroke: FINAL_COLOR.greenDeep,
+      color: FINAL_COLOR.canvas,
+      fontSize: 16,
+      lineHeight: 24,
+    });
+    createPill(consent, {
+      label: "Reject",
+      x: 248,
+      y: 320,
+      width: 180,
+      height: 62,
+      fill: FINAL_COLOR.canvas,
+      stroke: FINAL_COLOR.greenDeep,
+      color: FINAL_COLOR.greenDeep,
+      fontSize: 16,
+      lineHeight: 24,
+    });
+
+    addFinalLabel(section, "BACK TO TOP", 150, 1740, 300);
+    const controlStage = createCanvasFrame(section, {
+      name: "Back-to-top interaction reference",
+      x: 150,
+      y: 1800,
+      width: 1440,
+      height: 230,
+      fill: FINAL_COLOR.canvas,
+      stroke: FINAL_COLOR.border,
+    });
+    const control = createPill(controlStage, {
+      label: "↑",
+      x: 64,
+      y: 70,
+      width: 56,
+      height: 56,
+      fill: FINAL_COLOR.canvas,
+      stroke: FINAL_COLOR.border,
+      color: FINAL_COLOR.greenDeep,
+      fontSize: 24,
+      lineHeight: 28,
+    });
+    control.name = "Back to top / Volver arriba";
+    addFinalBody(controlStage, {
+      characters: "Fixed bottom-right after the hero leaves view · keyboard accessible · visible focus · reduced-motion aware · clears the consent UI.",
+      fontSize: 17,
+      lineHeight: 28,
+      color: FINAL_COLOR.inkMuted,
+      width: 1150,
+      x: 180,
+      y: 78,
+    });
+
+    addFinalLabel(section, "FOOTER", 150, 2140, 240);
+    createFinalContactFooter(section, 2200).x = 150;
+  });
+
+  placement.existing?.remove();
+  figma.currentPage.selection = [section];
+  figma.viewport.scrollAndZoomIntoView([section]);
+  closeWithMessage(
+    `Published current component references from design release ${ABI_DESIGN_RELEASE.version}.`,
+  );
+}
+
 async function buildApprovedFoundations() {
   if (figma.editorType !== "figma") {
     throw new Error("The approved V2 foundations can only be created in Figma Design.");
@@ -3545,7 +3890,7 @@ async function buildApprovedFoundations() {
   await loadSynthesisFonts();
   const referenceHash = findImageHashByName(FINAL_HERO_REFERENCE);
   const section = createSection(
-    "V2 — Approved production foundations",
+    "V2 — Current production foundations",
     placement.point,
     1740,
     3600,
@@ -3555,7 +3900,7 @@ async function buildApprovedFoundations() {
 
   populateSectionSafely(section, () => {
     addFinalHeading(section, {
-      characters: "V2 — Approved production foundations",
+      characters: "V2 — Current production foundations",
       fontSize: 48,
       lineHeight: 58,
       width: 1260,
@@ -3563,7 +3908,7 @@ async function buildApprovedFoundations() {
       y: 90,
     });
     addFinalBody(section, {
-      characters: "A refinement of Clean Organic Editorial—not another direction. These foundations are ready to inform production screens, but do not alter Astro yet.",
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from the production token source in src/styles/tokens.css. Astro remains authoritative; rerun the publisher after intentional token changes.`,
       fontSize: 19,
       lineHeight: 31,
       color: FINAL_COLOR.inkMuted,
@@ -3691,8 +4036,8 @@ async function buildApprovedFoundations() {
   figma.viewport.scrollAndZoomIntoView([section]);
   closeWithMessage(
     referenceHash
-      ? "Rebuilt the approved V2 foundations with the authoritative hero reference."
-      : "Rebuilt the approved V2 foundations. Import the reference image on this page and rebuild to show it.",
+      ? "Published the current V2 foundations with the authoritative hero reference."
+      : "Published the current V2 foundations. Import the reference image on this page and republish to show it.",
   );
 }
 
@@ -3747,9 +4092,10 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     y: 42,
   });
   for (const [label, itemX] of [
-    ["Work", 940],
+    ["Home", 850],
+    ["Work", 950],
     ["About", 1060],
-    ["Contact", 1190],
+    ["Contact", 1180],
     ["ES", 1320],
   ]) {
     addFinalBody(hero, {
@@ -3836,7 +4182,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     y: 125,
   });
   addFinalBody(lead, {
-    characters: "imaginArt · Product content, editorial email and event communication",
+    characters: "Product content, editorial email improvements and event communication for a specialist audiovisual audience.",
     font: FONT.montserratMedium,
     fontSize: 18,
     lineHeight: 30,
@@ -3846,7 +4192,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     y: 285,
   });
   addFinalBody(lead, {
-    characters: "One lead case showing how technical and business information became useful communication.",
+    characters: "A lead professional case showing how technical and business information became clearer, useful communication.",
     fontSize: 20,
     lineHeight: 33,
     width: 560,
@@ -3890,7 +4236,15 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     height: 620,
     fill: FINAL_COLOR.canvas,
   });
-  addFinalLabel(secondary, "02 · SECONDARY WORK", 80, 72, 430);
+  addFinalLabel(secondary, "SELECTED WORK", 80, 72, 430);
+  addFinalHeading(secondary, {
+    characters: "More ways of making digital communication useful.",
+    fontSize: 34,
+    lineHeight: 43,
+    width: 780,
+    x: 80,
+    y: 105,
+  });
   const secondaryItems = [
     ["Secondary work — Cognitive biases in ecommerce", "Cognitive biases in ecommerce", "Behavioural design · UX audit · Figma", 80],
     ["Secondary work — Error Messages", "Error Messages", "UX writing · clarity · recovery", 740],
@@ -3899,7 +4253,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     const item = createCanvasFrame(secondary, {
       name,
       x: itemX,
-      y: 150,
+      y: 190,
       width: 620,
       height: 340,
     });
@@ -3941,9 +4295,9 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     height: 650,
     fill: FINAL_COLOR.surface,
   });
-  addFinalLabel(about, "ABOUT · WORKING POSITIONING", 80, 80, 440);
+  addFinalLabel(about, "A LITTLE ABOUT ME", 80, 80, 440);
   addFinalHeading(about, {
-    characters: "Curious about the detail. Focused on the person reading.",
+    characters: "Clear thinking, honest communication and a practical way forward.",
     fontSize: 50,
     lineHeight: 62,
     width: 760,
@@ -3951,7 +4305,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     y: 145,
   });
   addFinalBody(about, {
-    characters: "I work across content strategy and communications, bringing structure, clarity and a human voice to complex subjects.",
+    characters: "I’m a Galician in Barcelona with a broad path through administration, communication, UX writing and B2B content. Helping people understand what they need is the thread connecting it all.",
     fontSize: 20,
     lineHeight: 34,
     width: 500,
@@ -3959,7 +4313,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     y: 180,
   });
   addFinalBody(about, {
-    characters: "Final first-person wording still needs Abilene’s review.",
+    characters: "More about me  →",
     fontSize: 15,
     lineHeight: 24,
     color: FINAL_COLOR.inkMuted,
@@ -3995,7 +4349,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
   createFinalContactFooter(page, 2910);
 
   const note = createCanvasFrame(page, {
-    name: "Pre-production note",
+    name: "Production snapshot notes",
     x: 0,
     y: 3760,
     width: 1440,
@@ -4004,7 +4358,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
   });
   createRule(note, { x: 80, y: 60, width: 1280, color: FINAL_COLOR.border });
   addFinalBody(note, {
-    characters: `Approved hero art direction: ${FINAL_HERO_REFERENCE_PATH}\nWorking Figma hero asset: ${FINAL_HERO_PHOTO}.png · full-bleed image with editable HTML/CSS-equivalent copy and navigation layered above it. The flattened reference is not a production component.`,
+    characters: `Generated from the Astro production implementation · ${ABI_DESIGN_RELEASE.commit}\nHero source: src/assets/images/abilene-hero-v2.png · full-bleed image with editable copy and navigation layered above it.`,
     fontSize: 16,
     lineHeight: 27,
     color: FINAL_COLOR.inkMuted,
@@ -4013,7 +4367,7 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     y: 110,
   });
   addFinalBody(note, {
-    characters: "Interaction: Back to top / Volver arriba is fixed bottom-right, hidden while the hero is meaningfully visible and revealed afterwards. Future Astro enhancement: IntersectionObserver, tiny native JS, visible keyboard focus, reduced-motion-aware scrolling and cookie-consent clearance.",
+    characters: "Interaction: Back to top / Volver arriba is fixed bottom-right, hidden while the hero is meaningfully visible and revealed afterwards. The Astro implementation uses minimal native JavaScript, visible keyboard focus, reduced-motion-aware scrolling and cookie-consent clearance.",
     fontSize: 15,
     lineHeight: 25,
     color: FINAL_COLOR.inkMuted,
@@ -5090,9 +5444,9 @@ function createAboutDesktop(parent, x, y, photoHash) {
   });
   const roles = [
     ["2023–present", "imaginArt", "Content, communications and marketing"],
-    ["2020–2021", "Federación Pantalla", "Communication and audiovisual sector"],
-    ["2019–2021", "Ailanto", "Ecommerce and digital communication"],
-    ["2017–2019", "Ethic Investors", "Content and digital marketing"],
+    ["2020–2021", "Federación Pantalla", "Communication and community"],
+    ["2019–2021", "Ailanto", "Content, ecommerce and customer care"],
+    ["2017–2019", "Ethic Investors", "Administration and commercial content"],
     ["2011–2019", "Caprichos de Casa Import", "E-commerce manager · Administration, sales and business operations"],
   ];
   roles.forEach(([period, company, role], index) => {
@@ -5134,9 +5488,9 @@ function createAboutDesktop(parent, x, y, photoHash) {
     y: 125,
   });
   const studies = [
-    ["Degree in Communication", "2014–2021"],
     ["Postgraduate in UX Writing", "2021–2022"],
     ["Proficiency English Certificate - Cambridge C2 (2024)", ""],
+    ["Degree in Communication", "2014–2021"],
     ["Administration and Finance", "2009–2011"],
   ];
   studies.forEach(([study, period], index) => {
@@ -5174,7 +5528,7 @@ function createAboutDesktop(parent, x, y, photoHash) {
   const personalItems = [
     ["compass", "Galicia", "Galicia taught me hard work — and gave me wings to see the world."],
     ["leaf", "Sustainability", "Sustainability is one of the pivots of my life."],
-    ["spark", "Personality", "I’m simple, but my mind rarely stops."],
+    ["spark", "Personality", "I’m down-to-earth, but my mind rarely stops."],
     ["home", "Location", "Based in Barcelona. Galician at heart."],
   ];
   personalItems.forEach(([icon, title, body], index) => {
@@ -5257,7 +5611,7 @@ function createAboutMobileFooter(parent, y) {
   createRule(footer, { x: 28, y: 480, width: 334, color: FINAL_COLOR.burgundyTint });
   addFinalBody(footer, { characters: "Abilene Caride\nContent strategy · Communications · Business", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 320, x: 28, y: 540 });
   addFinalBody(footer, { characters: "Privacy · Cookie settings", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 300, x: 28, y: 650 });
-  addFinalBody(footer, { characters: "Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 320, x: 28, y: 720 });
+  addFinalBody(footer, { characters: "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 320, x: 28, y: 720 });
   addFinalBody(footer, { characters: "© 2026 Abilene Caride", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 250, x: 28, y: 850 });
   return footer;
 }
@@ -5318,9 +5672,9 @@ function createAboutMobile(parent, x, y, photoHash) {
   addFinalHeading(experience, { characters: "A broad profile, built deliberately.", fontSize: 34, lineHeight: 43, width: 334, x: 28, y: 100 });
   const roles = [
     ["2023–present", "imaginArt", "Content, communications and marketing"],
-    ["2020–2021", "Federación Pantalla", "Communication"],
-    ["2019–2021", "Ailanto", "Ecommerce and digital communication"],
-    ["2017–2019", "Ethic Investors", "Content and digital marketing"],
+    ["2020–2021", "Federación Pantalla", "Communication and community"],
+    ["2019–2021", "Ailanto", "Content, ecommerce and customer care"],
+    ["2017–2019", "Ethic Investors", "Administration and commercial content"],
     ["2011–2019", "Caprichos de Casa Import", "E-commerce manager · Administration, sales and business operations"],
   ];
   roles.forEach(([period, company, role], index) => {
@@ -5334,7 +5688,7 @@ function createAboutMobile(parent, x, y, photoHash) {
   const education = createCanvasFrame(page, { name: "Mobile — Education", x: 0, y: 4900, width: 390, height: 700, fill: CASE_COLOR.canvas });
   addFinalLabel(education, "EDUCATION", 28, 55, 220);
   addFinalHeading(education, { characters: "Learning that explains the path.", fontSize: 33, lineHeight: 42, width: 334, x: 28, y: 100 });
-  addFinalBody(education, { characters: "Degree in Communication\nPostgraduate in UX Writing\nProficiency English Certificate - Cambridge C2 (2024)\nAdministration and Finance", fontSize: 18, lineHeight: 52, width: 334, x: 28, y: 270 });
+  addFinalBody(education, { characters: "Postgraduate in UX Writing\nProficiency English Certificate - Cambridge C2 (2024)\nDegree in Communication\nAdministration and Finance", fontSize: 18, lineHeight: 52, width: 334, x: 28, y: 270 });
 
   const personal = createCanvasFrame(page, { name: "Mobile — A little more about me", x: 0, y: 5600, width: 390, height: 1000, fill: CASE_COLOR.surface });
   addFinalLabel(personal, "A LITTLE MORE ABOUT ME", 28, 55, 300);
@@ -5342,7 +5696,7 @@ function createAboutMobile(parent, x, y, photoHash) {
   const personalItems = [
     ["compass", "Galicia taught me hard work — and gave me wings to see the world."],
     ["leaf", "Sustainability is one of the pivots of my life."],
-    ["spark", "I’m simple, but my mind rarely stops."],
+    ["spark", "I’m down-to-earth, but my mind rarely stops."],
     ["home", "Based in Barcelona. Galician at heart."],
   ];
   personalItems.forEach(([icon, body], index) => {
@@ -5403,6 +5757,163 @@ async function buildAboutPreproduction() {
   closeWithMessage(photoHash ? "Rebuilt the final About desktop and mobile direction with the approved portrait." : "Rebuilt the final About direction with a safe portrait slot. Import the approved photo as AbileneAbout and rerun to link it.");
 }
 
+async function publishCurrentHomepage() {
+  if (figma.editorType !== "figma") {
+    throw new Error("The Homepage snapshot can only be published in Figma Design.");
+  }
+  requireExpectedFile(EXPECTED_FILES.personal);
+  if (!normalizeName(figma.currentPage.name).includes("homepage")) {
+    throw new Error(`Open the Homepage page before publishing. Current page: “${figma.currentPage.name}”.`);
+  }
+
+  const placement = productionSnapshotPlacement(GENERATED_KIND.currentHomepage);
+  await loadSynthesisFonts();
+  const heroImageHash = bundledImageHash("hero");
+  const section = createSection(
+    "Homepage — production snapshot",
+    placement.point,
+    1740,
+    5060,
+    CASE_COLOR.surface,
+    GENERATED_KIND.currentHomepage,
+  );
+  populateSectionSafely(section, () => {
+    addFinalHeading(section, {
+      characters: "Homepage — current production snapshot",
+      fontSize: 42,
+      lineHeight: 52,
+      width: 1160,
+      x: 150,
+      y: 70,
+    });
+    addFinalBody(section, {
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, localized production copy, production tokens and the bundled hero source image.`,
+      fontSize: 18,
+      lineHeight: 29,
+      color: FINAL_COLOR.inkMuted,
+      width: 1380,
+      x: 150,
+      y: 135,
+    });
+    const page = createFinalHomepage(section, 150, 360, heroImageHash);
+    page.name = "Homepage — desktop · current production snapshot";
+  });
+  placement.existing?.remove();
+  figma.currentPage.selection = [section];
+  figma.viewport.scrollAndZoomIntoView([section]);
+  closeWithMessage(`Published the editable Homepage snapshot from design release ${ABI_DESIGN_RELEASE.version}.`);
+}
+
+async function publishCurrentImaginart() {
+  if (figma.editorType !== "figma") {
+    throw new Error("The imaginArt snapshot can only be published in Figma Design.");
+  }
+  requireExpectedFile(EXPECTED_FILES.personal);
+  if (!normalizeName(figma.currentPage.name).includes("case studies")) {
+    throw new Error(`Open the Case Studies page before publishing. Current page: “${figma.currentPage.name}”.`);
+  }
+
+  const placement = productionSnapshotPlacement(GENERATED_KIND.currentImaginart);
+  await loadSynthesisFonts();
+  const section = createSection(
+    "imaginArt — production snapshot",
+    placement.point,
+    1740,
+    8640,
+    CASE_COLOR.surface,
+    GENERATED_KIND.currentImaginart,
+  );
+  const page = createCanvasFrame(section, {
+    name: "imaginArt case study — desktop · current production snapshot",
+    x: 150,
+    y: 360,
+    width: 1440,
+    height: 8080,
+    fill: CASE_COLOR.canvas,
+  });
+  populateSectionSafely(section, () => {
+    addFinalHeading(section, {
+      characters: "imaginArt — current production snapshot",
+      fontSize: 42,
+      lineHeight: 52,
+      width: 1180,
+      x: 150,
+      y: 70,
+    });
+    addFinalBody(section, {
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/case-studies/ImaginartCaseStudy.astro and src/data/imaginartCase.ts. Approximate metrics retain their public caveats.`,
+      fontSize: 18,
+      lineHeight: 29,
+      color: FINAL_COLOR.inkMuted,
+      width: 1380,
+      x: 150,
+      y: 135,
+    });
+    createFinalImaginartHero(page);
+    createFinalImaginartCollaboration(page);
+    createFinalImaginartNewsletter(page);
+    createFinalImaginartTurtle(page);
+    createFinalImaginartEvent(page);
+    createFinalImaginartCatalogue(page);
+    createFinalImaginartLumens(page);
+    createFinalContactFooter(page, 7230);
+  });
+  placement.existing?.remove();
+  figma.currentPage.selection = [section];
+  figma.viewport.scrollAndZoomIntoView([section]);
+  closeWithMessage(`Published the editable imaginArt snapshot from design release ${ABI_DESIGN_RELEASE.version}.`);
+}
+
+async function publishCurrentAbout() {
+  if (figma.editorType !== "figma") {
+    throw new Error("The About snapshot can only be published in Figma Design.");
+  }
+  requireExpectedFile(EXPECTED_FILES.personal);
+  const pageName = normalizeName(figma.currentPage.name);
+  if (!pageName.includes("about") && !pageName.includes("archive")) {
+    throw new Error(`Open the About + Archive page before publishing. Current page: “${figma.currentPage.name}”.`);
+  }
+
+  const placement = productionSnapshotPlacement(GENERATED_KIND.currentAbout);
+  await loadSynthesisFonts();
+  const photoHash = bundledImageHash("about");
+  const section = createSection(
+    "About — production snapshot",
+    placement.point,
+    2350,
+    8800,
+    CASE_COLOR.surface,
+    GENERATED_KIND.currentAbout,
+  );
+  populateSectionSafely(section, () => {
+    addFinalHeading(section, {
+      characters: "About — current production snapshot",
+      fontSize: 42,
+      lineHeight: 52,
+      width: 1100,
+      x: 150,
+      y: 70,
+    });
+    addFinalBody(section, {
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/AboutPage.astro, src/data/profile.ts, localized production copy and the bundled About portrait.`,
+      fontSize: 18,
+      lineHeight: 29,
+      color: FINAL_COLOR.inkMuted,
+      width: 1550,
+      x: 150,
+      y: 135,
+    });
+    createAboutDesktop(section, 150, 330, photoHash).name =
+      "About — desktop · current production snapshot";
+    createAboutMobile(section, 1790, 330, photoHash).name =
+      "About — mobile · current production snapshot";
+  });
+  placement.existing?.remove();
+  figma.currentPage.selection = [section];
+  figma.viewport.scrollAndZoomIntoView([section]);
+  closeWithMessage(`Published the editable About snapshot from design release ${ABI_DESIGN_RELEASE.version}.`);
+}
+
 async function buildMoodboard() {
   if (figma.editorType !== "figjam") {
     throw new Error(
@@ -5411,9 +5922,8 @@ async function buildMoodboard() {
   }
 
   requireExpectedFile(EXPECTED_FILES.moodboard);
-  ensureNoExisting(GENERATED_KIND.moodboard);
-  const anchor = requireSingleAnchor();
-  const point = insertionPoint(anchor);
+  const placement = replacementPlacement(GENERATED_KIND.moodboard);
+  const point = placement.point;
   await loadFonts();
 
   const sectionWidth = 3960;
@@ -5434,7 +5944,7 @@ async function buildMoodboard() {
   createFigJamCard(section, {
     title: "V2 — Creative Brief",
     body:
-      "Abi's real feedback, references and evidence organized for visual exploration.\n\nThis is a design brief, not a finished website direction. Figma is for exploration; Astro remains production.",
+      `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\n\nAbilene's feedback, references and evidence behind the implemented V2 direction. Figma records intent; Astro remains production.`,
     x: padding,
     y: 140,
     width: sectionWidth - padding * 2,
@@ -5467,7 +5977,7 @@ async function buildMoodboard() {
   createFigJamCard(section, {
     title: "Current positioning direction",
     body:
-      "Content strategy · Communications · Content\n\nInternal note\nAbi describes herself as a “Swiss army knife”: she has worked across many kinds of communication and learns quickly. Do not turn this into final homepage copy yet.\n\nDesign implication\nThe website should communicate breadth without making Abi look unfocused.",
+      "Content strategy · Communications · Business\n\nImplemented homepage line\nI help companies connect with their audiences through clear, honest communication.\n\nDesign implication\nThe website communicates breadth without making Abilene look unfocused.",
     x: padding + (columnWidth + columnGap) * 2,
     y: 580,
     width: columnWidth,
@@ -5534,8 +6044,8 @@ async function buildMoodboard() {
   });
 
   createFigJamCard(section, {
-    title: "Initial homepage content hypothesis",
-    body: `Hero\n↓\nSelected professional work\n↓\nShort positioning / About\n↓\nWriting (future)\n↓\nPrimary CTA\n\nOpen questions\n${bullets(MOODBOARD.openQuestions)}`,
+    title: "Implemented homepage structure",
+    body: `Hero\n↓\nLead imaginArt case\n↓\nSecondary work\n↓\nShort positioning / About\n↓\nPrimary contact CTA\n\nRemaining content questions\n${bullets(MOODBOARD.openQuestions)}`,
     x: padding,
     y: 3100,
     width: columnWidth,
@@ -5570,7 +6080,10 @@ async function buildMoodboard() {
 
   figma.currentPage.selection = [section];
   figma.viewport.scrollAndZoomIntoView([section]);
-  closeWithMessage("Created V2 — Creative Brief beside the selected anchor.");
+  placement.existing?.remove();
+  closeWithMessage(
+    `Published the current moodboard direction for design release ${ABI_DESIGN_RELEASE.version}.`,
+  );
 }
 
 async function buildFoundations() {
@@ -5663,6 +6176,68 @@ function findGenerated() {
   );
 }
 
+const STATUS_LABEL_MIGRATIONS = {
+  "Abi Website Foundations::02 — Components": {
+    "Workspace Intro — Components": "[ARCHIVE] Workspace Intro — Components",
+  },
+  "Abi Website Foundations::03 — Explorations": {
+    "[ABI BRIEF] Final Direction — Clean Organic Editorial — Pre-production":
+      "[APPROVED] Final Direction — Clean Organic Editorial — Pre-production",
+    "[ABI BRIEF] D — Clean Organic Editorial":
+      "[ARCHIVE] D — Clean Organic Editorial",
+    "[ABI BRIEF] V2 — Desktop Homepage Concepts":
+      "[ARCHIVE] V2 — Desktop Homepage Concepts",
+    "[ABI BRIEF] V2 — Exploration Directions":
+      "[ARCHIVE] V2 — Exploration Directions",
+    "Workspace Intro — Explorations": "[ARCHIVE] Workspace Intro — Explorations",
+  },
+  "Abi Personal Website::01 — Homepage": {
+    "V1 — Current Baseline": "[ARCHIVE] V1 — Current Baseline",
+    "V1 — Current Baseline — Desktop": "[ARCHIVE] V1 — Current Baseline — Desktop",
+    "Workspace Intro — Homepage": "[ARCHIVE] Workspace Intro — Homepage",
+  },
+  "Abi Personal Website::02 — Case Studies": {
+    "[ABI BRIEF] imaginArt — Final Direction — Visual refinement":
+      "[APPROVED] imaginArt — Final Direction — Visual refinement",
+    "[ABI BRIEF] imaginArt — Reframed Editorial Exploration":
+      "[ARCHIVE] imaginArt — Reframed Editorial Exploration",
+    "[ABI BRIEF] imaginArt — Case Study Structure Exploration":
+      "[ARCHIVE] imaginArt — Case Study Structure Exploration",
+    "Workspace Intro — Case Studies": "[ARCHIVE] Workspace Intro — Case Studies",
+  },
+  "Abi Personal Website::03 — About + Archive": {
+    "[ABI BRIEF] About — Final pre-production":
+      "[APPROVED] About — Final pre-production",
+    "Workspace Intro — Archive": "[ARCHIVE] Workspace Intro — Archive",
+  },
+};
+
+function organizeStatusLabels() {
+  const migrationKey = `${figma.root.name}::${figma.currentPage.name}`;
+  const migrations = STATUS_LABEL_MIGRATIONS[migrationKey];
+  if (!migrations) {
+    closeWithMessage(
+      `No status-label migration is defined for “${figma.root.name} / ${figma.currentPage.name}”.`,
+      true,
+    );
+    return;
+  }
+
+  let renamed = 0;
+  for (const node of figma.currentPage.children) {
+    const nextName = migrations[node.name];
+    if (!nextName) continue;
+    node.name = nextName;
+    renamed += 1;
+  }
+
+  closeWithMessage(
+    renamed === 0
+      ? "Status labels were already organized; no nodes were changed."
+      : `Organized ${renamed} status label${renamed === 1 ? "" : "s"} without deleting or moving content.`,
+  );
+}
+
 async function run() {
   try {
     switch (figma.command) {
@@ -5684,6 +6259,18 @@ async function run() {
       case "build-approved-foundations":
         await buildApprovedFoundations();
         break;
+      case "publish-current-components":
+        await publishCurrentComponents();
+        break;
+      case "publish-current-homepage":
+        await publishCurrentHomepage();
+        break;
+      case "publish-current-imaginart":
+        await publishCurrentImaginart();
+        break;
+      case "publish-current-about":
+        await publishCurrentAbout();
+        break;
       case "build-imaginart-wireframe":
         await buildImaginartWireframe();
         break;
@@ -5696,11 +6283,14 @@ async function run() {
       case "build-about-preproduction":
         await buildAboutPreproduction();
         break;
+      case "organize-status-labels":
+        organizeStatusLabels();
+        break;
       case "find-generated":
         findGenerated();
         break;
       default:
-        closeWithMessage("Choose one of the plugin commands from the Development menu.", true);
+        closeWithMessage("Choose one of the publisher commands from the Development menu.", true);
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unexpected plugin error.";

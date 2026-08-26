@@ -1,0 +1,26 @@
+{
+  "version": "2.1.1",
+  "status": "CURRENT",
+  "name": "Clean Organic Editorial",
+  "sourceOfTruth": "Astro repository",
+  "sources": [
+    "src/styles/tokens.css",
+    "src/i18n/config.ts",
+    "src/components/",
+    "src/components/pages/",
+    "src/assets/images/abilene-hero-v2.png",
+    "src/assets/images/abilene-about-v2.png",
+    "src/content/projects/",
+    "docs/design/V2-PREPRODUCTION-DIRECTION.md",
+    "docs/content/case-study-imaginart.md"
+  ],
+  "targets": {
+    "foundations": "Abi Website Foundations / 01 — Foundations",
+    "components": "Abi Website Foundations / 02 — Components",
+    "explorations": "Abi Website Foundations / 03 — Explorations",
+    "homepage": "Abi Personal Website / 01 — Homepage",
+    "caseStudies": "Abi Personal Website / 02 — Case Studies",
+    "about": "Abi Personal Website / 03 — About + Archive",
+    "moodboard": "Abi Website Moodboard"
+  }
+}

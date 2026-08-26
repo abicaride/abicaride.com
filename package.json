@@ -9,7 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "figma:package": "node tools/figma/abi-brief-builder/package.mjs",
+    "figma:validate": "node tools/figma/abi-brief-builder/validate.mjs"
   },
   "dependencies": {
     "astro": "^7.2.4"

@@ -16,9 +16,6 @@ as a static site.
 - Preserve the English and Spanish experience, accessibility, privacy and
   performance in every change.
 - Reuse and extend the existing architecture before introducing a new pattern.
-- Use **Abilene Caride** in all public-facing UI, copy, metadata and design.
-  `Abi` may remain in private working notes, established Figma/workflow names
-  and technical identifiers; do not rename `abicaride.com`, routes or slugs.
 
 ## Architecture
 
@@ -92,6 +89,26 @@ implementation rules.
   shorten a file.
 - Use TypeScript types for component props and shared data contracts.
 
+### Pages CMS editing lane
+
+- Pages CMS is an external, Projects-only editor over the same Git-managed
+  Markdown and source images. It is not a separate database and cannot create
+  new presentation or application capabilities.
+- `.pages.yml` should expose only fields that the Astro collection already
+  validates. Development adds a capability to Astro first; the CMS may expose
+  a bounded editorial control afterwards.
+- Pages CMS creates new project entries with `draft: true`. Keep a new or
+  materially revised project in draft until its facts, imagery, English and
+  Spanish versions and public voice have been reviewed. The Astro schema's
+  `draft: false` fallback exists only for backwards compatibility with older
+  files that omit the field.
+- Treat `routeSlug`, `translationKey`, `locale`, `draft`, `featured` and `order`
+  as publication controls, not casual copy fields. Do not change a public URL,
+  publish a draft or alter homepage prominence unless the request is explicit.
+- Keep English and Spanish projects paired. Do not invent missing professional
+  facts or silently publish an unreviewed translation; leave incomplete work in
+  draft and report what still needs review.
+
 ## Rendering, JavaScript and privacy
 
 - Static HTML is the default. Do not add hydration directives or browser scripts
@@ -108,6 +125,29 @@ implementation rules.
   `ad_personalization` remain denied.
 - Do not add Google Tag Manager, advertising features, custom analytics events or
   another consent dependency unless explicitly requested.
+
+### Interaction contracts
+
+The small interaction surface is intentional. Preserve these ownership
+boundaries instead of adding page-local variants:
+
+- `src/pages/index.astro` owns the non-indexable browser-language gateway and
+  its manual/no-JavaScript fallbacks.
+- `SiteHeader.astro` and `getLocalizedPath()` own primary navigation, active
+  state and EN/ES switching, including translated project slugs.
+- Native links and anchors own email, project, contact and in-page CTA flows.
+  Do not replace them with scripted navigation.
+- `BaseLayout.astro` supplies the global back-to-top trigger;
+  `BackToTop.astro` owns its minimal Intersection Observer, keyboard-accessible
+  button and reduced-motion-aware scroll behaviour.
+- `AnalyticsConsent.astro`, `analytics-consent.js` and footer/privacy
+  `data-cookie-settings` links own the complete analytics choice and reopening
+  flow. Do not duplicate or bypass that state elsewhere.
+
+When an interaction changes, test the complete path rather than only its visual
+state: keyboard operation, visible focus, reduced motion where relevant, both
+locales, narrow and desktop layouts and the no-consent/no-JavaScript fallback
+when one exists.
 
 ## Styling and visual system
 
@@ -135,6 +175,34 @@ The shared Figma workspace contains three complementary files:
 These file links are intentionally public and view-only. Public visibility does
 not make exploratory material an approved specification, and agents must not
 change sharing permissions or grant edit access unless explicitly requested.
+
+The repository is the source of truth and Figma is a versioned visual release
+target. Managed Figma roots use `[CURRENT]`, `[APPROVED]` or `[ARCHIVE]` as
+defined in
+[`docs/decisions/008-code-first-figma-publishing.md`](docs/decisions/008-code-first-figma-publishing.md).
+
+- Update Astro/content/design sources before changing managed Figma output.
+- Use the local
+  [`Abi Website Design Publisher`](tools/figma/abi-brief-builder/README.md) for
+  Foundations, implemented component references, production-page snapshots and
+  bounded design summaries.
+- Publish current Homepage, About and imaginArt references through the local
+  publisher. Figma MCP is optional and quota-limited; it and manual browser
+  capture must not be required for a design release. The supported quota-
+  independent path is the local development plugin in authenticated Figma
+  Desktop.
+- Package and validate the publisher before a Figma release. Do not edit
+  `tools/figma/abi-brief-builder/dist/code.js` directly.
+- Never overwrite untagged manual work. Publisher commands may replace only
+  their own tagged predecessor.
+- Treat running a publisher command as an external Figma write. Run it only
+  when the user explicitly asks to publish or synchronize Figma, and open the
+  exact target file and page first.
+- Verify the generated status, design release, source commit, right-edge canvas
+  placement and survival of untagged/approved/archive material after every
+  desktop publish. If output is wrong, use Figma Undo, fix `code.js` or its
+  repository source, package and validate again, then republish. Do not repair a
+  managed `[CURRENT]` section by dragging or editing it manually.
 
 Do not treat exploratory frames or moodboard references as approved designs.
 Implement a Figma direction only when the task explicitly identifies it as
@@ -165,6 +233,10 @@ When translating an approved design:
 Figma is not a build dependency. Do not modify Figma files, permissions or
 workspace structure unless explicitly requested.
 
+The exact Desktop command-to-file/page map and recovery procedure live in the
+publisher [`README`](tools/figma/abi-brief-builder/README.md). Do not duplicate
+that operational detail in implementation code.
+
 ## Images and performance
 
 - Import raster content images from `src/assets/` and use Astro's
@@ -193,6 +265,15 @@ workspace structure unless explicitly requested.
 
 - Before editing, inspect nearby components, helpers, tokens and content so the
   change follows established patterns.
+- Classify the request before acting: routine project content, other content,
+  visual/design work, application capability or workflow/infrastructure. Use
+  Pages CMS, repository content, Figma or Astro code according to the ownership
+  boundaries above; do not solve a content change by inventing architecture.
+- Preserve unrelated user changes in a dirty worktree. Keep changes local and
+  reversible while reviewing them. A local implementation or preview does not
+  authorize committing, pushing, deploying, publishing to Figma, changing
+  permissions or changing a CMS publication control; perform those actions only
+  when explicitly requested.
 - When starting the development server, use background mode:
 
   ```sh
@@ -201,10 +282,16 @@ workspace structure unless explicitly requested.
 
   Manage it with `astro dev stop`, `astro dev status` and `astro dev logs`.
 - Run `npm run build` before considering a task complete.
+- If the Figma publisher changed, also run `npm run figma:validate`. If a design
+  release is requested, package, validate, publish through Figma Desktop and
+  visually verify the target canvas.
 - For routing, navigation or content changes, also verify affected EN and ES URLs,
   alternate-language links and internal links.
 - For visual changes, check at least one narrow mobile viewport and one desktop
   viewport.
+- For CMS changes, verify `.pages.yml` still represents the Astro schema, new
+  entries remain drafts by default and existing content builds without
+  frontmatter rewrites.
 - Report architectural decisions, assumptions and any validation that could not
   be completed.
 

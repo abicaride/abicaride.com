@@ -32,7 +32,7 @@ components:
     label: Translation key
     type: string
     required: true
-    description: Must match the corresponding project in the other language.
+    description: Must match the corresponding project in the other language. Changing it can break EN/ES pairing.
 
   project_category:
     label: Category
@@ -65,12 +65,13 @@ components:
     label: Featured
     type: boolean
     default: false
+    description: Controls prominent/homepage placement. Enable only after the project and its translated pair have been reviewed.
 
   project_order:
     label: Display order
     type: number
     required: true
-    description: Positive whole number. Astro performs the final integer validation.
+    description: Positive whole number controlling listing order. Keep intentional ordering aligned across the translated pair.
     options:
       min: 1
 
@@ -78,7 +79,7 @@ components:
     label: Draft
     type: boolean
     default: true
-    description: Draft projects are excluded from generated project routes and listings.
+    description: Keep enabled while preparing or reviewing a project. Turn it off only when the facts, imagery, public voice and both language versions are ready; drafts are excluded from routes and listings.
 
   project_image:
     label: Hero image

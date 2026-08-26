@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted; extended by [ADR 008](008-code-first-figma-publishing.md)
 
 ## Context
 
@@ -27,7 +27,9 @@ The approved hero reference at
 expresses composition, atmosphere, photography direction and palette source.
 It is not a production asset and must not be imported into Astro.
 
-There is no requirement for perfect bidirectional synchronization.
+There is no requirement for perfect bidirectional synchronization. ADR 008 adds
+a deliberate one-way publishing path from the repository into managed Figma
+sections and production-page captures.
 
 ## Why
 

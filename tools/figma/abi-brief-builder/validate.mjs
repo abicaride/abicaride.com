@@ -1,8 +1,17 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
-const pluginSource = fs.readFileSync(new URL("./code.js", import.meta.url), "utf8");
+execFileSync(process.execPath, [fileURLToPath(new URL("./package.mjs", import.meta.url))], {
+  stdio: "inherit",
+});
+const pluginSource = fs.readFileSync(new URL("./dist/code.js", import.meta.url), "utf8");
+
+assert.match(pluginSource, /case "organize-status-labels"/);
+assert.match(pluginSource, /\[ARCHIVE\] V1 — Current Baseline/);
+assert.match(pluginSource, /\[APPROVED\] imaginArt — Final Direction/);
 
 function estimateTextHeight(node) {
   if (!node.characters || !node.width) return 10;
@@ -200,6 +209,12 @@ function createFigma({ editorType, fileName, pageName, command }) {
       page.children.push(node);
       return node;
     },
+    base64Decode() {
+      return new Uint8Array([1, 2, 3]);
+    },
+    createImage() {
+      return { hash: "packaged-production-image" };
+    },
     createNodeFromSvg() {
       const node = new MockNode("FRAME", page);
       page.children.push(node);
@@ -233,6 +248,7 @@ async function execute(figma) {
     JSON,
     Math,
     Promise,
+    Uint8Array,
     parseInt,
   });
   const script = new vm.Script(pluginSource, { filename: "code.js" });
@@ -248,7 +264,8 @@ function allNodes(node, output = []) {
 
 function generatedSections(figma) {
   return figma.currentPage.children.filter(
-    (node) => node.type === "SECTION" && node.name.startsWith("[ABI BRIEF]"),
+    (node) =>
+      node.type === "SECTION" && /^\[(?:CURRENT|APPROVED|ARCHIVE)\]/.test(node.name),
   );
 }
 
@@ -313,7 +330,7 @@ for (const obsolete of [
 
 await execute(moodboard);
 assert.equal(generatedSections(moodboard).length, 1, "A rerun must not duplicate content");
-assert.equal(moodboard.notifications.at(-1).error, true);
+assert.equal(moodboard.notifications.at(-1).error, false);
 
 const foundations = createFigma({
   editorType: "figma",
@@ -591,7 +608,8 @@ const approvedFoundationsText = approvedFoundationsNodes
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "V2 — Approved production foundations",
+  "V2 — Current production foundations",
+  "Design release 2.1.1",
   "Inter for headings",
   "Montserrat Regular",
   "--color-canvas",
@@ -656,7 +674,7 @@ for (const expected of [
   "Back to top / Volver arriba",
   "LET’S TALK",
   "Privacy · Cookie settings",
-  "Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
+  "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
   "Content strategy · Communications · Business",
   "PALETTE HIERARCHY · DURABLE RULE",
   "NEUTRALS · dominant backgrounds",
@@ -709,7 +727,7 @@ assert.ok(
   "The two-line Cognitive Biases title must not overlap its metadata",
 );
 const finalBody = finalDirectionNodes.find(
-  (node) => node.type === "TEXT" && node.characters.startsWith("One lead case showing"),
+  (node) => node.type === "TEXT" && node.characters.startsWith("A lead professional case showing"),
 );
 assert.equal(finalBody.fontName.family, "Montserrat");
 const finalHeading = finalDirectionNodes.find(
@@ -725,9 +743,10 @@ assert.equal(heroName.fontSize, 32);
 assert.equal(heroName.x, 80);
 assert.equal(heroName.y, 42);
 const heroNavigation = [
-  ["Work", 940],
+  ["Home", 850],
+  ["Work", 950],
   ["About", 1060],
-  ["Contact", 1190],
+  ["Contact", 1180],
   ["ES", 1320],
 ];
 for (const [label, x] of heroNavigation) {
@@ -735,9 +754,9 @@ for (const [label, x] of heroNavigation) {
     (node) => node.type === "TEXT" && node.characters === label && node.x === x && node.y === 44,
   );
   assert.ok(item, `Missing hero navigation item: ${label}`);
-  assert.equal(item.fills[0].color.r, 0xee / 0xff);
-  assert.equal(item.fills[0].color.g, 0xec / 0xff);
-  assert.equal(item.fills[0].color.b, 0xe6 / 0xff);
+  assert.equal(item.fills[0].color.r, 0xec / 0xff);
+  assert.equal(item.fills[0].color.g, 0xe8 / 0xff);
+  assert.equal(item.fills[0].color.b, 0xde / 0xff);
 }
 const specialistLine = finalDirectionNodes.find(
   (node) => node.type === "TEXT" && node.characters === "Content, communications and marketing specialist",
@@ -975,7 +994,7 @@ for (const expected of [
   "Spanish · native",
   "Sign language · Portuguese · Korean",
   "LET’S TALK",
-  "Made with 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
+  "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
   "Back to top",
 ]) {
   assert.ok(aboutText.toLowerCase().includes(expected.toLowerCase()), `Missing final About content: ${expected}`);
@@ -1005,6 +1024,116 @@ await execute(aboutPreproduction);
 assert.equal(generatedSections(aboutPreproduction).length, 1, "A final About rerun must not duplicate content");
 assert.equal(aboutPreproduction.notifications.at(-1).error, false);
 
+const currentComponents = createFigma({
+  editorType: "figma",
+  fileName: "Abi Website Foundations",
+  pageName: "02 — Components",
+  command: "publish-current-components",
+});
+await execute(currentComponents);
+assert.equal(currentComponents.closed, true);
+assert.equal(currentComponents.notifications.at(-1).error, false);
+assert.equal(generatedSections(currentComponents).length, 1);
+const currentComponentsSection = generatedSections(currentComponents)[0];
+assert.equal(currentComponentsSection.name, "[CURRENT] V2 — Current implemented components");
+assert.equal(currentComponentsSection.width, 1740);
+assert.equal(currentComponentsSection.height, 3380);
+const currentComponentsText = allNodes(currentComponentsSection)
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const expected of [
+  "Design release 2.1.1",
+  "Home",
+  "Get in touch",
+  "View my work",
+  "Making specialist B2B communication clearer",
+  "Analytics",
+  "Accept",
+  "Reject",
+  "BACK TO TOP",
+  "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
+]) {
+  assert.ok(currentComponentsText.includes(expected), `Missing current Components content: ${expected}`);
+}
+await execute(currentComponents);
+assert.equal(generatedSections(currentComponents).length, 1);
+assert.equal(currentComponents.notifications.at(-1).error, false);
+
+const currentHomepage = createFigma({
+  editorType: "figma",
+  fileName: "Abi Personal Website",
+  pageName: "01 — Homepage",
+  command: "publish-current-homepage",
+});
+await execute(currentHomepage);
+assert.equal(currentHomepage.notifications.at(-1).error, false);
+assert.equal(generatedSections(currentHomepage).length, 1);
+const currentHomepageSection = generatedSections(currentHomepage)[0];
+assert.equal(currentHomepageSection.name, "[CURRENT] Homepage — production snapshot");
+const currentHomepageNodes = allNodes(currentHomepageSection);
+const currentHomepageText = currentHomepageNodes
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const expected of [
+  "Homepage — current production snapshot",
+  "I help companies connect with their audiences through clear, honest communication.",
+  "More ways of making digital communication useful.",
+  "Clear thinking, honest communication and a practical way forward.",
+]) {
+  assert.ok(currentHomepageText.includes(expected), `Missing current Homepage content: ${expected}`);
+}
+const currentHero = currentHomepageNodes.find((node) => node.name.includes("Hero — full-bleed"));
+assert.equal(currentHero.fills[0].type, "IMAGE");
+assert.equal(currentHero.fills[0].imageHash, "packaged-production-image");
+await execute(currentHomepage);
+assert.equal(generatedSections(currentHomepage).length, 1);
+
+const currentImaginart = createFigma({
+  editorType: "figma",
+  fileName: "Abi Personal Website",
+  pageName: "02 — Case Studies",
+  command: "publish-current-imaginart",
+});
+const currentImaginartBlocker = new MockNode("SECTION", currentImaginart.currentPage);
+currentImaginartBlocker.name = "Existing approved material farther right";
+currentImaginartBlocker.x = 3000;
+currentImaginartBlocker.y = 0;
+currentImaginartBlocker.resize(1200, 9000);
+currentImaginart.currentPage.children.push(currentImaginartBlocker);
+await execute(currentImaginart);
+assert.equal(currentImaginart.notifications.at(-1).error, false);
+assert.equal(generatedSections(currentImaginart).length, 1);
+const currentImaginartSection = generatedSections(currentImaginart)[0];
+assert.equal(currentImaginartSection.name, "[CURRENT] imaginArt — production snapshot");
+assert.equal(currentImaginartSection.x, 4600, "Current snapshots must clear every top-level canvas item");
+assert.equal(currentImaginartSection.y, 0, "Current snapshots should align with the page's topmost material");
+const currentImaginartText = allNodes(currentImaginartSection)
+  .filter((node) => node.type === "TEXT")
+  .map((node) => node.characters)
+  .join("\n");
+for (const expected of ["~24%", "~34%", "Not an A/B test", "Madrid Open Days 2026", "AV Supports Catalogue", "Lumens"]) {
+  assert.ok(currentImaginartText.toLowerCase().includes(expected.toLowerCase()), `Missing current imaginArt content: ${expected}`);
+}
+
+const currentAbout = createFigma({
+  editorType: "figma",
+  fileName: "Abi Personal Website",
+  pageName: "03 — About + Archive",
+  command: "publish-current-about",
+});
+await execute(currentAbout);
+assert.equal(currentAbout.notifications.at(-1).error, false);
+assert.equal(generatedSections(currentAbout).length, 1);
+const currentAboutSection = generatedSections(currentAbout)[0];
+assert.equal(currentAboutSection.name, "[CURRENT] About — production snapshot");
+const currentAboutNodes = allNodes(currentAboutSection);
+assert.ok(currentAboutNodes.some((node) => node.name === "About — desktop · current production snapshot"));
+assert.ok(currentAboutNodes.some((node) => node.name === "About — mobile · current production snapshot"));
+const currentAboutPhoto = currentAboutNodes.find((node) => node.name === "About portrait — full body — AbileneAbout");
+assert.equal(currentAboutPhoto.fills[0].imageHash, "packaged-production-image");
+
 const wrongFile = createFigma({
   editorType: "figjam",
   fileName: "Unrelated FigJam",
@@ -1015,4 +1144,4 @@ await execute(wrongFile);
 assert.equal(generatedSections(wrongFile).length, 0);
 assert.equal(wrongFile.notifications.at(-1).error, true);
 
-console.log("Abi Website Brief Builder validation passed.");
+console.log("Abi Website Design Publisher validation passed.");

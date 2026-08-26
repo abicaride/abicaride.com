@@ -13,7 +13,7 @@ proprietary CMS or client-side UI framework.
 ## 📚 Documentation
 
 - [Architecture](docs/ARCHITECTURE.md) — how the technical system is designed
-- [Workflow](docs/WORKFLOW.md) — where to go when changing content, design or code
+- [Workflow](docs/WORKFLOW.md) — safe Pages CMS, Codex, deployment and manual Figma release flows
 - [Architecture decisions](docs/decisions/) — why the main decisions were made
 - [Pages CMS validation](docs/CMS-POC.md) — tested Projects-only editorial integration
 - [Agent instructions](AGENTS.md) — rules for AI-assisted changes
@@ -46,6 +46,11 @@ The Figma workspace is available as three public, view-only files:
 
 Figma communicates visual intention; this Astro repository remains the
 implementation and production source of truth.
+
+The local [Abi Website Design Publisher](tools/figma/abi-brief-builder/README.md)
+packages repository-owned tokens and design metadata into traceable
+`[CURRENT]`, `[APPROVED]` and `[ARCHIVE]` Figma sections. Figma publication is
+an explicit visual-release step, separate from website deployment.
 
 ## 🛠️ Getting started
 
@@ -93,6 +98,8 @@ The static output is written to `dist/`.
 | `npm run build` | Generate the production site |
 | `npm run preview` | Serve the production build locally |
 | `npm run astro -- <command>` | Run an Astro CLI command |
+| `npm run figma:package` | Package the local Figma Desktop design release |
+| `npm run figma:validate` | Package and validate every publisher command without Figma or MCP |
 
 ## 🏗️ Project structure
 
@@ -186,6 +193,14 @@ npm run build
 
 Review generated code before merging, especially around bilingual routing,
 accessibility, privacy, responsive images and dependency changes.
+
+Abi may also use Codex directly for content preparation and vibe coding. The
+recommended loop is local change → bilingual/mobile/desktop review → build →
+explicit approval to commit and push. Pages CMS remains the simplest editor for
+routine project content; Codex is appropriate when the change spans languages,
+layout, behaviour or architecture. See the [working guide](docs/WORKFLOW.md#work-safely-with-codex)
+for prompt examples, publication controls and the quota-independent Figma
+Desktop release procedure.
 
 ## 📄 Ownership
 

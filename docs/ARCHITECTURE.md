@@ -200,6 +200,25 @@ flowchart TD
 No hydration directives or SPA shell are present. The resulting `dist/`
 directory is a deployable static artifact.
 
+## Interaction contracts
+
+The project keeps a small, named interaction surface. Each flow has one owner
+and a fallback appropriate to its risk:
+
+| Interaction | Authoritative implementation | Required behaviour |
+| --- | --- | --- |
+| Root language gateway | `src/pages/index.astro` | Select the first supported browser preference, default to English, remain non-indexable and preserve manual EN/ES plus no-JavaScript links without storage or tracking |
+| Primary and language navigation | `src/components/SiteHeader.astro`, `src/i18n/config.ts` and localized routing helpers | Use semantic links, expose active state and resolve the real translated path, including project slugs |
+| Homepage/contact CTAs | Native links and fragment anchors in page components | Preserve standard browser behaviour; email uses `mailto:` and selected work remains directly addressable |
+| Back to top | `BaseLayout.astro` trigger plus `BackToTop.astro` | Reveal after the introductory region leaves view, remain keyboard accessible, respect reduced motion and avoid obstructing consent UI |
+| Analytics choice and withdrawal | `AnalyticsConsent.astro`, `public/scripts/analytics-consent.js` and `data-cookie-settings` links | Make no Google request before acceptance, keep rejection request-free, persist the local choice and allow settings to reopen it |
+
+These are contracts, not merely current visual details. New pages reuse the
+global owners where relevant. An interaction change must be checked in English
+and Spanish, with keyboard input and visible focus, at narrow and desktop
+viewports, and against its privacy or no-JavaScript fallback where applicable.
+Page-local script copies are an architectural regression.
+
 ## Content architecture
 
 ### Projects collection — Implemented
@@ -232,7 +251,7 @@ The actual schema in `src/content.config.ts` contains:
 | `period` | No | Human-readable project period |
 | `featured` | Default `false` | Selects prominent projects |
 | `order` | Yes | Positive integer controlling listing order |
-| `draft` | Default `false` | Excludes unpublished entries from generated pages |
+| `draft` | Schema fallback `false` | Excludes unpublished entries from generated pages; Pages CMS creates new entries as `true` |
 | `image` | Yes | Astro-managed source plus localized alt text |
 | `metrics` | No | Reusable value, label and optional detail items |
 | `gallery` | No | Astro-managed images with alt text and optional captions |
@@ -391,6 +410,12 @@ or database. Each editor authenticates with their own GitHub account. The GitHub
 App is repository-scoped rather than branch-scoped; GitHub permissions and branch
 rules control whether an editor can commit to `main`.
 
+Pages CMS defaults newly created projects to `draft: true`; this is the
+editorial safety default. The Astro schema retains a `false` fallback only so
+older repository files that omit the field remain backwards compatible. Route
+slugs, locale, translation keys, draft state, featured state and order are
+publication controls and require deliberate review.
+
 See [the validation report](CMS-POC.md) for the tested matrix and image-path
 findings.
 
@@ -401,7 +426,8 @@ See [ADR 006](decisions/006-pages-cms.md) for alternatives and trade-offs.
 
 ## Figma architecture
 
-Figma describes visual intention; Astro is the production implementation.
+Figma communicates visual intention and receives versioned visual releases;
+Astro remains the production implementation and Git remains authoritative.
 
 ```mermaid
 flowchart LR
@@ -409,6 +435,8 @@ flowchart LR
     FOUNDATIONS --> DESIGN["Approved page design"]
     DESIGN --> DEV["Codex or developer"]
     DEV --> ASTRO["Astro implementation"]
+    ASTRO --> PACKAGE["Package + validate design release"]
+    PACKAGE --> CURRENT["[CURRENT] managed Figma output"]
 ```
 
 The existing workspace is public to read through three view-only file links:
@@ -425,12 +453,26 @@ existing collaboration permissions, and visitors are not invited into the
 Figma team or given editing access.
 
 Moodboards and explorations are not approved specifications by default. There
-is no requirement for perfect or automatic bidirectional Figma/code sync.
+is no automatic bidirectional Figma/code sync: the supported synchronization is
+deliberately one-way from the repository into managed Figma areas.
 
-The local [`Abi Website Brief Builder`](../tools/figma/abi-brief-builder/README.md)
-can lay out the current V2 source brief in the Moodboard and Foundations files.
-It is an optional, manually run Figma Desktop tool with no network access. It
-does not synchronize Figma with Astro or make Figma a production dependency.
+The local [`Abi Website Design Publisher`](../tools/figma/abi-brief-builder/README.md)
+packages the current design release, injects literal production tokens and
+repository-owned production images, validates every command and writes only
+bounded tagged sections—including editable production-page snapshots. Publishing
+is a manual Figma release action and does not make Figma or MCP a production
+dependency.
+
+The supported write path is the local development plugin in an authenticated
+Figma Desktop session. This is intentional: free-tier MCP quota or connector
+availability cannot block a release, no Figma credential enters CI, and the
+human can verify the canvas before accepting the synchronization. MCP may help
+with inspection or one-off work, but it is not the release harness. Website
+deployment and Figma publication remain separate operations.
+
+Managed Figma roots are labelled `[CURRENT]`, `[APPROVED]` or `[ARCHIVE]` and
+record their source release/commit in plugin metadata. See
+[ADR 008](decisions/008-code-first-figma-publishing.md).
 
 ## Role of Codex
 

@@ -1,8 +1,8 @@
 {
-  "name": "Abi Website Brief Builder",
+  "name": "Abi Website Design Publisher",
   "id": "1567075123184659021",
   "api": "1.0.0",
-  "main": "code.js",
+  "main": "dist/code.js",
   "editorType": ["figma", "figjam"],
   "documentAccess": "dynamic-page",
   "networkAccess": {
@@ -10,43 +10,66 @@
   },
   "menu": [
     {
-      "name": "Moodboard: Build V2 creative brief",
-      "command": "build-moodboard"
-    },
-    {
-      "name": "Foundations: Build exploration directions",
-      "command": "build-foundations"
-    },
-    {
-      "name": "Foundations: Build desktop homepage concepts",
-      "command": "build-homepage-concepts"
-    },
-    {
-      "name": "Foundations: Build Direction D synthesis",
-      "command": "build-direction-d"
-    },
-    {
-      "name": "Foundations: Rebuild approved V2 foundations",
+      "name": "Publish current Foundations",
       "command": "build-approved-foundations"
     },
     {
-      "name": "Foundations: Rebuild final pre-production direction",
+      "name": "Publish current Components reference",
+      "command": "publish-current-components"
+    },
+    {
+      "name": "Publish current Moodboard direction",
+      "command": "build-moodboard"
+    },
+    {
+      "name": "Publish current Homepage snapshot",
+      "command": "publish-current-homepage"
+    },
+    {
+      "name": "Publish current imaginArt snapshot",
+      "command": "publish-current-imaginart"
+    },
+    {
+      "name": "Publish current About snapshot",
+      "command": "publish-current-about"
+    },
+    {
+      "name": "Organize status labels on this page",
+      "command": "organize-status-labels"
+    },
+    {
+      "separator": true
+    },
+    {
+      "name": "Archive: Build exploration directions",
+      "command": "build-foundations"
+    },
+    {
+      "name": "Archive: Build desktop homepage concepts",
+      "command": "build-homepage-concepts"
+    },
+    {
+      "name": "Archive: Build Direction D synthesis",
+      "command": "build-direction-d"
+    },
+    {
+      "name": "Archive: Rebuild final design direction",
       "command": "build-final-direction"
     },
     {
-      "name": "Personal Website: Build imaginArt case wireframe",
+      "name": "Archive: Build imaginArt case wireframe",
       "command": "build-imaginart-wireframe"
     },
     {
-      "name": "Personal Website: Build reframed imaginArt exploration",
+      "name": "Archive: Build reframed imaginArt exploration",
       "command": "build-imaginart-reframed"
     },
     {
-      "name": "Personal Website: Rebuild final imaginArt pre-production",
+      "name": "Approved reference: Rebuild imaginArt direction",
       "command": "build-imaginart-preproduction"
     },
     {
-      "name": "Personal Website: Rebuild final About pre-production",
+      "name": "Approved reference: Rebuild About direction",
       "command": "build-about-preproduction"
     },
     {
