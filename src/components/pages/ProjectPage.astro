@@ -19,7 +19,7 @@ const isImaginart = project.data.translationKey === 'imaginart-b2b-content';
   {isImaginart ? (
     <ImaginartCaseStudy locale={locale} />
   ) : (
-    <article class="project-shell" data-back-to-top-anchor>
+    <article class="project-shell">
       <a class="back-link" href={getLocalizedPath(locale, 'projects')}><span aria-hidden="true">← </span>{copy.project.back}</a>
       <header class="project-header">
         <ProjectMetadata locale={locale} category={project.data.category} year={project.data.year} company={project.data.company} client={project.data.client} role={project.data.role} period={project.data.period} />

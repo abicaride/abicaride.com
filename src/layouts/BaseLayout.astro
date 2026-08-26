@@ -17,7 +17,7 @@ interface Props {
   showBackToTop?: boolean;
 }
 
-const { title, description, locale, alternatePath, currentLocalePath, indexable = true, headerVariant = 'default', showBackToTop = false } = Astro.props;
+const { title, description, locale, alternatePath, currentLocalePath, indexable = true, headerVariant = 'default', showBackToTop = true } = Astro.props;
 const currentPath = Astro.url.pathname;
 const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 const resolvedAlternatePath = alternatePath ?? switchLocalePath(currentPath, otherLocale);
@@ -53,7 +53,10 @@ const defaultUrl = new URL(localizedPaths[defaultLocale], Astro.site);
     <a class="skip-link" href="#main-content">{ui[locale].skipToContent}</a>
     <div class="site-frame">
       <SiteHeader locale={locale} currentPath={currentPath} alternatePath={resolvedAlternatePath} currentLocalePath={currentLocalePath} variant={headerVariant} />
-      <main id="main-content"><slot /></main>
+      <main id="main-content">
+        {showBackToTop && <span class="back-to-top-trigger" data-back-to-top-trigger aria-hidden="true"></span>}
+        <slot />
+      </main>
       <SiteFooter locale={locale} />
     </div>
     {showBackToTop && <BackToTop label={ui[locale].backToTop} />}
@@ -63,4 +66,6 @@ const defaultUrl = new URL(localizedPaths[defaultLocale], Astro.site);
 
 <style>
   .site-frame { position: relative; display: grid; min-height: 100vh; grid-template-rows: auto 1fr auto; }
+  #main-content { position: relative; }
+  .back-to-top-trigger { position: absolute; inset-block-start: 50vh; inline-size: var(--border-width); block-size: var(--border-width); pointer-events: none; }
 </style>

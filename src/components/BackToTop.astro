@@ -7,14 +7,14 @@ const { label } = Astro.props;
 
 <script>
   const button = document.querySelector<HTMLButtonElement>('[data-back-to-top]');
-  const anchor = document.querySelector('[data-back-to-top-anchor]') ?? document.querySelector('main > :first-child');
+  const trigger = document.querySelector('[data-back-to-top-trigger]');
 
-  if (button && anchor) {
+  if (button && trigger) {
     const observer = new IntersectionObserver(([entry]) => {
       button.hidden = entry.isIntersecting;
-    }, { threshold: 0.08 });
+    });
 
-    observer.observe(anchor);
+    observer.observe(trigger);
     button.addEventListener('click', () => {
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
