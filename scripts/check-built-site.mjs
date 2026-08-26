@@ -86,6 +86,14 @@ for (const file of htmlFiles) {
   const descriptions = matches(html, /<meta\s+name="description"\s+content="([^"]*)"/gi);
   const h1Count = matches(html, /<h1\b/gi).length;
 
+  for (const requiredIconLink of [
+    'href="/favicon.svg"',
+    'href="/favicon.ico"',
+    'href="/apple-touch-icon.png"',
+  ]) {
+    if (!html.includes(requiredIconLink)) errors.push(`${source}: missing ${requiredIconLink}`);
+  }
+
   if (h1Count !== 1) errors.push(`${source}: expected one h1, found ${h1Count}`);
   if (descriptions.length !== 1) errors.push(`${source}: expected one meta description, found ${descriptions.length}`);
 
@@ -180,6 +188,18 @@ for (const route of sitemapLocations) {
 const robots = await readFile(path.join(distDirectory, 'robots.txt'), 'utf8');
 if (!robots.includes('Sitemap: https://abicaride.com/sitemap.xml')) {
   errors.push('robots.txt: canonical sitemap URL is missing');
+}
+
+const faviconSvg = await readFile(path.join(distDirectory, 'favicon.svg'), 'utf8');
+if (!faviconSvg.includes('#F7F3EA') || !faviconSvg.includes('#103A20')) {
+  errors.push('favicon.svg: approved cream and deep-green palette is missing');
+}
+if (faviconSvg.includes('prefers-color-scheme') || faviconSvg.includes('viewBox="0 0 128 128"')) {
+  errors.push('favicon.svg: previous generic Astro favicon remains');
+}
+
+for (const asset of ['favicon.ico', 'favicon-16x16.png', 'favicon-32x32.png', 'apple-touch-icon.png']) {
+  await localTargetExists(new URL(`/${asset}`, siteOrigin), 'favicon assets');
 }
 
 if (errors.length) {

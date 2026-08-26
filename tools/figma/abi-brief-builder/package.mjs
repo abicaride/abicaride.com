@@ -12,6 +12,9 @@ const assetPaths = {
   hero: path.join(repositoryRoot, "src/assets/images/abilene-hero-v2.png"),
   about: path.join(repositoryRoot, "src/assets/images/abilene-about-v2.png"),
 };
+const vectorPaths = {
+  favicon: path.join(repositoryRoot, "public/favicon.svg"),
+};
 const outputDirectory = path.join(toolDirectory, "dist");
 const outputPath = path.join(outputDirectory, "code.js");
 
@@ -32,6 +35,12 @@ const assets = Object.fromEntries(
       mimeType: "image/png",
       base64: fs.readFileSync(assetPath).toString("base64"),
     },
+  ]),
+);
+const vectors = Object.fromEntries(
+  Object.entries(vectorPaths).map(([name, vectorPath]) => [
+    name,
+    fs.readFileSync(vectorPath, "utf8"),
   ]),
 );
 
@@ -82,6 +91,7 @@ const header = [
   `const ABI_DESIGN_RELEASE = Object.freeze(${JSON.stringify(packagedRelease)});`,
   `const ABI_DESIGN_TOKENS = Object.freeze(${JSON.stringify(tokens)});`,
   `const ABI_DESIGN_ASSETS = Object.freeze(${JSON.stringify(assets)});`,
+  `const ABI_DESIGN_VECTORS = Object.freeze(${JSON.stringify(vectors)});`,
   "",
 ].join("\n");
 
@@ -89,5 +99,5 @@ fs.mkdirSync(outputDirectory, { recursive: true });
 fs.writeFileSync(outputPath, `${header}${source}`, "utf8");
 
 console.log(
-  `Packaged Abi Figma design release ${release.version} from ${commit} (${requiredTokens.length} production tokens, ${Object.keys(assets).length} production images).`,
+  `Packaged Abi Figma design release ${release.version} from ${commit} (${requiredTokens.length} production tokens, ${Object.keys(assets).length} production images, ${Object.keys(vectors).length} production vector).`,
 );

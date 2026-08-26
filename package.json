@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "check:site": "node scripts/check-built-site.mjs",
+    "favicon:generate": "node scripts/generate-favicon-assets.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "figma:package": "node tools/figma/abi-brief-builder/package.mjs",

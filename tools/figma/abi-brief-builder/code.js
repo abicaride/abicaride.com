@@ -663,6 +663,16 @@ function createLineIcon(parent, options) {
   return icon;
 }
 
+function createBrandMark(parent, options) {
+  const mark = figma.createNodeFromSvg(ABI_DESIGN_VECTORS.favicon);
+  parent.appendChild(mark);
+  mark.name = options.name || `Favicon / Brand mark — ${options.size}px`;
+  mark.resize(options.size, options.size);
+  mark.x = options.x;
+  mark.y = options.y;
+  return mark;
+}
+
 function createEllipse(parent, options) {
   const ellipse = figma.createEllipse();
   parent.appendChild(ellipse);
@@ -3927,7 +3937,7 @@ async function buildApprovedFoundations() {
     "V2 — Current production foundations",
     placement.point,
     1740,
-    3600,
+    4400,
     FINAL_COLOR.surface,
     GENERATED_KIND.approvedFoundations,
   );
@@ -3976,10 +3986,100 @@ async function buildApprovedFoundations() {
     );
 
     createRule(section, { x: 150, y: 1350, width: 1440, color: FINAL_COLOR.border });
-    addFinalLabel(section, "GRAPHIC PRINCIPLES", 150, 1410, 400);
+    addFinalLabel(section, "FAVICON / BRAND MARK", 150, 1410, 500);
+    addFinalHeading(section, {
+      characters: "Approved current favicon",
+      fontSize: 38,
+      lineHeight: 48,
+      width: 700,
+      x: 150,
+      y: 1470,
+    });
+    addFinalBody(section, {
+      characters: "The cream version is canonical: warm cream #F7F3EA with deep forest green #103A20. The serif A is a brand symbol only; interface typography remains Inter and Montserrat.",
+      fontSize: 18,
+      lineHeight: 30,
+      color: FINAL_COLOR.inkMuted,
+      width: 960,
+      x: 150,
+      y: 1535,
+    });
+    createBrandMark(section, {
+      name: "[CURRENT] Favicon / Brand mark — canonical cream",
+      x: 150,
+      y: 1640,
+      size: 360,
+    });
+    createBrandMark(section, {
+      name: "Favicon / Brand mark — 180px presentation",
+      x: 650,
+      y: 1730,
+      size: 180,
+    });
+    createBrandMark(section, {
+      name: "Favicon / Brand mark — 32px presentation",
+      x: 980,
+      y: 1804,
+      size: 32,
+    });
+    createBrandMark(section, {
+      name: "Favicon / Brand mark — 16px presentation",
+      x: 1130,
+      y: 1812,
+      size: 16,
+    });
+    addFinalBody(section, {
+      characters: "CANONICAL CREAM · APPROVED",
+      font: FONT.montserratMedium,
+      fontSize: 15,
+      lineHeight: 22,
+      color: FINAL_COLOR.greenDeep,
+      width: 360,
+      x: 150,
+      y: 2025,
+    });
+    addFinalBody(section, {
+      characters: "180 × 180",
+      fontSize: 15,
+      lineHeight: 22,
+      color: FINAL_COLOR.inkMuted,
+      width: 180,
+      x: 650,
+      y: 1935,
+    });
+    addFinalBody(section, {
+      characters: "32 × 32",
+      fontSize: 15,
+      lineHeight: 22,
+      color: FINAL_COLOR.inkMuted,
+      width: 110,
+      x: 945,
+      y: 1865,
+    });
+    addFinalBody(section, {
+      characters: "16 × 16",
+      fontSize: 15,
+      lineHeight: 22,
+      color: FINAL_COLOR.inkMuted,
+      width: 110,
+      x: 1095,
+      y: 1865,
+    });
+    createFinalColumn(section, {
+      x: 1280,
+      y: 1640,
+      width: 310,
+      label: "PRODUCTION RULE",
+      body: "Cream + deep green only. Burgundy remains a supporting site color, not a favicon variant. The simplified stems and leaves are optically weighted to survive at 16px.",
+      bodySize: 17,
+      lineHeight: 28,
+    });
+
+    createRule(section, { x: 150, y: 2200, width: 1440, color: FINAL_COLOR.border });
+    addFinalLabel(section, "GRAPHIC PRINCIPLES", 150, 2260, 400);
     createFinalColumn(section, {
       x: 150,
-      y: 1480,
+      y: 2330,
       width: 420,
       label: "BACKGROUND RHYTHM",
       body: "Warm cream → light warm neutral → warm cream → stronger neutral only when necessary. No large colored section blocks.",
@@ -3988,7 +4088,7 @@ async function buildApprovedFoundations() {
     });
     createFinalColumn(section, {
       x: 660,
-      y: 1480,
+      y: 2330,
       width: 420,
       label: "COLOR AS ACCENT",
       body: "Deep green leads CTAs, links, icons and diagrams. Burgundy is tertiary: selected metrics or tiny details only—never the primary CTA or a section background.",
@@ -3997,7 +4097,7 @@ async function buildApprovedFoundations() {
     });
     createFinalColumn(section, {
       x: 1170,
-      y: 1480,
+      y: 2330,
       width: 420,
       label: "FORM",
       body: "Whitespace, thin separators, meaningful line icons and diagrams. No floating ellipses, blobs, fake leaves or speculative rounded-card system.",
@@ -4005,12 +4105,12 @@ async function buildApprovedFoundations() {
       lineHeight: 28,
     });
 
-    createRule(section, { x: 150, y: 2050, width: 1440, color: FINAL_COLOR.border });
-    addFinalLabel(section, "APPROVED HERO ART-DIRECTION REFERENCE", 150, 2110, 700);
+    createRule(section, { x: 150, y: 2900, width: 1440, color: FINAL_COLOR.border });
+    addFinalLabel(section, "APPROVED HERO ART-DIRECTION REFERENCE", 150, 2960, 700);
     const reference = createCanvasFrame(section, {
       name: `Design reference only — ${FINAL_HERO_REFERENCE}`,
       x: 150,
-      y: 2180,
+      y: 3030,
       width: 900,
       height: 600,
       fill: FINAL_COLOR.greenTint,
@@ -4037,7 +4137,7 @@ async function buildApprovedFoundations() {
     }
     createFinalColumn(section, {
       x: 1120,
-      y: 2180,
+      y: 3030,
       width: 470,
       label: "APPROVED FOR",
       body: "Wide landscape composition\nCopy left + portrait/environment right\nShared vertical hero zone\nPlant-filled realistic atmosphere\nWarm daylight and calm depth\nGreen-led palette",
@@ -4046,7 +4146,7 @@ async function buildApprovedFoundations() {
     });
     createFinalColumn(section, {
       x: 1120,
-      y: 2700,
+      y: 3550,
       width: 470,
       label: "NOT A PRODUCTION ASSET",
       body: "Do not ship the flattened mockup. It contains baked-in type, navigation, CTAs, invented logos and generated compositing. Recreate the approved intent with HTML/CSS and the final processed real portrait.",
@@ -4061,7 +4161,7 @@ async function buildApprovedFoundations() {
       color: FINAL_COLOR.greenDeep,
       width: 1280,
       x: 150,
-      y: 3240,
+      y: 4090,
     });
   });
 
@@ -4070,8 +4170,8 @@ async function buildApprovedFoundations() {
   figma.viewport.scrollAndZoomIntoView([section]);
   closeWithMessage(
     referenceHash
-      ? "Published the current V2 foundations with the authoritative hero reference."
-      : "Published the current V2 foundations. Import the reference image on this page and republish to show it.",
+      ? "Published the current V2 foundations with the approved favicon and authoritative hero reference."
+      : "Published the current V2 foundations with the approved favicon. Import the hero reference image on this page and republish to show it.",
   );
 }
 

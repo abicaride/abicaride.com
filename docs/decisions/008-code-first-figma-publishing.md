@@ -20,10 +20,11 @@ The Git repository remains the source of truth. Figma is a versioned visual
 release target.
 
 The local **Abi Website Design Publisher** is the single Figma release path. It
-packages repository metadata, production tokens and the two production
-portrait images, validates its output and publishes bounded Foundations,
-Components, Moodboard, production-page snapshots and approved/archive
-reference sections. MCP is optional and never required for a release.
+packages repository metadata, production tokens, the production favicon vector
+and the two production portrait images, validates its output and publishes
+bounded Foundations, Components, Moodboard, production-page snapshots and
+approved/archive reference sections. MCP is optional and never required for a
+release.
 
 Managed root sections use exactly one status:
 

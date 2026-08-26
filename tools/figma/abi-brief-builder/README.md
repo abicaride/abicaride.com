@@ -31,9 +31,9 @@ not an independent implementation source or an Astro build dependency.
 
 The local publisher owns Foundations, implemented-component documentation,
 production-page snapshots, design/research summaries and bounded approved or
-archived references. The packaged release includes the production hero and
-About portrait, so publishing does not depend on MCP quotas or manual image
-imports.
+archived references. The packaged release includes the production favicon
+vector, hero and About portrait, so publishing does not depend on MCP quotas or
+manual image imports.
 
 ## Why the release runs in Figma Desktop
 
@@ -64,7 +64,8 @@ source Git commit and repository source-of-truth statement.
 
 - **Publish current Foundations** creates or replaces the managed production
   Foundations section. Its palette is injected from `src/styles/tokens.css`
-  during packaging, preventing duplicated Figma token values from drifting.
+  and its approved favicon from `public/favicon.svg` during packaging,
+  preventing duplicated Figma token values or brand-mark vectors from drifting.
 - **Publish current Components reference** documents only patterns already
   reused in Astro: localized navigation, primary and secondary actions, project
   previews, analytics consent, back-to-top and the contact footer.
@@ -140,10 +141,11 @@ for public viewing**, and visually verify each page. This command is deliberatel
 separate from normal publication because it removes a small exact allowlist of
 historical starter/intro layers and rearranges named top-level references.
 
-Packaging embeds the current Git commit, literal production color tokens and
-the two production portrait images into `dist/code.js`. Checking out an older
-commit, repackaging and republishing provides a reproducible rollback path;
-Figma version history is a second safety net.
+Packaging embeds the current Git commit, literal production color tokens, the
+production favicon vector and the two production portrait images into
+`dist/code.js`. Checking out an older commit, repackaging and republishing
+provides a reproducible rollback path; Figma version history is a second safety
+net.
 
 ## Safety model
 

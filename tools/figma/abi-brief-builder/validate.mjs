@@ -13,6 +13,7 @@ assert.match(pluginSource, /case "organize-status-labels"/);
 assert.match(pluginSource, /case "prepare-public-foundations-page"/);
 assert.match(pluginSource, /\[ARCHIVE\] V1 — Current Baseline/);
 assert.match(pluginSource, /\[APPROVED\] imaginArt — Final Direction/);
+assert.match(pluginSource, /ABI_DESIGN_VECTORS/);
 
 function estimateTextHeight(node) {
   if (!node.characters || !node.width) return 10;
@@ -603,7 +604,7 @@ assert.equal(approvedFoundations.notifications.at(-1).error, false);
 assert.equal(generatedSections(approvedFoundations).length, 1);
 const approvedFoundationsSection = generatedSections(approvedFoundations)[0];
 assert.equal(approvedFoundationsSection.width, 1740);
-assert.equal(approvedFoundationsSection.height, 3600);
+assert.equal(approvedFoundationsSection.height, 4400);
 const approvedFoundationsNodes = allNodes(approvedFoundationsSection);
 const approvedFoundationsText = approvedFoundationsNodes
   .filter((node) => node.type === "TEXT")
@@ -611,7 +612,7 @@ const approvedFoundationsText = approvedFoundationsNodes
   .join("\n");
 for (const expected of [
   "V2 — Current production foundations",
-  "Design release 2.1.2",
+  "Design release 2.1.3",
   "Inter for headings",
   "Montserrat Regular",
   "--color-canvas",
@@ -621,6 +622,11 @@ for (const expected of [
   "--color-burgundy",
   "#741A2A",
   "No floating ellipses",
+  "FAVICON / BRAND MARK",
+  "Approved current favicon",
+  "CANONICAL CREAM · APPROVED",
+  "Cream + deep green only",
+  "brand symbol only",
   "not a production asset",
   "supersedes previous hero explorations",
 ]) {
@@ -635,6 +641,16 @@ const referenceFrame = approvedFoundationsNodes.find(
 assert.equal(referenceFrame.fills[0].type, "IMAGE");
 assert.equal(referenceFrame.fills[0].imageHash, "approved-reference-hash");
 assert.equal(approvedFoundationsNodes.filter((node) => node.type === "ELLIPSE").length, 0);
+for (const [name, size] of [
+  ["Favicon / Brand mark — 180px presentation", 180],
+  ["Favicon / Brand mark — 32px presentation", 32],
+  ["Favicon / Brand mark — 16px presentation", 16],
+]) {
+  const mark = approvedFoundationsNodes.find((node) => node.name === name);
+  assert.ok(mark, `Missing approved Foundations mark: ${name}`);
+  assert.equal(mark.width, size);
+  assert.equal(mark.height, size);
+}
 await execute(approvedFoundations);
 assert.equal(generatedSections(approvedFoundations).length, 1);
 assert.equal(approvedFoundations.notifications.at(-1).error, false);
@@ -1073,7 +1089,7 @@ const currentComponentsText = allNodes(currentComponentsSection)
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Design release 2.1.2",
+  "Design release 2.1.3",
   "Home",
   "Get in touch",
   "View my work",
