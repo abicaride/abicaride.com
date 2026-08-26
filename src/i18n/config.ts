@@ -13,6 +13,7 @@ export const ui = {
   en: {
     siteName: 'Abilene Caride',
     siteDescription: 'The bilingual personal website of Abilene Caride.',
+    socialImageAlt: 'Abilene Caride smiling in a warm, plant-filled interior',
     skipToContent: 'Skip to content',
     primaryNavigation: 'Primary navigation',
     languageNavigation: 'Language selection',
@@ -172,6 +173,7 @@ export const ui = {
   es: {
     siteName: 'Abilene Caride',
     siteDescription: 'La web personal bilingüe de Abilene Caride.',
+    socialImageAlt: 'Abilene Caride sonriendo en un interior cálido lleno de plantas',
     skipToContent: 'Saltar al contenido',
     primaryNavigation: 'Navegación principal',
     languageNavigation: 'Selección de idioma',

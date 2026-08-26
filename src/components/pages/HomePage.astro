@@ -16,7 +16,7 @@ const secondaryProjects = ['cognitive-biases', 'error-messages']
   .filter((project): project is NonNullable<typeof project> => Boolean(project));
 ---
 
-<BaseLayout title={copy.home.title} description={copy.siteDescription} locale={locale} headerVariant="overlay" showBackToTop>
+<BaseLayout title={copy.home.title} description={copy.siteDescription} locale={locale} headerVariant="overlay" showBackToTop profilePage>
   <section class="hero" aria-labelledby="page-title">
     <Picture
       class="hero-picture"

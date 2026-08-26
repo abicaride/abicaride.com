@@ -8,6 +8,7 @@ import '../styles/global.css';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="The bilingual personal website of Abilene Caride. La web personal bilingüe de Abilene Caride." />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
@@ -54,5 +55,12 @@ import '../styles/global.css';
     gap: var(--space-4);
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  nav a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    padding-inline: var(--space-3);
+    align-items: center;
   }
 </style>

@@ -34,14 +34,15 @@ const architecturePath = getLocalizedPath(locale, locale === 'en' ? 'architectur
   .contact-close { display: grid; max-width: 58rem; gap: var(--space-6); padding-block-end: clamp(5rem, 10vw, 8rem); }
   .footer-eyebrow { font-family: var(--font-heading); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; }
   h2 { color: var(--color-canvas); font-size: clamp(2.5rem, 2rem + 3vw, 5rem); }
-  .email { width: fit-content; color: var(--color-canvas); font-family: var(--font-heading); font-size: clamp(1.15rem, 1rem + 0.55vw, 1.55rem); font-weight: var(--font-weight-semibold); text-decoration: none; }
+  .email { display: inline-flex; min-height: 2.75rem; width: fit-content; align-items: center; color: var(--color-canvas); font-family: var(--font-heading); font-size: clamp(1.15rem, 1rem + 0.55vw, 1.55rem); font-weight: var(--font-weight-semibold); text-decoration: none; }
   .email:hover { color: var(--color-burgundy-tint); }
   .utility { display: grid; padding-block-start: var(--space-10); border-block-start: var(--border-width) solid color-mix(in srgb, var(--color-burgundy-tint) 58%, transparent); gap: var(--space-8); color: color-mix(in srgb, var(--color-canvas) 86%, transparent); font-size: var(--font-size-sm); }
   .identity { display: grid; gap: var(--space-1); }
   .footer-name { color: var(--color-canvas); font-family: var(--font-heading); font-weight: var(--font-weight-semibold); }
   .footer-links { display: flex; gap: var(--space-3) var(--space-5); flex-wrap: wrap; }
-  .utility a { color: inherit; }
+  .utility a { display: inline-flex; min-height: 2.75rem; align-items: center; color: inherit; }
   .utility a:hover { color: var(--color-canvas); }
+  .site-footer :focus-visible { outline-color: var(--color-canvas); }
   .build-note { max-width: 28rem; text-decoration-style: dotted; }
 
   @media (min-width: 56rem) {

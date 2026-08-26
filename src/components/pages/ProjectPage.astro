@@ -15,7 +15,16 @@ const { Content } = await render(project);
 const isImaginart = project.data.translationKey === 'imaginart-b2b-content';
 ---
 
-<BaseLayout title={project.data.title} description={project.data.description} locale={locale} alternatePath={alternatePath} showBackToTop>
+<BaseLayout
+  title={project.data.title}
+  description={project.data.description}
+  locale={locale}
+  alternatePath={alternatePath}
+  showBackToTop
+  ogType="article"
+  socialImage={isImaginart ? project.data.image.src : undefined}
+  socialImageAlt={isImaginart ? project.data.image.alt : undefined}
+>
   {isImaginart ? (
     <ImaginartCaseStudy locale={locale} />
   ) : (

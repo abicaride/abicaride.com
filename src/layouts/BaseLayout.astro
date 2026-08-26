@@ -4,6 +4,7 @@ import BackToTop from '../components/BackToTop.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { defaultLocale, switchLocalePath, ui, type Locale } from '../i18n/config';
+import { getImage, type ImageMetadata } from 'astro:assets';
 import '../styles/global.css';
 
 interface Props {
@@ -15,9 +16,26 @@ interface Props {
   indexable?: boolean;
   headerVariant?: 'default' | 'overlay';
   showBackToTop?: boolean;
+  socialImage?: string | ImageMetadata;
+  socialImageAlt?: string;
+  ogType?: 'website' | 'article' | 'profile';
+  profilePage?: boolean;
 }
 
-const { title, description, locale, alternatePath, currentLocalePath, indexable = true, headerVariant = 'default', showBackToTop = true } = Astro.props;
+const {
+  title,
+  description,
+  locale,
+  alternatePath,
+  currentLocalePath,
+  indexable = true,
+  headerVariant = 'default',
+  showBackToTop = true,
+  socialImage = '/images/social/abilene-caride.jpg',
+  socialImageAlt = ui[locale].socialImageAlt,
+  ogType = 'website',
+  profilePage = false,
+} = Astro.props;
 const currentPath = Astro.url.pathname;
 const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 const resolvedAlternatePath = alternatePath ?? switchLocalePath(currentPath, otherLocale);
@@ -25,6 +43,63 @@ const localizedPaths = { [locale]: currentPath, [otherLocale]: resolvedAlternate
 const fullTitle = title === ui[locale].siteName ? title : `${title} | ${ui[locale].siteName}`;
 const canonicalUrl = new URL(currentPath, Astro.site);
 const defaultUrl = new URL(localizedPaths[defaultLocale], Astro.site);
+const socialImageResult = typeof socialImage === 'string'
+  ? null
+  : await getImage({
+      src: socialImage,
+      width: 1200,
+      height: 630,
+      fit: 'cover',
+      position: 'center',
+      format: 'jpg',
+      quality: 82,
+    });
+const socialImageUrl = new URL(
+  socialImageResult?.src ?? socialImage,
+  Astro.site,
+);
+const websiteId = new URL('/#website', Astro.site).href;
+const personId = new URL('/#abilene-caride', Astro.site).href;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': websiteId,
+      name: ui[locale].siteName,
+      url: new URL('/', Astro.site).href,
+      inLanguage: ['en', 'es'],
+    },
+    ...(profilePage
+      ? [
+          {
+            '@type': 'Person',
+            '@id': personId,
+            name: ui[locale].siteName,
+            url: canonicalUrl.href,
+            jobTitle: ui[locale].home.title,
+            description: ui[locale].home.heroHeading,
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: 'Barcelona',
+              addressCountry: 'ES',
+            },
+            sameAs: ['https://www.linkedin.com/in/abilene-caride/'],
+          },
+          {
+            '@type': 'ProfilePage',
+            '@id': `${canonicalUrl.href}#profile-page`,
+            url: canonicalUrl.href,
+            name: fullTitle,
+            description,
+            inLanguage: locale,
+            isPartOf: { '@id': websiteId },
+            mainEntity: { '@id': personId },
+          },
+        ]
+      : []),
+  ],
+};
 ---
 
 <!doctype html>
@@ -37,16 +112,30 @@ const defaultUrl = new URL(localizedPaths[defaultLocale], Astro.site);
     {!indexable && <meta name="robots" content="noindex, follow" />}
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={ui[locale].siteName} />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:locale" content={locale === 'en' ? 'en_US' : 'es_ES'} />
+    <meta property="og:locale:alternate" content={otherLocale === 'en' ? 'en_US' : 'es_ES'} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:alt" content={socialImageAlt} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:image:alt" content={socialImageAlt} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     {indexable && <link rel="canonical" href={canonicalUrl} />}
     {indexable && <link rel="alternate" hreflang="en" href={new URL(localizedPaths.en, Astro.site)} />}
     {indexable && <link rel="alternate" hreflang="es" href={new URL(localizedPaths.es, Astro.site)} />}
     {indexable && <link rel="alternate" hreflang="x-default" href={defaultUrl} />}
+    <link rel="sitemap" href="/sitemap.xml" />
     <title>{fullTitle}</title>
+    {indexable && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
     <slot name="head" />
   </head>
   <body>
