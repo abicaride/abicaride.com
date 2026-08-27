@@ -314,7 +314,7 @@ export const ui = {
       experienceTitle: 'Experiencia',
       experienceIntro: 'Un perfil amplio, construido con intención.',
       cvLabel: 'Descargar CV ↓',
-      cvNote: 'CV en inglés',
+      cvNote: 'CV en español',
       educationTitle: 'Formación',
       educationIntro: 'Una formación que explica el recorrido.',
       personalEyebrow: 'Un poco más sobre mí',
@@ -343,7 +343,7 @@ export const ui = {
       linkedinAction: 'Ver el perfil de Abilene Caride',
       cvLabel: 'CV',
       cvAction: 'Descargar CV',
-      cvNote: 'CV en inglés',
+      cvNote: 'CV en español',
       formEyebrow: 'Formulario de contacto',
       formTitle: 'Envía un mensaje ahora.',
       fields: {
@@ -385,6 +385,15 @@ export const ui = {
 
 export function isLocale(value: string | undefined): value is Locale {
   return locales.includes(value as Locale);
+}
+
+const cvPaths: Record<Locale, string> = {
+  en: '/cv/abilene-caride-cv-en.pdf',
+  es: '/cv/abilene-caride-cv-es.pdf',
+};
+
+export function getCvPath(locale: Locale): string {
+  return cvPaths[locale];
 }
 
 export function getLocalizedPath(locale: Locale, path = ''): string {

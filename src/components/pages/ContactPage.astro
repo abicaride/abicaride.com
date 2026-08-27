@@ -1,5 +1,5 @@
 ---
-import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
+import { getCvPath, getLocalizedPath, ui, type Locale } from '../../i18n/config';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LineIcon from '../LineIcon.astro';
 
@@ -43,7 +43,7 @@ const privacyPath = getLocalizedPath(locale, locale === 'en' ? 'privacy' : 'priv
           <div>
             <dt><LineIcon name="download" size={28} /><span>{copy.contact.cvLabel}</span></dt>
             <dd class="cv-detail">
-              <a href="/cv/Abilene-Caride-CV-EN.pdf" download>{copy.contact.cvAction}</a>
+              <a href={getCvPath(locale)} download>{copy.contact.cvAction}</a>
               {'cvNote' in copy.contact && <span>{copy.contact.cvNote}</span>}
             </dd>
           </div>

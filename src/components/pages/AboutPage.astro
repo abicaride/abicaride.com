@@ -1,7 +1,7 @@
 ---
 import { Picture } from 'astro:assets';
 import aboutImage from '../../assets/images/abilene-about-v2.png';
-import { ui, type Locale } from '../../i18n/config';
+import { getCvPath, ui, type Locale } from '../../i18n/config';
 import { profiles } from '../../data/profile';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LineIcon from '../LineIcon.astro';
@@ -23,7 +23,7 @@ const additionalLanguages = profile.languages.slice(4);
         <p>{copy.about.introduction}</p>
         <p>{copy.about.story}</p>
         <div class="cv-action-row">
-          <a class="button button-secondary" href="/cv/Abilene-Caride-CV-EN.pdf" download>
+          <a class="button button-secondary" href={getCvPath(locale)} download>
             {copy.about.cvLabel}
           </a>
           {copy.about.cvNote && <span>{copy.about.cvNote}</span>}
