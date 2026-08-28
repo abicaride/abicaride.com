@@ -12,6 +12,8 @@ const pluginSource = fs.readFileSync(new URL("./dist/code.js", import.meta.url),
 assert.match(pluginSource, /case "organize-status-labels"/);
 assert.match(pluginSource, /case "prepare-public-foundations-page"/);
 assert.match(pluginSource, /case "publish-current-contact"/);
+assert.match(pluginSource, /abilene-caride-cv-en\.pdf/);
+assert.match(pluginSource, /abilene-caride-cv-es\.pdf/);
 assert.match(pluginSource, /\[ARCHIVE\] V1 — Current Baseline/);
 assert.match(pluginSource, /\[APPROVED\] imaginArt — Final Direction/);
 assert.match(pluginSource, /ABI_DESIGN_VECTORS/);
@@ -614,7 +616,7 @@ const approvedFoundationsText = approvedFoundationsNodes
   .join("\n");
 for (const expected of [
   "V2 — Current production foundations",
-  "Design release 2.1.9",
+  "Design release 2.1.10",
   "Inter for headings",
   "Montserrat Regular",
   "--color-canvas",
@@ -1101,7 +1103,7 @@ const currentComponentsText = currentComponentsNodes
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Design release 2.1.9",
+  "Design release 2.1.10",
   "Home",
   "Get in touch",
   "View my work",
@@ -1293,6 +1295,19 @@ assert.ok(currentAboutNodes.some((node) => node.name === "About — desktop · c
 assert.ok(currentAboutNodes.some((node) => node.name === "About — mobile · current production snapshot"));
 const currentAboutPhoto = currentAboutNodes.find((node) => node.name === "About portrait — full body — AbileneAbout");
 assert.equal(currentAboutPhoto.fills[0].imageHash, "packaged-production-image");
+assert.deepEqual(
+  JSON.parse(currentAboutSection.getPluginData("abi-website-brief-builder:cv-links")),
+  { en: "/cv/abilene-caride-cv-en.pdf", es: "/cv/abilene-caride-cv-es.pdf" },
+);
+const currentAboutCvLinks = currentAboutNodes.filter(
+  (node) => node.type === "TEXT" && node.characters === "Download CV ↓",
+);
+assert.equal(currentAboutCvLinks.length, 2);
+assert.ok(
+  currentAboutCvLinks.every(
+    (node) => node.hyperlink?.value === "https://abicaride.com/cv/abilene-caride-cv-en.pdf",
+  ),
+);
 
 const currentContact = createFigma({
   editorType: "figma",
@@ -1349,6 +1364,19 @@ const contactMobileHeading = currentContactNodes.find(
 );
 assert.equal(contactDesktopHeading.fontSize, 102);
 assert.equal(contactMobileHeading.fontSize, 40);
+assert.deepEqual(
+  JSON.parse(currentContactSection.getPluginData("abi-website-brief-builder:cv-links")),
+  { en: "/cv/abilene-caride-cv-en.pdf", es: "/cv/abilene-caride-cv-es.pdf" },
+);
+const currentContactCvLinks = currentContactNodes.filter(
+  (node) => node.type === "TEXT" && node.characters === "Download CV",
+);
+assert.equal(currentContactCvLinks.length, 2);
+assert.ok(
+  currentContactCvLinks.every(
+    (node) => node.hyperlink?.value === "https://abicaride.com/cv/abilene-caride-cv-en.pdf",
+  ),
+);
 await execute(currentContact);
 assert.equal(generatedSections(currentContact).length, 1, "A Contact rerun must not duplicate content");
 

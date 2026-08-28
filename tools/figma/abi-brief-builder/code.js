@@ -7,9 +7,21 @@
  */
 
 const PLUGIN_DATA_KEY = "abi-website-brief-builder";
-const PLUGIN_VERSION = "10";
+const PLUGIN_VERSION = "11";
 const RELEASE_DATA_KEY = `${PLUGIN_DATA_KEY}:release`;
+const CV_LINK_DATA_KEY = `${PLUGIN_DATA_KEY}:cv-links`;
 const INSERTION_GAP = 400;
+
+const CV_DOWNLOADS = Object.freeze({
+  en: Object.freeze({
+    path: "/cv/abilene-caride-cv-en.pdf",
+    url: "https://abicaride.com/cv/abilene-caride-cv-en.pdf",
+  }),
+  es: Object.freeze({
+    path: "/cv/abilene-caride-cv-es.pdf",
+    url: "https://abicaride.com/cv/abilene-caride-cv-es.pdf",
+  }),
+});
 
 const EXPECTED_FILES = {
   moodboard: "abi website moodboard",
@@ -778,7 +790,7 @@ function createPill(parent, options) {
     stroke: options.stroke || COLOR.line,
     radius: 999,
   });
-  appendText(pill, {
+  const label = appendText(pill, {
     characters: options.label,
     font: FONT.medium,
     fontSize: options.fontSize || 16,
@@ -788,6 +800,9 @@ function createPill(parent, options) {
     x: 14,
     y: Math.round((pill.height - (options.lineHeight || 22)) / 2),
   });
+  if (options.href) {
+    label.hyperlink = { type: "URL", value: options.href };
+  }
   return pill;
 }
 
@@ -4959,6 +4974,13 @@ function createCurrentImaginartAtAGlance(page) {
   });
 }
 
+function markCvDownloads(node) {
+  node.setPluginData(
+    CV_LINK_DATA_KEY,
+    JSON.stringify({ en: CV_DOWNLOADS.en.path, es: CV_DOWNLOADS.es.path }),
+  );
+}
+
 function createCurrentImaginartIndex(page) {
   const indexBand = createCaseBand(page, {
     name: "03 In this case",
@@ -5695,6 +5717,7 @@ function createAboutDesktop(parent, x, y, photoHash) {
     color: FINAL_COLOR.greenDeep,
     fontSize: 16,
     lineHeight: 24,
+    href: CV_DOWNLOADS.en.url,
   });
   cvAction.name = "Download CV — secondary action";
   const photo = createCanvasFrame(hero, {
@@ -6047,7 +6070,7 @@ function createAboutMobile(parent, x, y, photoHash) {
   addFinalHeading(page, { characters: "I help users find the clearest path to what they need in digital products.", fontSize: 40, lineHeight: 49, width: 334, x: 28, y: 170 });
   addFinalBody(page, { characters: "Helping is the thread running through my work. I want people to understand what they need and find their way forward.\n\nProfessionally, I do that through words.", fontSize: 18, lineHeight: 30, width: 334, x: 28, y: 460 });
   addFinalBody(page, { characters: "I wear a lot of hats, but I don’t do things halfway. I care about making communication useful and getting it right.", fontSize: 18, lineHeight: 30, width: 334, x: 28, y: 690 });
-  const mobileCvAction = createPill(page, { label: "Download CV ↓", x: 28, y: 850, width: 200, height: 54, fill: FINAL_COLOR.canvas, stroke: FINAL_COLOR.greenDeep, color: FINAL_COLOR.greenDeep, fontSize: 15, lineHeight: 23 });
+  const mobileCvAction = createPill(page, { label: "Download CV ↓", x: 28, y: 850, width: 200, height: 54, fill: FINAL_COLOR.canvas, stroke: FINAL_COLOR.greenDeep, color: FINAL_COLOR.greenDeep, fontSize: 15, lineHeight: 23, href: CV_DOWNLOADS.en.url });
   mobileCvAction.name = "Download CV — mobile secondary action";
   const photo = createCanvasFrame(page, { name: `About portrait — mobile — ${FINAL_ABOUT_PHOTO}`, x: 0, y: 950, width: 390, height: 570, fill: FINAL_COLOR.surfaceStrong, clipsContent: true });
   applyImageFill(photo, photoHash, "FIT");
@@ -6213,9 +6236,9 @@ function createContactDesktop(parent, x, y) {
     ["email", "EMAIL", "abicaride@gmail.com"],
     ["location", "LOCATION", "Poblenou (22@), Barcelona, Spain"],
     ["linkedin", "LINKEDIN", "View Abilene Caride’s profile  ↗"],
-    ["download", "CV", "Download CV"],
+    ["download", "CV", "Download CV", CV_DOWNLOADS.en.url],
   ];
-  detailItems.forEach(([icon, label, value], index) => {
+  detailItems.forEach(([icon, label, value, href], index) => {
     const column = index % 2;
     const row = Math.floor(index / 2);
     const itemX = 80 + column * 660;
@@ -6223,7 +6246,7 @@ function createContactDesktop(parent, x, y) {
     createRule(details, { x: itemX, y: itemY, width: 580, color: FINAL_COLOR.border });
     createLineIcon(details, { icon, x: itemX, y: itemY + 30, size: 28, strokeWidth: 1.9 });
     addFinalLabel(details, label, itemX + 48, itemY + 32, 220);
-    addFinalBody(details, {
+    const detailValue = addFinalBody(details, {
       characters: value,
       font: FONT.montserratMedium,
       fontSize: 18,
@@ -6233,6 +6256,7 @@ function createContactDesktop(parent, x, y) {
       x: itemX,
       y: itemY + 88,
     });
+    if (href) detailValue.hyperlink = { type: "URL", value: href };
   });
 
   const form = createCanvasFrame(page, {
@@ -6351,14 +6375,14 @@ function createContactMobile(parent, x, y) {
     ["email", "EMAIL", "abicaride@gmail.com"],
     ["location", "LOCATION", "Poblenou (22@), Barcelona, Spain"],
     ["linkedin", "LINKEDIN", "View Abilene Caride’s profile  ↗"],
-    ["download", "CV", "Download CV"],
+    ["download", "CV", "Download CV", CV_DOWNLOADS.en.url],
   ];
-  detailItems.forEach(([icon, label, value], index) => {
+  detailItems.forEach(([icon, label, value, href], index) => {
     const itemY = 300 + index * 200;
     createRule(details, { x: 28, y: itemY, width: 334, color: FINAL_COLOR.border });
     createLineIcon(details, { icon, x: 28, y: itemY + 26, size: 28, strokeWidth: 1.9 });
     addFinalLabel(details, label, 74, itemY + 28, 200);
-    addFinalBody(details, {
+    const detailValue = addFinalBody(details, {
       characters: value,
       font: FONT.montserratMedium,
       fontSize: 16,
@@ -6368,6 +6392,7 @@ function createContactMobile(parent, x, y) {
       x: 28,
       y: itemY + 82,
     });
+    if (href) detailValue.hyperlink = { type: "URL", value: href };
   });
 
   const form = createCanvasFrame(page, {
@@ -6591,6 +6616,7 @@ async function publishCurrentAbout() {
     CASE_COLOR.surface,
     GENERATED_KIND.currentAbout,
   );
+  markCvDownloads(section);
   populateSectionSafely(section, () => {
     addFinalHeading(section, {
       characters: "About — current production snapshot",
@@ -6601,7 +6627,7 @@ async function publishCurrentAbout() {
       y: 70,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/AboutPage.astro, src/data/profile.ts, localized production copy and the bundled About portrait.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/AboutPage.astro, src/data/profile.ts, localized production copy and the bundled About portrait.\nCV downloads: EN ${CV_DOWNLOADS.en.path} · ES ${CV_DOWNLOADS.es.path}.`,
       fontSize: 18,
       lineHeight: 29,
       color: FINAL_COLOR.inkMuted,
@@ -6640,6 +6666,7 @@ async function publishCurrentContact() {
     CASE_COLOR.surface,
     GENERATED_KIND.currentContact,
   );
+  markCvDownloads(section);
   populateSectionSafely(section, () => {
     addFinalHeading(section, {
       characters: "Contact — current production snapshot",
@@ -6650,7 +6677,7 @@ async function publishCurrentContact() {
       y: 70,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/ContactPage.astro, localized production copy and production tokens. The H1 reflects the implemented 10px reduction at desktop and mobile sizes.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/ContactPage.astro, localized production copy and production tokens. The H1 reflects the implemented 10px reduction at desktop and mobile sizes.\nCV downloads: EN ${CV_DOWNLOADS.en.path} · ES ${CV_DOWNLOADS.es.path}.`,
       fontSize: 18,
       lineHeight: 29,
       color: FINAL_COLOR.inkMuted,

@@ -80,10 +80,14 @@ source Git commit and repository source-of-truth statement.
 - **Publish current imaginArt snapshot** creates or replaces the editable
   production case-study reference, including the public evidence caveats.
 - **Publish current About snapshot** creates or replaces editable desktop and
-  mobile references with the packaged About portrait.
+  mobile references with the packaged About portrait. Its CV action links to
+  the final English PDF and the managed root records both locale-specific CV
+  paths.
 - **Publish current Contact snapshot** creates or replaces editable desktop and
-  mobile Contact references on the shared About + Archive page. The separate
-  managed root preserves the current About, approved references and archives.
+  mobile Contact references on the shared About + Archive page. Its CV action
+  links to the final English PDF and the managed root records both
+  locale-specific CV paths. The separate managed root preserves the current
+  About, approved references and archives.
 - **Prepare this Foundations page for public viewing** removes only the known
   Figma starter tutorial, obsolete workspace-intro frames and the redundant
   top-level hero-reference import from the three Foundations pages. It also

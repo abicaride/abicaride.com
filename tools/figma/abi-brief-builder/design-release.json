@@ -1,5 +1,5 @@
 {
-  "version": "2.1.9",
+  "version": "2.1.10",
   "status": "CURRENT",
   "name": "Clean Organic Editorial",
   "sourceOfTruth": "Astro repository",
@@ -14,6 +14,8 @@
     "src/assets/images/abilene-about-v2.png",
     "src/assets/brand/abilene-mark.svg",
     "public/favicon.svg",
+    "public/cv/abilene-caride-cv-en.pdf",
+    "public/cv/abilene-caride-cv-es.pdf",
     "src/content/projects/",
     "docs/design/V2-PREPRODUCTION-DIRECTION.md",
     "docs/content/case-study-imaginart.md",
