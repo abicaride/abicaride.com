@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { pageSeo } from '../../data/seo';
 import { getLocalizedPath, ui, type Locale } from '../../i18n/config';
 
 interface Props {
@@ -8,13 +9,14 @@ interface Props {
 
 const { locale } = Astro.props;
 const copy = ui[locale].privacy;
+const seo = pageSeo[locale].privacy;
 const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 const alternatePath = getLocalizedPath(otherLocale, otherLocale === 'en' ? 'privacy' : 'privacidad');
 ---
 
 <BaseLayout
-  title={copy.title}
-  description={copy.description}
+  title={seo.title}
+  description={seo.description}
   locale={locale}
   alternatePath={alternatePath}
 >

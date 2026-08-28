@@ -6,8 +6,8 @@ routeSlug: imaginart-b2b-content
 translationKey: imaginart-b2b-content
 category: Marketing, B2B content & communications
 company: imaginArt
-role: Communications Specialist
-period: 2023–Present
+role: Marketing & Communications Specialist
+period: Jan 2023–Jul 2026
 featured: true
 order: 1
 draft: false

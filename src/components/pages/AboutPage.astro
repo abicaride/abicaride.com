@@ -3,18 +3,20 @@ import { Picture } from 'astro:assets';
 import aboutImage from '../../assets/images/abilene-about-v2.png';
 import { getCvPath, ui, type Locale } from '../../i18n/config';
 import { profiles } from '../../data/profile';
+import { pageSeo } from '../../data/seo';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LineIcon from '../LineIcon.astro';
 
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const copy = ui[locale];
+const seo = pageSeo[locale].about;
 const profile = profiles[locale];
 const primaryLanguages = profile.languages.slice(0, 4);
 const additionalLanguages = profile.languages.slice(4);
 ---
 
-<BaseLayout title={copy.about.title} description={copy.about.description} locale={locale} showBackToTop>
+<BaseLayout title={seo.title} description={seo.description} locale={locale} showBackToTop>
   <article class="about-page">
     <header class="about-hero">
       <div class="hero-copy">

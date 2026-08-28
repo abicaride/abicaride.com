@@ -38,7 +38,7 @@ export const imaginartCase: Record<Locale, ImaginartCaseCopy> = {
       eyebrow: 'imaginArt · B2B content & communications',
       title: 'Making specialist B2B communication clearer',
       descriptor: 'Content structure, editorial communication and campaigns for professional audiovisual audiences.',
-      role: 'Communications Specialist · 2023–Present',
+      role: 'Marketing & Communications Specialist · Jan 2023–Jul 2026',
       introduction: 'The recurring challenge was to preserve technical truth while making information clearer, more useful and easier to act on across product, email and event channels.',
     },
     collaboration: {
@@ -101,7 +101,7 @@ export const imaginartCase: Record<Locale, ImaginartCaseCopy> = {
       eyebrow: 'imaginArt · Contenido y comunicación B2B',
       title: 'Hacer más clara la comunicación B2B especializada',
       descriptor: 'Estructura de contenidos, comunicación editorial y campañas para audiencias profesionales del sector audiovisual.',
-      role: 'Especialista en Comunicación · 2023–actualidad',
+      role: 'Especialista en Marketing y Comunicación · Ene 2023–Jul 2026',
       introduction: 'El reto recurrente era conservar la precisión técnica y convertir la información en algo más claro, útil y fácil de llevar a la acción en producto, email y eventos.',
     },
     collaboration: {

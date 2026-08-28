@@ -6,6 +6,14 @@ const siteOrigin = 'https://abicaride.com';
 const errors = [];
 const externalOrigins = new Set();
 const canonicalRoutes = new Set();
+const indexableTitles = new Map();
+const indexableDescriptions = new Map();
+const intentionalNoIndexRoutes = new Set([
+  '/',
+  '/404.html',
+  '/en/architecture/',
+  '/es/arquitectura/',
+]);
 
 const walk = async (directory) => {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -66,6 +74,12 @@ const inspectReference = async (reference, pageUrl, source) => {
 
 const matches = (input, expression) => [...input.matchAll(expression)];
 
+const recordUniqueValue = (values, value, source) => {
+  const sources = values.get(value) ?? [];
+  sources.push(source);
+  values.set(value, sources);
+};
+
 let files;
 try {
   files = await walk(distDirectory);
@@ -84,6 +98,7 @@ for (const file of htmlFiles) {
   const isNoIndex = /<meta\s+name="robots"\s+content="[^"]*noindex/i.test(html);
   const canonicals = matches(html, /<link\s+rel="canonical"\s+href="([^"]+)"/gi);
   const descriptions = matches(html, /<meta\s+name="description"\s+content="([^"]*)"/gi);
+  const titles = matches(html, /<title>(.*?)<\/title>/gis);
   const h1Count = matches(html, /<h1\b/gi).length;
   const isLocalizedPage = route.startsWith('/en/') || route.startsWith('/es/');
 
@@ -96,7 +111,38 @@ for (const file of htmlFiles) {
   }
 
   if (h1Count !== 1) errors.push(`${source}: expected one h1, found ${h1Count}`);
+  if (titles.length !== 1) errors.push(`${source}: expected one title, found ${titles.length}`);
   if (descriptions.length !== 1) errors.push(`${source}: expected one meta description, found ${descriptions.length}`);
+  if (isNoIndex !== intentionalNoIndexRoutes.has(route)) {
+    errors.push(`${source}: unexpected indexability state (${isNoIndex ? 'noindex' : 'indexable'})`);
+  }
+  if (route === '/' && /<meta\s+http-equiv="refresh"/i.test(html)) {
+    errors.push(`${source}: language gateway must not use a meta-refresh fallback`);
+  }
+
+  const mainHtml = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1] ?? '';
+  const headingLevels = matches(mainHtml, /<h([1-6])\b/gi).map((match) => Number(match[1]));
+  for (let index = 1; index < headingLevels.length; index += 1) {
+    if (headingLevels[index] > headingLevels[index - 1] + 1) {
+      errors.push(`${source}: heading hierarchy skips from h${headingLevels[index - 1]} to h${headingLevels[index]}`);
+    }
+  }
+
+  for (const image of matches(html, /<img\b[^>]*>/gi)) {
+    if (!/\salt(?=\s|=|>)/i.test(image[0])) {
+      errors.push(`${source}: image is missing an alt attribute`);
+    }
+  }
+
+  for (const anchor of matches(html, /<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
+    const attributes = anchor[1];
+    const text = anchor[2].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const isHidden = /aria-hidden="true"/i.test(attributes);
+    const hasAccessibleLabel = /aria-label="[^"]+"/i.test(attributes);
+    if (!isHidden && !hasAccessibleLabel && !text) {
+      errors.push(`${source}: link has no descriptive text or accessible label`);
+    }
+  }
   if (isLocalizedPage) {
     if (!html.includes('class="brand-watermark"')) {
       errors.push(`${source}: missing the shared footer brand-mark watermark`);
@@ -120,6 +166,21 @@ for (const file of htmlFiles) {
   if (isNoIndex) {
     if (canonicals.length) errors.push(`${source}: noindex page unexpectedly has a canonical`);
   } else {
+    if (titles.length === 1) {
+      const title = titles[0][1].trim();
+      recordUniqueValue(indexableTitles, title, source);
+      if (title.length < 35 || title.length > 70) {
+        errors.push(`${source}: title length ${title.length} is outside the focused 35–70 character range`);
+      }
+    }
+    if (descriptions.length === 1) {
+      const description = descriptions[0][1].trim();
+      recordUniqueValue(indexableDescriptions, description, source);
+      if (description.length < 110 || description.length > 165) {
+        errors.push(`${source}: meta description length ${description.length} is outside the focused 110–165 character range`);
+      }
+    }
+
     const requiredSocialMetadata = [
       'og:site_name',
       'og:title',
@@ -164,6 +225,19 @@ for (const file of htmlFiles) {
     for (const language of ['en', 'es', 'x-default']) {
       if (!alternates.has(language)) errors.push(`${source}: missing ${language} hreflang`);
     }
+    if (alternates.has('en') && !new URL(alternates.get('en'), pageUrl).pathname.startsWith('/en/')) {
+      errors.push(`${source}: English hreflang does not target an /en/ route`);
+    }
+    if (alternates.has('es') && !new URL(alternates.get('es'), pageUrl).pathname.startsWith('/es/')) {
+      errors.push(`${source}: Spanish hreflang does not target an /es/ route`);
+    }
+    if (
+      alternates.has('en') &&
+      alternates.has('x-default') &&
+      new URL(alternates.get('x-default'), pageUrl).href !== new URL(alternates.get('en'), pageUrl).href
+    ) {
+      errors.push(`${source}: x-default hreflang does not match the default English route`);
+    }
 
     const jsonLd = matches(html, /<script\s+type="application\/ld\+json">(.*?)<\/script>/gis);
     if (jsonLd.length !== 1) {
@@ -192,6 +266,13 @@ for (const file of htmlFiles) {
   for (const match of matches(html, /<meta\s+(?:property="og:image"|name="twitter:image")\s+content="([^"]+)"/gi)) {
     await inspectReference(match[1], pageUrl, source);
   }
+}
+
+for (const [title, sources] of indexableTitles) {
+  if (sources.length > 1) errors.push(`duplicate indexable title "${title}" in ${sources.join(', ')}`);
+}
+for (const [description, sources] of indexableDescriptions) {
+  if (sources.length > 1) errors.push(`duplicate indexable meta description in ${sources.join(', ')}`);
 }
 
 const sitemapPath = path.join(distDirectory, 'sitemap.xml');

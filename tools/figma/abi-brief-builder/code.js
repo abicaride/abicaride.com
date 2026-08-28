@@ -177,7 +177,7 @@ const HOMEPAGE = {
 const CASE_STUDY = {
   title: "imaginArt",
   descriptor: "Marketing, B2B content & communications",
-  role: "Communications Specialist · 2023–Present",
+  role: "Marketing & Communications Specialist · Jan 2023–Jul 2026",
 };
 
 const MOODBOARD = {
@@ -3197,7 +3197,7 @@ async function buildImaginartReframed() {
     });
     appendText(hero, {
       characters:
-        "Communications Specialist · 2023–Present\nProduct content · editorial email · event communication",
+        "Marketing & Communications Specialist · Jan 2023–Jul 2026\nProduct content · editorial email · event communication",
       fontSize: 20,
       lineHeight: 32,
       color: SYNTHESIS_COLOR.ink,
@@ -4807,7 +4807,7 @@ async function buildImaginartPreproductionLegacy() {
       y: 140,
     });
     addFinalBody(hero, {
-      characters: "imaginArt · B2B content & communications\nCommunications Specialist · 2023–Present",
+      characters: "imaginArt · B2B content & communications\nMarketing & Communications Specialist · Jan 2023–Jul 2026",
       fontSize: 20,
       lineHeight: 33,
       width: 700,
@@ -4927,7 +4927,7 @@ function createFinalImaginartHero(page) {
     y: 140,
   });
   addCaseBody(hero, {
-    characters: "imaginArt · B2B content & communications\nCommunications Specialist · 2023–Present",
+    characters: "imaginArt · B2B content & communications\nMarketing & Communications Specialist · Jan 2023–Jul 2026",
     width: 700,
     x: 80,
     y: 350,
@@ -4952,7 +4952,7 @@ function createCurrentImaginartAtAGlance(page) {
   });
   const items = [
     ["THE CHALLENGE", "Make specialist technical information clearer and easier to act on."],
-    ["MY ROLE", "Communications Specialist"],
+    ["MY ROLE", "Marketing & Communications Specialist"],
     ["WHAT I DID", "Content strategy · Product content · Email · Events"],
     ["EVIDENCE", "~24% → ~34% email open rate\n~110–125 event attendees\nApproximate recalled figures"],
   ];
@@ -5854,11 +5854,11 @@ function createAboutDesktop(parent, x, y, photoHash) {
     y: 145,
   });
   const roles = [
-    ["2023–present", "imaginArt", "Content, communications and marketing", "B2B communication strategy, campaigns, events, web content, SEO and user experience work."],
-    ["2020–2021", "Federación Pantalla", "Communication and community", "Social content, newsletters, press materials, live events and internal communication."],
-    ["2019–2021", "Ailanto", "Content, ecommerce and customer care", "Corporate copy, ecommerce design support, weekly newsletters and customer service."],
-    ["2017–2019", "Ethic Investors", "Administration and commercial content", "Executive support, official documentation and content for property and crowdfunding offers."],
-    ["2011–2019", "Caprichos de Casa Import", "E-commerce manager · Administration, sales and business operations", "Online catalogue maintenance, promotions, newsletters and support for the store redesign and relaunch."],
+    ["Jan 2023–Jul 2026", "imaginArt", "Marketing & Communications Specialist", "B2B communication strategy, campaigns, events, web content, SEO and user experience work."],
+    ["Sep 2019–Nov 2021", "Ailanto", "Content Designer", "Corporate copy, ecommerce design support, weekly newsletters and customer service."],
+    ["Nov 2020–Mar 2021", "Federación Pantalla", "Communication Intern", "Social content, newsletters, press materials, live events and internal communication."],
+    ["May 2017–Jul 2019", "Ethic Investors", "Copywriter", "Executive support, official documentation and content for property and crowdfunding offers."],
+    ["2011–2017", "Caprichos de Casa Import", "Ecommerce and Business Operations", "Online catalogue maintenance, promotions, newsletters and support for the store redesign and relaunch."],
   ];
   createRule(experience, { x: 290, y: 360, width: 2, height: 840, color: FINAL_COLOR.greenDeep });
   roles.forEach(([period, company, role, scope], index) => {
@@ -5911,7 +5911,7 @@ function createAboutDesktop(parent, x, y, photoHash) {
   const studies = [
     ["Postgraduate in UX Writing", "2021–2022"],
     ["Proficiency English Certificate - Cambridge C2 (2024)", ""],
-    ["Degree in Communication", "2014–2021"],
+    ["BA in Communication", "2014–2020"],
     ["Administration and Finance", "2009–2011"],
   ];
   studies.forEach(([study, period], index) => {
@@ -5992,7 +5992,7 @@ function createAboutDesktop(parent, x, y, photoHash) {
     y: 125,
   });
   addFinalBody(languages, {
-    characters: "Spanish · native     Galician · native     English · C2     Catalan · B1",
+    characters: "Spanish · native     Galician · native     English · C2 certified     Catalan · B1",
     font: FONT.montserratMedium,
     fontSize: 20,
     lineHeight: 34,
@@ -6002,7 +6002,7 @@ function createAboutDesktop(parent, x, y, photoHash) {
   });
   createRule(languages, { x: 80, y: 420, width: 1280, color: FINAL_COLOR.border });
   addFinalBody(languages, {
-    characters: "Also part of the picture: sign language · Portuguese · Korean",
+    characters: "Also part of the picture: Spanish Sign Language · bilingual · Portuguese · A2 · Korean · A1",
     fontSize: 18,
     lineHeight: 30,
     color: FINAL_COLOR.inkMuted,
@@ -6112,11 +6112,11 @@ function createAboutMobile(parent, x, y, photoHash) {
   addFinalLabel(experience, "EXPERIENCE", 28, 55, 220);
   addFinalHeading(experience, { characters: "A broad profile, built deliberately.", fontSize: 34, lineHeight: 43, width: 334, x: 28, y: 100 });
   const roles = [
-    ["2023–present", "imaginArt", "Content, communications and marketing", "B2B communication strategy, campaigns, events, web content, SEO and user experience work."],
-    ["2020–2021", "Federación Pantalla", "Communication and community", "Social content, newsletters, press materials, live events and internal communication."],
-    ["2019–2021", "Ailanto", "Content, ecommerce and customer care", "Corporate copy, ecommerce design support, weekly newsletters and customer service."],
-    ["2017–2019", "Ethic Investors", "Administration and commercial content", "Executive support, official documentation and content for property and crowdfunding offers."],
-    ["2011–2019", "Caprichos de Casa Import", "E-commerce manager · Administration, sales and business operations", "Online catalogue maintenance, promotions, newsletters and support for the store redesign and relaunch."],
+    ["Jan 2023–Jul 2026", "imaginArt", "Marketing & Communications Specialist", "B2B communication strategy, campaigns, events, web content, SEO and user experience work."],
+    ["Sep 2019–Nov 2021", "Ailanto", "Content Designer", "Corporate copy, ecommerce design support, weekly newsletters and customer service."],
+    ["Nov 2020–Mar 2021", "Federación Pantalla", "Communication Intern", "Social content, newsletters, press materials, live events and internal communication."],
+    ["May 2017–Jul 2019", "Ethic Investors", "Copywriter", "Executive support, official documentation and content for property and crowdfunding offers."],
+    ["2011–2017", "Caprichos de Casa Import", "Ecommerce and Business Operations", "Online catalogue maintenance, promotions, newsletters and support for the store redesign and relaunch."],
   ];
   createRule(experience, { x: 47, y: 310, width: 2, height: 1040, color: FINAL_COLOR.greenDeep });
   roles.forEach(([period, company, role, scope], index) => {
@@ -6131,7 +6131,7 @@ function createAboutMobile(parent, x, y, photoHash) {
   const education = createCanvasFrame(page, { name: "Mobile — Education", x: 0, y: 5120, width: 390, height: 700, fill: CASE_COLOR.canvas });
   addFinalLabel(education, "EDUCATION", 28, 55, 220);
   addFinalHeading(education, { characters: "Learning that explains the path.", fontSize: 33, lineHeight: 42, width: 334, x: 28, y: 100 });
-  addFinalBody(education, { characters: "Postgraduate in UX Writing\nProficiency English Certificate - Cambridge C2 (2024)\nDegree in Communication\nAdministration and Finance", fontSize: 18, lineHeight: 52, width: 334, x: 28, y: 270 });
+  addFinalBody(education, { characters: "Postgraduate in UX Writing\nProficiency English Certificate - Cambridge C2 (2024)\nBA in Communication · 2014–2020\nAdministration and Finance", fontSize: 18, lineHeight: 52, width: 334, x: 28, y: 270 });
 
   const personal = createCanvasFrame(page, { name: "Mobile — A little more about me", x: 0, y: 5820, width: 390, height: 1000, fill: CASE_COLOR.surface });
   addFinalLabel(personal, "A LITTLE MORE ABOUT ME", 28, 55, 300);
@@ -6151,8 +6151,8 @@ function createAboutMobile(parent, x, y, photoHash) {
   const languages = createCanvasFrame(page, { name: "Mobile — Languages", x: 0, y: 6820, width: 390, height: 600, fill: CASE_COLOR.canvas });
   addFinalLabel(languages, "LANGUAGES", 28, 55, 220);
   addFinalHeading(languages, { characters: "Different ways of listening.", fontSize: 33, lineHeight: 42, width: 334, x: 28, y: 100 });
-  addFinalBody(languages, { characters: "Spanish · native\nGalician · native\nEnglish · C2\nCatalan · B1", font: FONT.montserratMedium, fontSize: 18, lineHeight: 40, width: 334, x: 28, y: 250 });
-  addFinalBody(languages, { characters: "Sign language · Portuguese · Korean", fontSize: 14, lineHeight: 23, color: FINAL_COLOR.inkMuted, width: 334, x: 28, y: 455 });
+  addFinalBody(languages, { characters: "Spanish · native\nGalician · native\nEnglish · C2 certified\nCatalan · B1", font: FONT.montserratMedium, fontSize: 18, lineHeight: 40, width: 334, x: 28, y: 250 });
+  addFinalBody(languages, { characters: "Spanish Sign Language · bilingual\nPortuguese · A2 · Korean · A1", fontSize: 14, lineHeight: 23, color: FINAL_COLOR.inkMuted, width: 334, x: 28, y: 455 });
 
   createAboutMobileFooter(page, 7420);
   const control = createAboutBackToTop(page, 306, 7260);
@@ -6470,7 +6470,7 @@ async function buildAboutPreproduction() {
     addFinalBody(section, { characters: photoHash ? "APPROVED FULL-BODY PORTRAIT LINKED FROM ABILENEABOUT" : "PHOTO PENDING · Import the approved full-body red-top / grey-skirt portrait on this page, name the image layer AbileneAbout, then rebuild. No substitute or generated likeness is used.", font: FONT.montserratMedium, fontSize: 14, lineHeight: 23, color: photoHash ? FINAL_COLOR.greenDeep : FINAL_COLOR.burgundy, width: 1500, x: 150, y: 195 });
     createAboutDesktop(section, 150, 330, photoHash);
     createAboutMobile(section, 1790, 330, photoHash);
-    addFinalBody(section, { characters: "PRODUCTION NOTES · Back to top appears after the hero leaves view, remains keyboard accessible, respects reduced motion and clears consent UI. The tools inventory is intentionally omitted. ‘Sign language · bilingual’ is not strengthened in this direction; final wording needs verification. imaginArt · 2023–present is confirmed by Abilene; update the older production profile value during implementation.", fontSize: 15, lineHeight: 25, color: FINAL_COLOR.inkMuted, width: 1420, x: 150, y: 7670 });
+    addFinalBody(section, { characters: "PRODUCTION NOTES · Back to top appears after the hero leaves view, remains keyboard accessible, respects reduced motion and clears consent UI. The tools inventory is intentionally omitted. Experience, education and language labels match src/data/profile.ts. SEO titles and descriptions are nonvisual and remain tracked in src/data/seo.ts.", fontSize: 15, lineHeight: 25, color: FINAL_COLOR.inkMuted, width: 1420, x: 150, y: 7670 });
   });
   placement.existing?.remove();
   if (
@@ -6568,7 +6568,7 @@ async function publishCurrentImaginart() {
       y: 70,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/case-studies/ImaginartCaseStudy.astro, src/data/imaginartCase.ts and src/data/selectedCaseDetails.ts. Approximate metrics retain their public caveats.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/case-studies/ImaginartCaseStudy.astro, src/data/imaginartCase.ts and src/data/selectedCaseDetails.ts. Approximate metrics retain their public caveats. SEO metadata is nonvisual and tracked in src/data/seo.ts.`,
       fontSize: 18,
       lineHeight: 29,
       color: FINAL_COLOR.inkMuted,
@@ -6627,7 +6627,7 @@ async function publishCurrentAbout() {
       y: 70,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/AboutPage.astro, src/data/profile.ts, localized production copy and the bundled About portrait.\nCV downloads: EN ${CV_DOWNLOADS.en.path} · ES ${CV_DOWNLOADS.es.path}.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/AboutPage.astro, src/data/profile.ts, localized production copy and the bundled About portrait. SEO metadata is nonvisual and tracked in src/data/seo.ts.\nCV downloads: EN ${CV_DOWNLOADS.en.path} · ES ${CV_DOWNLOADS.es.path}.`,
       fontSize: 18,
       lineHeight: 29,
       color: FINAL_COLOR.inkMuted,

@@ -1,15 +1,17 @@
 ---
 import { getCvPath, getLocalizedPath, ui, type Locale } from '../../i18n/config';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { pageSeo } from '../../data/seo';
 import LineIcon from '../LineIcon.astro';
 
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const copy = ui[locale];
+const seo = pageSeo[locale].contact;
 const privacyPath = getLocalizedPath(locale, locale === 'en' ? 'privacy' : 'privacidad');
 ---
 
-<BaseLayout title={copy.contact.title} description={copy.contact.description} locale={locale}>
+<BaseLayout title={seo.title} description={seo.description} locale={locale}>
   <article class="contact-page">
     <header class="contact-intro">
       <p class="eyebrow">{copy.contact.eyebrow}</p>

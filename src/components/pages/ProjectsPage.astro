@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { pageSeo } from '../../data/seo';
 import { ui, type Locale } from '../../i18n/config';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectPreview from '../ProjectPreview.astro';
@@ -7,6 +8,7 @@ import ProjectPreview from '../ProjectPreview.astro';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const copy = ui[locale];
+const seo = pageSeo[locale].projects;
 const projects = (await getCollection('projects', ({ data }) => data.locale === locale && !data.draft)).sort((a, b) => a.data.order - b.data.order);
 const selected = projects.filter((project) => project.data.featured);
 const lead = selected.find((project) => project.data.translationKey === 'imaginart-b2b-content');
@@ -14,7 +16,7 @@ const secondary = selected.filter((project) => project !== lead);
 const more = projects.filter((project) => !project.data.featured);
 ---
 
-<BaseLayout title={copy.projects.title} description={copy.projects.description} locale={locale}>
+<BaseLayout title={seo.title} description={seo.description} locale={locale}>
   <div class="projects-shell">
     <header class="page-header">
       <p class="eyebrow">{copy.projects.selectedEyebrow}</p>

@@ -616,7 +616,7 @@ const approvedFoundationsText = approvedFoundationsNodes
   .join("\n");
 for (const expected of [
   "V2 — Current production foundations",
-  "Design release 2.1.10",
+  "Design release 2.1.11",
   "Inter for headings",
   "Montserrat Regular",
   "--color-canvas",
@@ -1037,13 +1037,22 @@ for (const expected of [
   "UX Writing",
   "Content strategy · Communications · Business",
   "Clear. Honest. Practical.",
-  "2023–present",
-  "Federación Pantalla",
+  "Jan 2023–Jul 2026",
+  "Marketing & Communications Specialist",
+  "Sep 2019–Nov 2021",
+  "Content Designer",
   "Ailanto",
+  "Nov 2020–Mar 2021",
+  "Communication Intern",
+  "Federación Pantalla",
+  "May 2017–Jul 2019",
+  "Copywriter",
   "Ethic Investors",
+  "2011–2017",
   "Caprichos de Casa Import",
-  "E-commerce manager · Administration, sales and business operations",
-  "Degree in Communication",
+  "Ecommerce and Business Operations",
+  "BA in Communication",
+  "2014–2020",
   "Postgraduate in UX Writing",
   "Proficiency English Certificate - Cambridge C2 (2024)",
   "Administration and Finance",
@@ -1051,7 +1060,9 @@ for (const expected of [
   "Sustainability is one of the pivots of my life.",
   "Based in Barcelona. Galician at heart.",
   "Spanish · native",
-  "Sign language · Portuguese · Korean",
+  "Spanish Sign Language · bilingual",
+  "Portuguese · A2",
+  "Korean · A1",
   "LET’S TALK",
   "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
   "Back to top",
@@ -1060,6 +1071,11 @@ for (const expected of [
 }
 assert.ok(!aboutText.includes("Postgraduate course in UX Writing"));
 assert.ok(!aboutText.includes("Cambridge English C2"));
+assert.ok(!aboutText.includes("2023–present"));
+assert.ok(!aboutText.includes("2011–2019"));
+assert.ok(!aboutText.includes("2014–2021"));
+assert.ok(!aboutText.includes("Degree in Communication"));
+assert.ok(!aboutText.includes("Sign language · Portuguese · Korean"));
 const aboutDesktop = aboutNodes.find((node) => node.type === "FRAME" && node.name === "About — Final pre-production");
 const aboutMobile = aboutNodes.find((node) => node.type === "FRAME" && node.name === "About — Final pre-production — Mobile");
 assert.equal(aboutDesktop.width, 1440);
@@ -1103,7 +1119,7 @@ const currentComponentsText = currentComponentsNodes
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Design release 2.1.10",
+  "Design release 2.1.11",
   "Home",
   "Get in touch",
   "View my work",
@@ -1247,6 +1263,7 @@ const currentImaginartText = allNodes(currentImaginartSection)
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
+  "Marketing & Communications Specialist · Jan 2023–Jul 2026",
   "At a glance",
   "In this case",
   "The challenge",
