@@ -8,6 +8,9 @@ execFileSync(process.execPath, [fileURLToPath(new URL("./package.mjs", import.me
   stdio: "inherit",
 });
 const pluginSource = fs.readFileSync(new URL("./dist/code.js", import.meta.url), "utf8");
+const designRelease = JSON.parse(
+  fs.readFileSync(new URL("./design-release.json", import.meta.url), "utf8"),
+);
 
 assert.match(pluginSource, /case "organize-status-labels"/);
 assert.match(pluginSource, /case "prepare-public-foundations-page"/);
@@ -617,7 +620,7 @@ const approvedFoundationsText = approvedFoundationsNodes
   .join("\n");
 for (const expected of [
   "V2 — Current production foundations",
-  "Design release 2.1.12",
+  `Design release ${designRelease.version}`,
   "Inter for headings",
   "Montserrat Regular",
   "--color-canvas",
@@ -802,7 +805,7 @@ const heroName = finalDirectionNodes.find(
 assert.equal(heroName.fontName.family, "Inter");
 assert.equal(heroName.fontName.style, "Semi Bold");
 assert.equal(heroName.fontSize, 32);
-assert.equal(heroName.x, 80);
+assert.equal(heroName.x, 122);
 assert.equal(heroName.y, 42);
 const heroNavigation = [
   ["Home", 700],
@@ -819,7 +822,7 @@ for (const [label, x] of heroNavigation) {
   assert.equal(item.fills[0].color.g, 0xe8 / 0xff);
   assert.equal(item.fills[0].color.b, 0xde / 0xff);
 }
-for (const [label, x] of [["EN", 1205], ["/", 1253], ["ES", 1285]]) {
+for (const [label, x] of [["EN", 1100], ["/", 1148], ["ES", 1180]]) {
   assert.ok(
     finalDirectionNodes.some(
       (node) => node.type === "TEXT" && node.characters === label && node.x === x && node.y === 45,
@@ -1142,7 +1145,7 @@ const currentComponentsText = currentComponentsNodes
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Design release 2.1.12",
+  `Design release ${designRelease.version}`,
   "Home",
   "Get in touch",
   "View my work",

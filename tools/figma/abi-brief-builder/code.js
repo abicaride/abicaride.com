@@ -792,6 +792,47 @@ function createTransparentBrandMark(parent, options) {
   return mark;
 }
 
+function headerShadowEffects(color) {
+  return [
+    {
+      type: "DROP_SHADOW",
+      color: { ...hexToRgb(color), a: 0.78 },
+      offset: { x: 0, y: 1 },
+      radius: 16,
+      spread: 0,
+      visible: true,
+      blendMode: "NORMAL",
+    },
+  ];
+}
+
+function createHeaderBrand(parent, options) {
+  const size = options.size || 34;
+  const mark = createTransparentBrandMark(parent, {
+    name: options.markName || "Header logo — transparent Abilene brand mark",
+    x: options.x,
+    y: options.markY,
+    size,
+    color: options.markColor,
+    opacity: 1,
+  });
+  const label = addFinalHeading(parent, {
+    characters: "Abilene Caride",
+    fontSize: options.fontSize,
+    lineHeight: options.lineHeight,
+    color: options.labelColor,
+    width: options.width,
+    x: options.x + size + 8,
+    y: options.textY,
+  });
+  label.name = options.labelName || "Header brand name";
+  if (options.shadowColor) {
+    mark.effects = headerShadowEffects(options.shadowColor);
+    label.effects = headerShadowEffects(options.shadowColor);
+  }
+  return { mark, label };
+}
+
 function createEllipse(parent, options) {
   const ellipse = figma.createEllipse();
   parent.appendChild(ellipse);
@@ -3860,14 +3901,16 @@ function createImplementedHeaderReference(parent, options) {
     fill: palette.canvas,
     stroke: palette.border,
   });
-  addFinalHeading(header, {
-    characters: "Abilene Caride",
+  createHeaderBrand(header, {
+    x: 64,
+    markY: 65,
+    textY: 62,
+    size: 34,
     fontSize: 32,
     lineHeight: 40,
-    color: palette.greenDeep,
+    markColor: palette.greenDeep,
+    labelColor: palette.greenDeep,
     width: 330,
-    x: 64,
-    y: 62,
   });
   for (const [label, itemX] of [
     ["Home", 700],
@@ -3886,11 +3929,11 @@ function createImplementedHeaderReference(parent, options) {
       y: 76,
     });
   }
-  createThemeSwitch(header, { x: 1100, y: 72, dark, palette });
-  addFinalBody(header, { characters: "EN", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: palette.greenDeep, width: 32, x: 1205, y: 77 });
-  addFinalBody(header, { characters: "/", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: palette.inkMuted, width: 16, x: 1253, y: 77 });
-  addFinalBody(header, { characters: "ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: palette.greenDeep, width: 32, x: 1285, y: 77 });
-  createRule(header, { name: "Active language underline — EN", x: 1205, y: 108, width: 24, height: 2, color: palette.greenDeep });
+  addFinalBody(header, { characters: "EN", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: palette.greenDeep, width: 32, x: 1100, y: 77 });
+  addFinalBody(header, { characters: "/", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: palette.inkMuted, width: 16, x: 1148, y: 77 });
+  addFinalBody(header, { characters: "ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: palette.greenDeep, width: 32, x: 1180, y: 77 });
+  createRule(header, { name: "Active language underline — EN", x: 1100, y: 108, width: 24, height: 2, color: palette.greenDeep });
+  createThemeSwitch(header, { x: 1240, y: 72, dark, palette });
   addFinalLabel(header, dark ? "DARK" : "LIGHT", 1340, 24, 70, palette.greenDeep);
   return header;
 }
@@ -3927,7 +3970,7 @@ async function publishCurrentComponents() {
       y: 90,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nOnly patterns already reused by the Astro implementation belong here. Theme defaults follow prefers-color-scheme before paint; explicit Light/Dark choice wins. Locale order stays EN / ES and only the active underline moves.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nOnly patterns already reused by the Astro implementation belong here. The transparent header logo is 34px on desktop and 28px on mobile; Light uses the original deep green and Dark follows the light navigation color. Theme defaults follow prefers-color-scheme before paint; explicit Light/Dark choice wins. Locale order stays EN / ES and only the active underline moves.`,
       fontSize: 18,
       lineHeight: 30,
       color: FINAL_COLOR.inkMuted,
@@ -4437,13 +4480,17 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     },
   ];
 
-  addFinalHeading(hero, {
-    characters: "Abilene Caride",
+  createHeaderBrand(hero, {
+    x: 80,
+    markY: 38,
+    textY: 42,
+    size: 34,
     fontSize: 32,
     lineHeight: 26,
+    markColor: FINAL_COLOR.greenDeep,
+    labelColor: FINAL_COLOR.canvas,
+    shadowColor: FINAL_COLOR.greenDeep,
     width: 260,
-    x: 80,
-    y: 42,
   });
   for (const [label, itemX] of [
     ["Home", 700],
@@ -4469,11 +4516,11 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     greenDeep: FINAL_COLOR.surface,
     inkMuted: FINAL_COLOR.surface,
   };
-  createThemeSwitch(hero, { x: 1100, y: 40, dark: false, palette: overlayPalette });
-  addFinalBody(hero, { characters: "EN", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 32, x: 1205, y: 45 });
-  addFinalBody(hero, { characters: "/", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 16, x: 1253, y: 45 });
-  addFinalBody(hero, { characters: "ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 32, x: 1285, y: 45 });
-  createRule(hero, { name: "Active language underline — EN", x: 1205, y: 75, width: 24, height: 2, color: FINAL_COLOR.surface });
+  addFinalBody(hero, { characters: "EN", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 32, x: 1100, y: 45 });
+  addFinalBody(hero, { characters: "/", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 16, x: 1148, y: 45 });
+  addFinalBody(hero, { characters: "ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 32, x: 1180, y: 45 });
+  createRule(hero, { name: "Active language underline — EN", x: 1100, y: 75, width: 24, height: 2, color: FINAL_COLOR.surface });
+  createThemeSwitch(hero, { x: 1240, y: 40, dark: false, palette: overlayPalette });
   addFinalHeading(hero, {
     characters: HOMEPAGE.workingLine,
     fontSize: 54,
@@ -5726,14 +5773,16 @@ async function buildImaginartPreproduction() {
 function createAboutHeader(parent, dark = false) {
   const palette = dark ? DARK_COLOR : FINAL_COLOR;
   const color = dark ? DARK_COLOR.greenDeep : FINAL_COLOR.greenDeep;
-  addFinalHeading(parent, {
-    characters: "Abilene Caride",
+  createHeaderBrand(parent, {
+    x: 80,
+    markY: 44,
+    textY: 42,
+    size: 34,
     fontSize: 32,
     lineHeight: 38,
-    color,
+    markColor: color,
+    labelColor: color,
     width: 280,
-    x: 80,
-    y: 42,
   });
   for (const [label, itemX] of [
     ["Work", 795],
@@ -5751,11 +5800,11 @@ function createAboutHeader(parent, dark = false) {
       y: 48,
     });
   }
-  createThemeSwitch(parent, { x: 1100, y: 44, dark, palette });
-  addFinalBody(parent, { characters: "EN", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color, width: 32, x: 1205, y: 49 });
-  addFinalBody(parent, { characters: "/", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: palette.inkMuted, width: 16, x: 1253, y: 49 });
-  addFinalBody(parent, { characters: "ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color, width: 32, x: 1285, y: 49 });
-  createRule(parent, { name: "Active language underline — EN", x: 1205, y: 79, width: 24, height: 2, color });
+  addFinalBody(parent, { characters: "EN", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color, width: 32, x: 1100, y: 49 });
+  addFinalBody(parent, { characters: "/", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: palette.inkMuted, width: 16, x: 1148, y: 49 });
+  addFinalBody(parent, { characters: "ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color, width: 32, x: 1180, y: 49 });
+  createRule(parent, { name: "Active language underline — EN", x: 1100, y: 79, width: 24, height: 2, color });
+  createThemeSwitch(parent, { x: 1240, y: 44, dark, palette });
 }
 
 function createAboutBackToTop(parent, x, y) {
@@ -6175,7 +6224,7 @@ function createAboutMobile(parent, x, y, photoHash) {
     height: 8620,
     fill: FINAL_COLOR.canvas,
   });
-  addFinalHeading(page, { characters: "Abilene Caride", fontSize: 25, lineHeight: 31, width: 240, x: 28, y: 30 });
+  createHeaderBrand(page, { x: 28, markY: 31, textY: 30, size: 28, fontSize: 25, lineHeight: 31, markColor: FINAL_COLOR.greenDeep, labelColor: FINAL_COLOR.greenDeep, width: 200 });
   addFinalBody(page, { characters: "Menu", font: FONT.montserratMedium, fontSize: 14, lineHeight: 22, color: FINAL_COLOR.greenDeep, width: 70, x: 310, y: 35 });
   addFinalLabel(page, "ABOUT", 28, 125, 180);
   addFinalHeading(page, { characters: "I help users find the clearest path to what they need in digital products.", fontSize: 40, lineHeight: 49, width: 334, x: 28, y: 170 });
@@ -6427,13 +6476,16 @@ function createContactMobile(parent, x, y) {
     height: 4340,
     fill: FINAL_COLOR.canvas,
   });
-  addFinalHeading(page, {
-    characters: "Abilene Caride",
+  createHeaderBrand(page, {
+    x: 28,
+    markY: 31,
+    textY: 30,
+    size: 28,
     fontSize: 25,
     lineHeight: 31,
-    width: 240,
-    x: 28,
-    y: 30,
+    markColor: FINAL_COLOR.greenDeep,
+    labelColor: FINAL_COLOR.greenDeep,
+    width: 200,
   });
   addFinalBody(page, {
     characters: "Menu",
@@ -6625,7 +6677,7 @@ async function publishCurrentHomepage() {
       y: 70,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, localized production copy, both production theme palettes and the bundled hero source image. The header keeps EN / ES in a fixed order.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, src/components/SiteHeader.astro, localized production copy, both production theme palettes and the bundled hero source image. The transparent 34px header logo uses its original deep green in Light, retains the matching green shadow and keeps EN / ES before the theme switch.`,
       fontSize: 18,
       lineHeight: 29,
       color: FINAL_COLOR.inkMuted,
