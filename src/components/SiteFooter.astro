@@ -12,6 +12,10 @@ const { locale, currentLocalePath, alternateLocalePath } = Astro.props;
 const copy = ui[locale];
 const currentYear = new Date().getFullYear();
 const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
+const localePaths = {
+  [locale]: currentLocalePath,
+  [otherLocale]: alternateLocalePath,
+} as Record<Locale, string>;
 const privacyPath = getLocalizedPath(locale, locale === 'en' ? 'privacy' : 'privacidad');
 const architecturePath = getLocalizedPath(locale, locale === 'en' ? 'architecture' : 'arquitectura');
 ---
@@ -48,11 +52,12 @@ const architecturePath = getLocalizedPath(locale, locale === 'en' ? 'architectur
         <nav class="utility-group" aria-labelledby="footer-language-title">
           <p class="utility-label" id="footer-language-title">{copy.footer.languageLabel}</p>
           <div class="locale-links">
-            <a href={currentLocalePath} lang={locale} aria-current="page">
-              <span class="visually-hidden">{languageNames[locale]}</span>{locale.toUpperCase()}
+            <a href={localePaths.en} lang="en" hreflang={locale === 'en' ? undefined : 'en'} aria-current={locale === 'en' ? 'page' : undefined}>
+              <span class="visually-hidden">{languageNames.en}</span>EN
             </a>
-            <a href={alternateLocalePath} lang={otherLocale} hreflang={otherLocale}>
-              <span class="visually-hidden">{languageNames[otherLocale]}</span>{otherLocale.toUpperCase()}
+            <span aria-hidden="true">/</span>
+            <a href={localePaths.es} lang="es" hreflang={locale === 'es' ? undefined : 'es'} aria-current={locale === 'es' ? 'page' : undefined}>
+              <span class="visually-hidden">{languageNames.es}</span>ES
             </a>
           </div>
         </nav>
@@ -110,7 +115,7 @@ const architecturePath = getLocalizedPath(locale, locale === 'en' ? 'architectur
   .site-footer :focus-visible { outline-color: var(--color-footer-text); }
   .cookie-settings { gap: var(--space-2); text-decoration-style: dotted; }
   .settings-icon { width: var(--space-5); height: var(--space-5); fill: none; stroke: currentColor; stroke-linecap: round; stroke-width: 1.5; }
-  .locale-links { display: flex; gap: var(--space-4); }
+  .locale-links { display: flex; align-items: center; gap: var(--space-2); }
   .locale-links a { min-width: 2.75rem; justify-content: center; font-family: var(--font-heading); font-weight: var(--font-weight-medium); text-decoration: none; }
   .locale-links a[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 0.12rem; text-underline-offset: 0.4rem; }
   .build-note { max-width: 28rem; text-decoration-style: dotted; }

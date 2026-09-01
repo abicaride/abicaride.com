@@ -17,6 +17,7 @@ assert.match(pluginSource, /abilene-caride-cv-es\.pdf/);
 assert.match(pluginSource, /\[ARCHIVE\] V1 — Current Baseline/);
 assert.match(pluginSource, /\[APPROVED\] imaginArt — Final Direction/);
 assert.match(pluginSource, /ABI_DESIGN_VECTORS/);
+assert.match(pluginSource, /ABI_DARK_DESIGN_TOKENS/);
 assert.match(pluginSource, /brandMark/);
 
 function estimateTextHeight(node) {
@@ -608,7 +609,7 @@ assert.equal(approvedFoundations.notifications.at(-1).error, false);
 assert.equal(generatedSections(approvedFoundations).length, 1);
 const approvedFoundationsSection = generatedSections(approvedFoundations)[0];
 assert.equal(approvedFoundationsSection.width, 1740);
-assert.equal(approvedFoundationsSection.height, 4400);
+assert.equal(approvedFoundationsSection.height, 5200);
 const approvedFoundationsNodes = allNodes(approvedFoundationsSection);
 const approvedFoundationsText = approvedFoundationsNodes
   .filter((node) => node.type === "TEXT")
@@ -616,7 +617,7 @@ const approvedFoundationsText = approvedFoundationsNodes
   .join("\n");
 for (const expected of [
   "V2 — Current production foundations",
-  "Design release 2.1.11",
+  "Design release 2.1.12",
   "Inter for headings",
   "Montserrat Regular",
   "--color-canvas",
@@ -625,6 +626,9 @@ for (const expected of [
   "#103A20",
   "--color-burgundy",
   "#741A2A",
+  "PALETTE · DARK THEME",
+  "#171916",
+  "#B6CFAE",
   "No floating ellipses",
   "FAVICON / BRAND MARK",
   "Approved current favicon",
@@ -743,7 +747,12 @@ for (const expected of [
 assert.ok(!finalDirectionText.includes("EXPERIENCE WITH"), "The conceptual company strip must not appear in the final direction");
 assert.ok(!finalDirectionText.includes("Content strategy.\nCommunications.\nBusiness."), "The category list must not compete with the final hero statement");
 assert.ok(!finalDirectionText.includes("Abi Caride"), "Final public direction must use Abilene Caride");
-assert.equal(finalDirectionNodes.filter((node) => node.type === "ELLIPSE").length, 0);
+assert.equal(
+  finalDirectionNodes.filter(
+    (node) => node.type === "ELLIPSE" && !node.name.startsWith("Theme switch thumb —"),
+  ).length,
+  0,
+);
 const heroPhoto = finalDirectionNodes.find(
   (node) => node.name === "Hero — full-bleed atmospheric image — AbileneHero",
 );
@@ -796,11 +805,10 @@ assert.equal(heroName.fontSize, 32);
 assert.equal(heroName.x, 80);
 assert.equal(heroName.y, 42);
 const heroNavigation = [
-  ["Home", 850],
-  ["Work", 950],
-  ["About", 1060],
-  ["Contact", 1180],
-  ["ES", 1320],
+  ["Home", 700],
+  ["Work", 795],
+  ["About", 890],
+  ["Contact", 990],
 ];
 for (const [label, x] of heroNavigation) {
   const item = finalDirectionNodes.find(
@@ -811,6 +819,16 @@ for (const [label, x] of heroNavigation) {
   assert.equal(item.fills[0].color.g, 0xe8 / 0xff);
   assert.equal(item.fills[0].color.b, 0xde / 0xff);
 }
+for (const [label, x] of [["EN", 1205], ["/", 1253], ["ES", 1285]]) {
+  assert.ok(
+    finalDirectionNodes.some(
+      (node) => node.type === "TEXT" && node.characters === label && node.x === x && node.y === 45,
+    ),
+    `Missing fixed-order locale item: ${label}`,
+  );
+}
+assert.ok(finalDirectionNodes.some((node) => node.name === "Theme switch — Light · Sun active"));
+assert.ok(finalDirectionNodes.some((node) => node.name === "Active language underline — EN"));
 const specialistLine = finalDirectionNodes.find(
   (node) => node.type === "TEXT" && node.characters === "Content, communications and marketing specialist",
 );
@@ -1086,7 +1104,12 @@ const aboutPhoto = aboutNodes.find((node) => node.name === "About portrait — f
 assert.equal(aboutPhoto.fills[0].type, "IMAGE");
 assert.equal(aboutPhoto.fills[0].imageHash, "approved-about-photo-hash");
 assert.equal(aboutPhoto.fills[0].scaleMode, "FIT");
-assert.equal(aboutNodes.filter((node) => node.type === "ELLIPSE").length, 10);
+assert.equal(
+  aboutNodes.filter(
+    (node) => node.type === "ELLIPSE" && !node.name.startsWith("Theme switch thumb —"),
+  ).length,
+  10,
+);
 const aboutBody = aboutNodes.find((node) => node.type === "TEXT" && node.characters.startsWith("Helping is the thread"));
 assert.equal(aboutBody.fontName.family, "Montserrat");
 assert.equal(aboutBody.fontSize, 20);
@@ -1112,14 +1135,14 @@ assert.equal(generatedSections(currentComponents).length, 1);
 const currentComponentsSection = generatedSections(currentComponents)[0];
 assert.equal(currentComponentsSection.name, "[CURRENT] V2 — Current implemented components");
 assert.equal(currentComponentsSection.width, 1740);
-assert.equal(currentComponentsSection.height, 4500);
+assert.equal(currentComponentsSection.height, 4780);
 const currentComponentsNodes = allNodes(currentComponentsSection);
 const currentComponentsText = currentComponentsNodes
   .filter((node) => node.type === "TEXT")
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Design release 2.1.11",
+  "Design release 2.1.12",
   "Home",
   "Get in touch",
   "View my work",
@@ -1132,7 +1155,7 @@ for (const expected of [
   "Privacy & cookies",
   "Cookie settings",
   "LANGUAGE",
-  "EN     ES",
+  "EN   /   ES",
   "HOW IT’S MADE",
   "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
 ]) {
@@ -1282,6 +1305,14 @@ for (const expected of [
 ]) {
   assert.ok(currentImaginartText.toLowerCase().includes(expected.toLowerCase()), `Missing current imaginArt content: ${expected}`);
 }
+assert.equal(
+  currentComponentsNodes.filter((node) => node.name.startsWith("Theme switch —")).length,
+  2,
+);
+assert.equal(
+  currentComponentsNodes.filter((node) => node.name === "Active language underline — EN").length,
+  2,
+);
 const currentImaginartPage = allNodes(currentImaginartSection).find(
   (node) => node.name === "imaginArt case study — desktop · current production snapshot",
 );

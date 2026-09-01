@@ -127,6 +127,26 @@ const FINAL_COLOR = {
   white: "#FFFFFF",
 };
 
+const DARK_COLOR = {
+  canvas: ABI_DARK_DESIGN_TOKENS["--color-canvas"],
+  surface: ABI_DARK_DESIGN_TOKENS["--color-surface"],
+  surfaceStrong: ABI_DARK_DESIGN_TOKENS["--color-surface-strong"],
+  ink: ABI_DARK_DESIGN_TOKENS["--color-ink"],
+  inkMuted: ABI_DARK_DESIGN_TOKENS["--color-ink-muted"],
+  greenDeep: ABI_DARK_DESIGN_TOKENS["--color-green-deep"],
+  green: ABI_DARK_DESIGN_TOKENS["--color-green"],
+  greenSoft: ABI_DARK_DESIGN_TOKENS["--color-green-soft"],
+  greenTint: ABI_DARK_DESIGN_TOKENS["--color-green-tint"],
+  burgundy: ABI_DARK_DESIGN_TOKENS["--color-burgundy"],
+  burgundyTint: ABI_DARK_DESIGN_TOKENS["--color-burgundy-tint"],
+  border: ABI_DARK_DESIGN_TOKENS["--color-border"],
+  footer: ABI_DARK_DESIGN_TOKENS["--color-footer"],
+  footerText: ABI_DARK_DESIGN_TOKENS["--color-footer-text"],
+  overlayText: ABI_DARK_DESIGN_TOKENS["--color-overlay-text"],
+  overlayShadow: ABI_DARK_DESIGN_TOKENS["--color-overlay-shadow"],
+  white: "#FFFFFF",
+};
+
 const CASE_COLOR = {
   canvas: "#F7F3EA",
   surface: "#ECE8DE",
@@ -285,6 +305,21 @@ const FINAL_PALETTE_TOKENS = [
   ["--color-burgundy", FINAL_COLOR.burgundy, "Footer, contact emphasis and rare detail"],
   ["--color-burgundy-tint", FINAL_COLOR.burgundyTint, "Optional pale accent"],
   ["--color-border", FINAL_COLOR.border, "Rules and boundaries"],
+];
+
+const DARK_PALETTE_TOKENS = [
+  ["--color-canvas", DARK_COLOR.canvas, "Primary page background"],
+  ["--color-surface", DARK_COLOR.surface, "Subtle section contrast"],
+  ["--color-surface-strong", DARK_COLOR.surfaceStrong, "Stronger neutral separation"],
+  ["--color-ink", DARK_COLOR.ink, "Main text"],
+  ["--color-ink-muted", DARK_COLOR.inkMuted, "Supporting text"],
+  ["--color-green-deep", DARK_COLOR.greenDeep, "Identity, navigation, links and primary CTA"],
+  ["--color-green", DARK_COLOR.green, "Diagrams and links"],
+  ["--color-green-soft", DARK_COLOR.greenSoft, "Large graphic accents"],
+  ["--color-green-tint", DARK_COLOR.greenTint, "Rare dark-theme accent"],
+  ["--color-burgundy", DARK_COLOR.burgundy, "Readable accent on dark surfaces"],
+  ["--color-burgundy-tint", DARK_COLOR.burgundyTint, "Secondary dark-theme accent"],
+  ["--color-border", DARK_COLOR.border, "Rules and boundaries"],
 ];
 
 const DIRECTIONS = [
@@ -683,6 +718,50 @@ function createLineIcon(parent, options) {
   icon.x = options.x;
   icon.y = options.y;
   return icon;
+}
+
+function createThemeSwitch(parent, options) {
+  const palette = options.palette || FINAL_COLOR;
+  const dark = Boolean(options.dark);
+  const track = createCanvasFrame(parent, {
+    name: `Theme switch — ${dark ? "Dark · Moon active" : "Light · Sun active"}`,
+    x: options.x,
+    y: options.y,
+    width: 68,
+    height: 32,
+    fill: palette.surface,
+    stroke: palette.border,
+    radius: 999,
+  });
+  createEllipse(track, {
+    name: `Theme switch thumb — ${dark ? "Moon" : "Sun"}`,
+    x: dark ? 38 : 4,
+    y: 4,
+    width: 24,
+    height: 24,
+    fill: palette.greenDeep,
+  });
+
+  const sunColor = dark ? palette.greenDeep : palette.canvas;
+  const sun = figma.createNodeFromSvg(
+    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3.5" stroke="${sunColor}" stroke-width="1.6"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="${sunColor}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  );
+  track.appendChild(sun);
+  sun.name = "Theme switch icon — Sun";
+  sun.resize(16, 16);
+  sun.x = 8;
+  sun.y = 8;
+
+  const moonColor = dark ? palette.canvas : palette.greenDeep;
+  const moon = figma.createNodeFromSvg(
+    `<svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.2 15.1A8 8 0 0 1 8.9 4.8 8 8 0 1 0 19.2 15.1z" fill="${moonColor}"/></svg>`,
+  );
+  track.appendChild(moon);
+  moon.name = "Theme switch icon — Moon";
+  moon.resize(16, 16);
+  moon.x = 44;
+  moon.y = 8;
+  return track;
 }
 
 function createBrandMark(parent, options) {
@@ -3460,13 +3539,13 @@ async function buildImaginartReframed() {
   closeWithMessage("Created the reframed imaginArt editorial exploration beside the selected anchor.");
 }
 
-function addFinalLabel(parent, characters, x, y, width = 520) {
+function addFinalLabel(parent, characters, x, y, width = 520, color = FINAL_COLOR.green) {
   return appendText(parent, {
     characters,
     font: FONT.medium,
     fontSize: 14,
     lineHeight: 22,
-    color: FINAL_COLOR.green,
+    color,
     width,
     x,
     y,
@@ -3686,7 +3765,7 @@ function createFinalContactFooter(parent, y) {
     y: 580,
   });
   addFinalBody(footer, {
-    characters: "EN     ES",
+    characters: "EN   /   ES",
     font: FONT.montserratMedium,
     fontSize: 14,
     lineHeight: 24,
@@ -3735,12 +3814,8 @@ function createTokenSwatch(parent, token, index, originY = 0) {
   const row = Math.floor(index / 4);
   const x = 80 + column * 330;
   const y = originY + row * 210;
-  const dark = [
-    FINAL_COLOR.ink,
-    FINAL_COLOR.greenDeep,
-    FINAL_COLOR.green,
-    FINAL_COLOR.burgundy,
-  ].includes(value);
+  const rgb = hexToRgb(value);
+  const dark = rgb.r * 0.2126 + rgb.g * 0.7152 + rgb.b * 0.0722 < 0.48;
   const swatch = createCanvasFrame(parent, {
     name: `Token — ${name}`,
     x,
@@ -3773,6 +3848,53 @@ function createTokenSwatch(parent, token, index, originY = 0) {
   return swatch;
 }
 
+function createImplementedHeaderReference(parent, options) {
+  const palette = options.palette || FINAL_COLOR;
+  const dark = Boolean(options.dark);
+  const header = createCanvasFrame(parent, {
+    name: `Header and localized navigation — ${dark ? "Dark" : "Light"}`,
+    x: 150,
+    y: options.y,
+    width: 1440,
+    height: 180,
+    fill: palette.canvas,
+    stroke: palette.border,
+  });
+  addFinalHeading(header, {
+    characters: "Abilene Caride",
+    fontSize: 32,
+    lineHeight: 40,
+    color: palette.greenDeep,
+    width: 330,
+    x: 64,
+    y: 62,
+  });
+  for (const [label, itemX] of [
+    ["Home", 700],
+    ["Work", 795],
+    ["About", 890],
+    ["Contact", 990],
+  ]) {
+    addFinalBody(header, {
+      characters: label,
+      font: FONT.montserratMedium,
+      fontSize: 15,
+      lineHeight: 24,
+      color: palette.greenDeep,
+      width: 90,
+      x: itemX,
+      y: 76,
+    });
+  }
+  createThemeSwitch(header, { x: 1100, y: 72, dark, palette });
+  addFinalBody(header, { characters: "EN", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: palette.greenDeep, width: 32, x: 1205, y: 77 });
+  addFinalBody(header, { characters: "/", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: palette.inkMuted, width: 16, x: 1253, y: 77 });
+  addFinalBody(header, { characters: "ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: palette.greenDeep, width: 32, x: 1285, y: 77 });
+  createRule(header, { name: "Active language underline — EN", x: 1205, y: 108, width: 24, height: 2, color: palette.greenDeep });
+  addFinalLabel(header, dark ? "DARK" : "LIGHT", 1340, 24, 70, palette.greenDeep);
+  return header;
+}
+
 async function publishCurrentComponents() {
   if (figma.editorType !== "figma") {
     throw new Error("The current Components reference can only be published in Figma Design.");
@@ -3790,7 +3912,7 @@ async function publishCurrentComponents() {
     "V2 — Current implemented components",
     placement.point,
     1740,
-    4500,
+    4780,
     FINAL_COLOR.surface,
     GENERATED_KIND.currentComponents,
   );
@@ -3805,7 +3927,7 @@ async function publishCurrentComponents() {
       y: 90,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nOnly patterns already reused by the Astro implementation belong here. This is a production reference, not a speculative UI library.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nOnly patterns already reused by the Astro implementation belong here. Theme defaults follow prefers-color-scheme before paint; explicit Light/Dark choice wins. Locale order stays EN / ES and only the active underline moves.`,
       fontSize: 18,
       lineHeight: 30,
       color: FINAL_COLOR.inkMuted,
@@ -3815,47 +3937,14 @@ async function publishCurrentComponents() {
     });
 
     addFinalLabel(section, "HEADER / NAVIGATION", 150, 330, 420);
-    const header = createCanvasFrame(section, {
-      name: "Header and localized navigation reference",
-      x: 150,
-      y: 390,
-      width: 1440,
-      height: 180,
-      fill: FINAL_COLOR.canvas,
-      stroke: FINAL_COLOR.border,
-    });
-    addFinalHeading(header, {
-      characters: "Abilene Caride",
-      fontSize: 32,
-      lineHeight: 40,
-      width: 330,
-      x: 64,
-      y: 62,
-    });
-    for (const [label, itemX] of [
-      ["Home", 850],
-      ["Work", 945],
-      ["About", 1040],
-      ["Contact", 1140],
-      ["ES", 1280],
-    ]) {
-      addFinalBody(header, {
-        characters: label,
-        font: FONT.montserratMedium,
-        fontSize: 15,
-        lineHeight: 24,
-        color: FINAL_COLOR.greenDeep,
-        width: 100,
-        x: itemX,
-        y: 76,
-      });
-    }
+    createImplementedHeaderReference(section, { y: 390, palette: FINAL_COLOR, dark: false });
+    createImplementedHeaderReference(section, { y: 590, palette: DARK_COLOR, dark: true });
 
-    addFinalLabel(section, "BUTTONS", 150, 660, 260);
+    addFinalLabel(section, "BUTTONS", 150, 880, 260);
     const buttonStage = createCanvasFrame(section, {
       name: "Primary and secondary CTA reference",
       x: 150,
-      y: 720,
+      y: 940,
       width: 1440,
       height: 250,
       fill: FINAL_COLOR.canvas,
@@ -3895,11 +3984,11 @@ async function publishCurrentComponents() {
       y: 76,
     });
 
-    addFinalLabel(section, "PROJECT PREVIEW", 150, 1060, 320);
+    addFinalLabel(section, "PROJECT PREVIEW", 150, 1280, 320);
     const project = createCanvasFrame(section, {
       name: "Project preview reference",
       x: 150,
-      y: 1120,
+      y: 1340,
       width: 760,
       height: 500,
       fill: FINAL_COLOR.canvas,
@@ -3935,11 +4024,11 @@ async function publishCurrentComponents() {
       y: 390,
     });
 
-    addFinalLabel(section, "ANALYTICS CONSENT", 990, 1060, 360);
+    addFinalLabel(section, "ANALYTICS CONSENT", 990, 1280, 360);
     const consent = createCanvasFrame(section, {
       name: "Accessible analytics consent reference",
       x: 990,
-      y: 1120,
+      y: 1340,
       width: 600,
       height: 500,
       fill: FINAL_COLOR.canvas,
@@ -3987,11 +4076,11 @@ async function publishCurrentComponents() {
       lineHeight: 24,
     });
 
-    addFinalLabel(section, "BACK TO TOP", 150, 1740, 300);
+    addFinalLabel(section, "BACK TO TOP", 150, 1960, 300);
     const controlStage = createCanvasFrame(section, {
       name: "Back-to-top interaction reference",
       x: 150,
-      y: 1800,
+      y: 2020,
       width: 1440,
       height: 230,
       fill: FINAL_COLOR.canvas,
@@ -4020,10 +4109,10 @@ async function publishCurrentComponents() {
       y: 78,
     });
 
-    addFinalLabel(section, "FOOTER · DESKTOP", 150, 2140, 300);
-    createFinalContactFooter(section, 2200).x = 150;
-    addFinalLabel(section, "FOOTER · MOBILE", 150, 3100, 300);
-    const mobileFooter = createAboutMobileFooter(section, 3160);
+    addFinalLabel(section, "FOOTER · DESKTOP", 150, 2360, 300);
+    createFinalContactFooter(section, 2420).x = 150;
+    addFinalLabel(section, "FOOTER · MOBILE", 150, 3320, 300);
+    const mobileFooter = createAboutMobileFooter(section, 3380);
     mobileFooter.x = 150;
     addFinalBody(section, {
       characters: "The same transparent brand mark becomes smaller and more cropped on narrow screens. It remains decorative, low-opacity and clear of email, privacy, cookie settings and build information.",
@@ -4032,7 +4121,7 @@ async function publishCurrentComponents() {
       color: FINAL_COLOR.inkMuted,
       width: 780,
       x: 620,
-      y: 3260,
+      y: 3480,
     });
   });
 
@@ -4062,7 +4151,7 @@ async function buildApprovedFoundations() {
     "V2 — Current production foundations",
     placement.point,
     1740,
-    4400,
+    5200,
     FINAL_COLOR.surface,
     GENERATED_KIND.approvedFoundations,
   );
@@ -4105,20 +4194,26 @@ async function buildApprovedFoundations() {
     });
     createRule(section, { x: 150, y: 550, width: 1440, color: FINAL_COLOR.border });
 
-    addFinalLabel(section, "PALETTE · DERIVED FROM THE APPROVED HERO", 150, 610, 700);
+    addFinalLabel(section, "PALETTE · LIGHT THEME · DERIVED FROM THE APPROVED HERO", 150, 610, 900);
     FINAL_PALETTE_TOKENS.forEach((token, index) =>
       createTokenSwatch(section, token, index, 680),
     );
 
     createRule(section, { x: 150, y: 1350, width: 1440, color: FINAL_COLOR.border });
-    addFinalLabel(section, "FAVICON / BRAND MARK", 150, 1410, 500);
+    addFinalLabel(section, "PALETTE · DARK THEME · SYSTEM DEFAULT OR EXPLICIT USER CHOICE", 150, 1410, 980);
+    DARK_PALETTE_TOKENS.forEach((token, index) =>
+      createTokenSwatch(section, token, index, 1480),
+    );
+
+    createRule(section, { x: 150, y: 2150, width: 1440, color: FINAL_COLOR.border });
+    addFinalLabel(section, "FAVICON / BRAND MARK", 150, 2210, 500);
     addFinalHeading(section, {
       characters: "Approved current favicon",
       fontSize: 38,
       lineHeight: 48,
       width: 700,
       x: 150,
-      y: 1470,
+      y: 2270,
     });
     addFinalBody(section, {
       characters: "The cream version is canonical: warm cream #F7F3EA with deep forest green #103A20. The serif A is a brand symbol only; interface typography remains Inter and Montserrat.",
@@ -4127,30 +4222,30 @@ async function buildApprovedFoundations() {
       color: FINAL_COLOR.inkMuted,
       width: 960,
       x: 150,
-      y: 1535,
+      y: 2335,
     });
     createBrandMark(section, {
       name: "[CURRENT] Favicon / Brand mark — canonical cream",
       x: 150,
-      y: 1640,
+      y: 2440,
       size: 360,
     });
     createBrandMark(section, {
       name: "Favicon / Brand mark — 180px presentation",
       x: 650,
-      y: 1730,
+      y: 2530,
       size: 180,
     });
     createBrandMark(section, {
       name: "Favicon / Brand mark — 32px presentation",
       x: 980,
-      y: 1804,
+      y: 2604,
       size: 32,
     });
     createBrandMark(section, {
       name: "Favicon / Brand mark — 16px presentation",
       x: 1130,
-      y: 1812,
+      y: 2612,
       size: 16,
     });
     addFinalBody(section, {
@@ -4161,7 +4256,7 @@ async function buildApprovedFoundations() {
       color: FINAL_COLOR.greenDeep,
       width: 360,
       x: 150,
-      y: 2025,
+      y: 2825,
     });
     addFinalBody(section, {
       characters: "180 × 180",
@@ -4170,7 +4265,7 @@ async function buildApprovedFoundations() {
       color: FINAL_COLOR.inkMuted,
       width: 180,
       x: 650,
-      y: 1935,
+      y: 2735,
     });
     addFinalBody(section, {
       characters: "32 × 32",
@@ -4179,7 +4274,7 @@ async function buildApprovedFoundations() {
       color: FINAL_COLOR.inkMuted,
       width: 110,
       x: 945,
-      y: 1865,
+      y: 2665,
     });
     addFinalBody(section, {
       characters: "16 × 16",
@@ -4188,11 +4283,11 @@ async function buildApprovedFoundations() {
       color: FINAL_COLOR.inkMuted,
       width: 110,
       x: 1095,
-      y: 1865,
+      y: 2665,
     });
     createFinalColumn(section, {
       x: 1280,
-      y: 1640,
+      y: 2440,
       width: 310,
       label: "PRODUCTION RULE",
       body: "Cream + deep green only. Burgundy remains a supporting site color, not a favicon variant. The simplified stems and leaves are optically weighted to survive at 16px.",
@@ -4200,11 +4295,11 @@ async function buildApprovedFoundations() {
       lineHeight: 28,
     });
 
-    createRule(section, { x: 150, y: 2200, width: 1440, color: FINAL_COLOR.border });
-    addFinalLabel(section, "GRAPHIC PRINCIPLES", 150, 2260, 400);
+    createRule(section, { x: 150, y: 3000, width: 1440, color: FINAL_COLOR.border });
+    addFinalLabel(section, "GRAPHIC PRINCIPLES", 150, 3060, 400);
     createFinalColumn(section, {
       x: 150,
-      y: 2330,
+      y: 3130,
       width: 420,
       label: "BACKGROUND RHYTHM",
       body: "Warm cream → light warm neutral → warm cream → stronger neutral only when necessary. No large colored section blocks.",
@@ -4213,7 +4308,7 @@ async function buildApprovedFoundations() {
     });
     createFinalColumn(section, {
       x: 660,
-      y: 2330,
+      y: 3130,
       width: 420,
       label: "COLOR AS ACCENT",
       body: "Deep green leads CTAs, links, icons and diagrams. Burgundy is tertiary: selected metrics or tiny details only—never the primary CTA or a section background.",
@@ -4222,7 +4317,7 @@ async function buildApprovedFoundations() {
     });
     createFinalColumn(section, {
       x: 1170,
-      y: 2330,
+      y: 3130,
       width: 420,
       label: "FORM",
       body: "Whitespace, thin separators, meaningful line icons and diagrams. No floating ellipses, blobs, fake leaves or speculative rounded-card system.",
@@ -4230,12 +4325,12 @@ async function buildApprovedFoundations() {
       lineHeight: 28,
     });
 
-    createRule(section, { x: 150, y: 2900, width: 1440, color: FINAL_COLOR.border });
-    addFinalLabel(section, "APPROVED HERO ART-DIRECTION REFERENCE", 150, 2960, 700);
+    createRule(section, { x: 150, y: 3700, width: 1440, color: FINAL_COLOR.border });
+    addFinalLabel(section, "APPROVED HERO ART-DIRECTION REFERENCE", 150, 3760, 700);
     const reference = createCanvasFrame(section, {
       name: `Design reference only — ${FINAL_HERO_REFERENCE}`,
       x: 150,
-      y: 3030,
+      y: 3830,
       width: 900,
       height: 600,
       fill: FINAL_COLOR.greenTint,
@@ -4262,7 +4357,7 @@ async function buildApprovedFoundations() {
     }
     createFinalColumn(section, {
       x: 1120,
-      y: 3030,
+      y: 3830,
       width: 470,
       label: "APPROVED FOR",
       body: "Wide landscape composition\nCopy left + portrait/environment right\nShared vertical hero zone\nPlant-filled realistic atmosphere\nWarm daylight and calm depth\nGreen-led palette",
@@ -4351,11 +4446,10 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     y: 42,
   });
   for (const [label, itemX] of [
-    ["Home", 850],
-    ["Work", 950],
-    ["About", 1060],
-    ["Contact", 1180],
-    ["ES", 1320],
+    ["Home", 700],
+    ["Work", 795],
+    ["About", 890],
+    ["Contact", 990],
   ]) {
     addFinalBody(hero, {
       characters: label,
@@ -4368,6 +4462,18 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
       color: FINAL_COLOR.surface,
     });
   }
+  const overlayPalette = {
+    canvas: FINAL_COLOR.greenDeep,
+    surface: FINAL_COLOR.greenDeep,
+    border: FINAL_COLOR.surface,
+    greenDeep: FINAL_COLOR.surface,
+    inkMuted: FINAL_COLOR.surface,
+  };
+  createThemeSwitch(hero, { x: 1100, y: 40, dark: false, palette: overlayPalette });
+  addFinalBody(hero, { characters: "EN", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 32, x: 1205, y: 45 });
+  addFinalBody(hero, { characters: "/", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 16, x: 1253, y: 45 });
+  addFinalBody(hero, { characters: "ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 32, x: 1285, y: 45 });
+  createRule(hero, { name: "Active language underline — EN", x: 1205, y: 75, width: 24, height: 2, color: FINAL_COLOR.surface });
   addFinalHeading(hero, {
     characters: HOMEPAGE.workingLine,
     fontSize: 54,
@@ -5618,7 +5724,8 @@ async function buildImaginartPreproduction() {
 }
 
 function createAboutHeader(parent, dark = false) {
-  const color = dark ? FINAL_COLOR.canvas : FINAL_COLOR.greenDeep;
+  const palette = dark ? DARK_COLOR : FINAL_COLOR;
+  const color = dark ? DARK_COLOR.greenDeep : FINAL_COLOR.greenDeep;
   addFinalHeading(parent, {
     characters: "Abilene Caride",
     fontSize: 32,
@@ -5629,10 +5736,9 @@ function createAboutHeader(parent, dark = false) {
     y: 42,
   });
   for (const [label, itemX] of [
-    ["Work", 960],
-    ["About", 1080],
-    ["Contact", 1205],
-    ["ES", 1330],
+    ["Work", 795],
+    ["About", 890],
+    ["Contact", 990],
   ]) {
     addFinalBody(parent, {
       characters: label,
@@ -5645,6 +5751,11 @@ function createAboutHeader(parent, dark = false) {
       y: 48,
     });
   }
+  createThemeSwitch(parent, { x: 1100, y: 44, dark, palette });
+  addFinalBody(parent, { characters: "EN", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color, width: 32, x: 1205, y: 49 });
+  addFinalBody(parent, { characters: "/", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: palette.inkMuted, width: 16, x: 1253, y: 49 });
+  addFinalBody(parent, { characters: "ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color, width: 32, x: 1285, y: 49 });
+  createRule(parent, { name: "Active language underline — EN", x: 1205, y: 79, width: 24, height: 2, color });
 }
 
 function createAboutBackToTop(parent, x, y) {
@@ -6045,7 +6156,7 @@ function createAboutMobileFooter(parent, y) {
   createLineIcon(footer, { icon: "settings", x: 160, y: 733, size: 17, strokeWidth: 1.5, color: FINAL_COLOR.surface });
   createRule(footer, { x: 28, y: 780, width: 334, color: FINAL_COLOR.burgundyTint });
   addFinalBody(footer, { characters: "LANGUAGE", font: FONT.montserratMedium, fontSize: 11, lineHeight: 19, color: FINAL_COLOR.canvas, width: 220, x: 28, y: 820 });
-  addFinalBody(footer, { characters: "EN     ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 150, x: 28, y: 855 });
+  addFinalBody(footer, { characters: "EN   /   ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 150, x: 28, y: 855 });
   createRule(footer, { x: 28, y: 885, width: 22, height: 2, color: FINAL_COLOR.canvas });
   createRule(footer, { x: 28, y: 925, width: 334, color: FINAL_COLOR.burgundyTint });
   addFinalBody(footer, { characters: "HOW IT’S MADE", font: FONT.montserratMedium, fontSize: 11, lineHeight: 19, color: FINAL_COLOR.canvas, width: 220, x: 28, y: 962 });
@@ -6514,7 +6625,7 @@ async function publishCurrentHomepage() {
       y: 70,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, localized production copy, production tokens and the bundled hero source image.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, localized production copy, both production theme palettes and the bundled hero source image. The header keeps EN / ES in a fixed order.`,
       fontSize: 18,
       lineHeight: 29,
       color: FINAL_COLOR.inkMuted,

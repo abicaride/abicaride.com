@@ -1,5 +1,5 @@
 ---
-import { getLocalizedPath, switchLocalePath, ui, type Locale } from '../i18n/config';
+import { getLocalizedPath, languageNames, switchLocalePath, ui, type Locale } from '../i18n/config';
 import ThemeControl from './ThemeControl.astro';
 
 interface Props {
@@ -14,6 +14,10 @@ const { locale, currentPath, alternatePath, currentLocalePath, variant = 'defaul
 const copy = ui[locale];
 const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 const languagePath = alternatePath ?? switchLocalePath(currentPath, otherLocale);
+const localePaths = {
+  [locale]: currentLocalePath ?? currentPath,
+  [otherLocale]: languagePath,
+} as Record<Locale, string>;
 const normalizePath = (path: string) => path.replace(/\/+$/, '') || '/';
 const normalizedCurrentPath = normalizePath(currentPath);
 const homePath = getLocalizedPath(locale);
@@ -40,9 +44,9 @@ const isActive = (href: string) => {
     <div class="header-actions">
       <ThemeControl labels={copy.theme} />
       <nav class="language-nav" aria-label={copy.languageNavigation}>
-        <a href={currentLocalePath ?? currentPath} lang={locale} aria-current="page"><span class="visually-hidden">{locale === 'en' ? 'English' : 'Español'}</span>{locale.toUpperCase()}</a>
+        <a href={localePaths.en} lang="en" hreflang={locale === 'en' ? undefined : 'en'} aria-current={locale === 'en' ? 'page' : undefined}><span class="visually-hidden">{languageNames.en}</span>EN</a>
         <span aria-hidden="true">/</span>
-        <a href={languagePath} lang={otherLocale} hreflang={otherLocale}><span class="visually-hidden">{otherLocale === 'en' ? 'English' : 'Español'}</span>{otherLocale.toUpperCase()}</a>
+        <a href={localePaths.es} lang="es" hreflang={locale === 'es' ? undefined : 'es'} aria-current={locale === 'es' ? 'page' : undefined}><span class="visually-hidden">{languageNames.es}</span>ES</a>
       </nav>
     </div>
   </div>

@@ -210,7 +210,7 @@ and a fallback appropriate to its risk:
 | --- | --- | --- |
 | Root language gateway | `src/pages/index.astro` | Select the first supported browser preference, default to English, remain non-indexable and preserve manual EN/ES plus no-JavaScript links without storage or tracking |
 | Primary and language navigation | `src/components/SiteHeader.astro`, `src/i18n/config.ts` and localized routing helpers | Use semantic links, expose active state and resolve the real translated path, including project slugs |
-| Theme preference | `ThemeInitializer.astro`, `ThemeControl.astro` and semantic tokens in `src/styles/tokens.css` | Apply the saved `abi-theme` preference before paint, follow live system changes in System mode and preserve Light/Dark choices across routes and locales |
+| Theme preference | `ThemeInitializer.astro`, `ThemeControl.astro` and semantic tokens in `src/styles/tokens.css` | Apply an explicit Light/Dark `abi-theme` preference before paint; when none exists, follow the browser/OS preference and its live changes across routes and locales |
 | Homepage/contact CTAs | Native links and fragment anchors in page components | Preserve standard browser behaviour; email uses `mailto:` and selected work remains directly addressable |
 | Back to top | `BaseLayout.astro` trigger plus `BackToTop.astro` | Reveal after the introductory region leaves view, remain keyboard accessible, respect reduced motion and avoid obstructing consent UI |
 | Analytics choice and withdrawal | `AnalyticsConsent.astro`, `public/scripts/analytics-consent.js` and `data-cookie-settings` links | Make no Google request before acceptance, keep rejection request-free, persist the local choice and allow settings to reopen it |
