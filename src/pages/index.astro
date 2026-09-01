@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import ThemeInitializer from '../components/ThemeInitializer.astro';
 ---
 
 <!doctype html>
@@ -14,6 +15,7 @@ import '../styles/global.css';
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <title>Abilene Caride</title>
+    <ThemeInitializer />
     <script is:inline>
       (() => {
         const preferredLocale = (navigator.languages ?? [navigator.language])

@@ -3,6 +3,7 @@ import AnalyticsConsent from '../components/AnalyticsConsent.astro';
 import BackToTop from '../components/BackToTop.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import ThemeInitializer from '../components/ThemeInitializer.astro';
 import { defaultLocale, switchLocalePath, ui, type Locale } from '../i18n/config';
 import { getImage, type ImageMetadata } from 'astro:assets';
 import '../styles/global.css';
@@ -136,6 +137,7 @@ const structuredData = {
     {indexable && <link rel="alternate" hreflang="x-default" href={defaultUrl} />}
     <link rel="sitemap" href="/sitemap.xml" />
     <title>{fullTitle}</title>
+    <ThemeInitializer />
     {indexable && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
     <slot name="head" />
   </head>

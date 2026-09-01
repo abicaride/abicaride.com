@@ -17,6 +17,11 @@ export const ui = {
     skipToContent: 'Skip to content',
     primaryNavigation: 'Primary navigation',
     languageNavigation: 'Language selection',
+    theme: {
+      system: 'Theme: System. Activate to use light theme.',
+      light: 'Theme: Light. Activate to use dark theme.',
+      dark: 'Theme: Dark. Activate to follow the system theme.',
+    },
     nav: {
       home: 'Home',
       projects: 'Work',
@@ -202,6 +207,11 @@ export const ui = {
     skipToContent: 'Saltar al contenido',
     primaryNavigation: 'Navegación principal',
     languageNavigation: 'Selección de idioma',
+    theme: {
+      system: 'Tema: Sistema. Activa para usar el tema claro.',
+      light: 'Tema: Claro. Activa para usar el tema oscuro.',
+      dark: 'Tema: Oscuro. Activa para seguir el tema del sistema.',
+    },
     nav: {
       home: 'Inicio',
       projects: 'Trabajo',

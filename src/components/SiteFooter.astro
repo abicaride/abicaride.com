@@ -69,7 +69,7 @@ const architecturePath = getLocalizedPath(locale, locale === 'en' ? 'architectur
 </footer>
 
 <style>
-  .site-footer { position: relative; isolation: isolate; overflow: hidden; background: var(--color-burgundy); color: var(--color-canvas); }
+  .site-footer { position: relative; isolation: isolate; overflow: hidden; background: var(--color-footer); color: var(--color-footer-text); }
   .footer-inner { position: relative; z-index: 1; max-width: var(--size-wide); margin-inline: auto; padding: clamp(5rem, 10vw, 9rem) var(--space-page) var(--space-12); }
   .brand-watermark {
     position: absolute;
@@ -78,7 +78,7 @@ const architecturePath = getLocalizedPath(locale, locale === 'en' ? 'architectur
     right: -4.75rem;
     width: 13.5rem;
     aspect-ratio: 1;
-    background: var(--color-canvas);
+    background: var(--color-footer-text);
     opacity: var(--opacity-footer-watermark);
     pointer-events: none;
     -webkit-mask: var(--brand-mark-image) center / contain no-repeat;
@@ -86,35 +86,35 @@ const architecturePath = getLocalizedPath(locale, locale === 'en' ? 'architectur
   }
   .contact-close { display: grid; max-width: 58rem; gap: var(--space-6); padding-block-end: clamp(5rem, 10vw, 8rem); }
   .footer-eyebrow { font-family: var(--font-heading); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; }
-  h2 { color: var(--color-canvas); font-size: clamp(2.5rem, 2rem + 3vw, 5rem); }
-  .email { display: inline-flex; min-height: 2.75rem; width: fit-content; align-items: center; gap: var(--space-2); color: var(--color-canvas); font-family: var(--font-heading); font-size: clamp(1.15rem, 1rem + 0.55vw, 1.55rem); font-weight: var(--font-weight-semibold); text-decoration: none; }
-  .email:hover { color: var(--color-burgundy-tint); }
-  .utility { display: grid; padding-block-start: var(--space-10); border-block-start: var(--border-width) solid color-mix(in srgb, var(--color-burgundy-tint) 58%, transparent); gap: var(--space-8); color: color-mix(in srgb, var(--color-canvas) 86%, transparent); font-size: var(--font-size-sm); }
+  h2 { color: var(--color-footer-text); font-size: clamp(2.5rem, 2rem + 3vw, 5rem); }
+  .email { display: inline-flex; min-height: 2.75rem; width: fit-content; align-items: center; gap: var(--space-2); color: var(--color-footer-text); font-family: var(--font-heading); font-size: clamp(1.15rem, 1rem + 0.55vw, 1.55rem); font-weight: var(--font-weight-semibold); text-decoration: none; }
+  .email:hover { color: var(--color-footer-text); text-decoration: underline; text-underline-offset: .22em; }
+  .utility { display: grid; padding-block-start: var(--space-10); border-block-start: var(--border-width) solid color-mix(in srgb, var(--color-burgundy-tint) 58%, transparent); gap: var(--space-8); color: color-mix(in srgb, var(--color-footer-text) 86%, transparent); font-size: var(--font-size-sm); }
   .utility-groups { display: grid; gap: var(--space-6); }
   .utility-group { display: grid; align-content: start; gap: var(--space-3); }
   .utility-group + .utility-group { padding-block-start: var(--space-6); border-block-start: var(--border-width) solid color-mix(in srgb, var(--color-burgundy-tint) 42%, transparent); }
-  .utility-label { color: var(--color-canvas); font-family: var(--font-heading); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; }
+  .utility-label { color: var(--color-footer-text); font-family: var(--font-heading); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; }
   .identity { grid-template-columns: var(--space-12) minmax(0, 1fr); align-items: center; }
   .identity > div { display: grid; gap: var(--space-1); }
   .identity-mark {
     width: var(--space-12);
     aspect-ratio: 1;
-    background: var(--color-canvas);
+    background: var(--color-footer-text);
     -webkit-mask: var(--brand-mark-image) center / contain no-repeat;
     mask: var(--brand-mark-image) center / contain no-repeat;
   }
-  .footer-name { color: var(--color-canvas); font-family: var(--font-heading); font-weight: var(--font-weight-semibold); }
+  .footer-name { color: var(--color-footer-text); font-family: var(--font-heading); font-weight: var(--font-weight-semibold); }
   .footer-links { display: grid; justify-items: start; }
   .utility a { display: inline-flex; min-height: 2.75rem; align-items: center; color: inherit; }
-  .utility a:hover { color: var(--color-canvas); }
-  .site-footer :focus-visible { outline-color: var(--color-canvas); }
+  .utility a:hover { color: var(--color-footer-text); }
+  .site-footer :focus-visible { outline-color: var(--color-footer-text); }
   .cookie-settings { gap: var(--space-2); text-decoration-style: dotted; }
   .settings-icon { width: var(--space-5); height: var(--space-5); fill: none; stroke: currentColor; stroke-linecap: round; stroke-width: 1.5; }
   .locale-links { display: flex; gap: var(--space-4); }
   .locale-links a { min-width: 2.75rem; justify-content: center; font-family: var(--font-heading); font-weight: var(--font-weight-medium); text-decoration: none; }
   .locale-links a[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 0.12rem; text-underline-offset: 0.4rem; }
   .build-note { max-width: 28rem; text-decoration-style: dotted; }
-  .utility-meta { padding-block-start: var(--space-8); border-block-start: var(--border-width) solid color-mix(in srgb, var(--color-burgundy-tint) 42%, transparent); color: color-mix(in srgb, var(--color-canvas) 72%, transparent); }
+  .utility-meta { padding-block-start: var(--space-8); border-block-start: var(--border-width) solid color-mix(in srgb, var(--color-burgundy-tint) 42%, transparent); color: color-mix(in srgb, var(--color-footer-text) 72%, transparent); }
   .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
   @media (min-width: 56rem) {

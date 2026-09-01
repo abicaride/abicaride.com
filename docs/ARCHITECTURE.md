@@ -40,7 +40,8 @@ runtime database or application server.
 
 Pages are static HTML and CSS. Small native-script enhancements are deliberate:
 the root language gateway reads browser language preferences without storage or
-tracking, the consent/analytics script responds to a visitor's local choice,
+tracking, the theme bootstrap and header control apply a functional local visual
+preference, the consent/analytics script responds to a visitor's local choice,
 and long pages may add an `IntersectionObserver`-driven Back to top control.
 
 ### Git as the production source of truth
@@ -209,6 +210,7 @@ and a fallback appropriate to its risk:
 | --- | --- | --- |
 | Root language gateway | `src/pages/index.astro` | Select the first supported browser preference, default to English, remain non-indexable and preserve manual EN/ES plus no-JavaScript links without storage or tracking |
 | Primary and language navigation | `src/components/SiteHeader.astro`, `src/i18n/config.ts` and localized routing helpers | Use semantic links, expose active state and resolve the real translated path, including project slugs |
+| Theme preference | `ThemeInitializer.astro`, `ThemeControl.astro` and semantic tokens in `src/styles/tokens.css` | Apply the saved `abi-theme` preference before paint, follow live system changes in System mode and preserve Light/Dark choices across routes and locales |
 | Homepage/contact CTAs | Native links and fragment anchors in page components | Preserve standard browser behaviour; email uses `mailto:` and selected work remains directly addressable |
 | Back to top | `BaseLayout.astro` trigger plus `BackToTop.astro` | Reveal after the introductory region leaves view, remain keyboard accessible, respect reduced motion and avoid obstructing consent UI |
 | Analytics choice and withdrawal | `AnalyticsConsent.astro`, `public/scripts/analytics-consent.js` and `data-cookie-settings` links | Make no Google request before acceptance, keep rejection request-free, persist the local choice and allow settings to reopen it |
@@ -364,9 +366,10 @@ The implementation uses Basic Consent Mode v2 semantics:
 - the footer can reopen settings and withdrawal clears accessible GA cookies;
 - there are no custom events, Google Tag Manager or advertising features.
 
-Analytics remains the only enhancement that uses storage or makes an optional
-third-party request. The root gateway and Back to top behavior neither track nor
-store visitor data.
+Analytics remains the only enhancement that can make an optional third-party
+request. The theme control stores only the functional `abi-theme` visual
+preference; it is independent from analytics consent and tracking. The root
+gateway and Back to top behavior neither track nor store visitor data.
 
 ## Deployment
 
