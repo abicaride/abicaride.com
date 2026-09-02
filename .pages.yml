@@ -6,6 +6,13 @@ media:
     categories: [image]
     extensions: [jpg, jpeg, png, webp, avif]
     rename: safe
+  - name: writing_images
+    label: Writing images
+    input: src/assets/images/writing
+    output: ../../../assets/images/writing
+    categories: [image]
+    extensions: [jpg, jpeg, png, webp, avif]
+    rename: safe
 
 components:
   project_title:
@@ -167,6 +174,98 @@ components:
       switcher: true
       media: false
 
+  writing_title:
+    label: Title
+    type: string
+    required: true
+
+  writing_description:
+    label: Description
+    type: text
+    required: true
+    description: Localized standfirst used on the Writing or Notas index and in page metadata.
+
+  writing_route_slug:
+    label: Route slug
+    type: string
+    required: true
+    pattern:
+      regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      message: Use lowercase letters, numbers and single hyphens only.
+    description: The localized article URL. Preserve it unless the public URL should intentionally change.
+
+  writing_translation_key:
+    label: Translation key
+    type: string
+    required: true
+    description: Must match the corresponding article in the other language so translated routes can be paired.
+
+  writing_published_at:
+    label: Publication date
+    type: date
+    required: true
+    options:
+      format: yyyy-MM-dd
+
+  writing_updated_at:
+    label: Updated date
+    type: date
+    default: ""
+    description: Optional. Use only when an article has been materially updated after publication.
+    options:
+      format: yyyy-MM-dd
+
+  writing_draft:
+    label: Draft
+    type: boolean
+    default: true
+    description: Keep enabled until the article, translation, metadata and imagery have been reviewed. Drafts do not generate public routes.
+
+  writing_category:
+    label: Category
+    type: string
+
+  writing_tags:
+    label: Tags
+    type: string
+    list: true
+
+  writing_image:
+    label: Hero image
+    type: object
+    fields:
+      - name: src
+        label: Image
+        type: image
+        required: true
+        options:
+          media: writing_images
+          categories: [image]
+          extensions: [jpg, jpeg, png, webp, avif]
+      - name: alt
+        label: Alternative text
+        type: text
+        required: true
+        description: Describe the image in the language of this article.
+
+  writing_related_project:
+    label: Related project translation key
+    type: string
+    description: Optional. Use the shared translationKey of a published project; the localized URL is resolved automatically.
+
+  writing_body:
+    label: Article
+    type: rich-text
+    required: true
+    description: The article body, stored as Markdown after the frontmatter.
+    options:
+      format: markdown
+      switcher: true
+      media: writing_images
+      categories: [image]
+      extensions: [jpg, jpeg, png, webp, avif]
+      rename: safe
+
 content:
   - name: projects_en
     label: Projects — English
@@ -307,6 +406,114 @@ content:
         component: project_tags
       - name: body
         component: project_body
+
+  - name: writing_en
+    label: Writing — English
+    type: collection
+    path: src/content/writing/en
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      template: "{routeSlug}.md"
+      field: false
+    view:
+      fields: [title, publishedAt, category, draft]
+      primary: title
+      sort: [publishedAt, title]
+      search: [title, description, category, tags]
+      default:
+        sort: publishedAt
+        order: desc
+    fields:
+      - name: title
+        component: writing_title
+      - name: description
+        component: writing_description
+      - name: locale
+        label: Language
+        type: select
+        required: true
+        readonly: true
+        default: en
+        description: Fixed for the English Writing collection.
+        options:
+          values:
+            - name: en
+              label: English (en)
+      - name: routeSlug
+        component: writing_route_slug
+      - name: translationKey
+        component: writing_translation_key
+      - name: publishedAt
+        component: writing_published_at
+      - name: updatedAt
+        component: writing_updated_at
+      - name: draft
+        component: writing_draft
+      - name: category
+        component: writing_category
+      - name: tags
+        component: writing_tags
+      - name: image
+        component: writing_image
+      - name: relatedProjectTranslationKey
+        component: writing_related_project
+      - name: body
+        component: writing_body
+
+  - name: writing_es
+    label: Notas — Español
+    type: collection
+    path: src/content/writing/es
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      template: "{routeSlug}.md"
+      field: false
+    view:
+      fields: [title, publishedAt, category, draft]
+      primary: title
+      sort: [publishedAt, title]
+      search: [title, description, category, tags]
+      default:
+        sort: publishedAt
+        order: desc
+    fields:
+      - name: title
+        component: writing_title
+      - name: description
+        component: writing_description
+      - name: locale
+        label: Language
+        type: select
+        required: true
+        readonly: true
+        default: es
+        description: Fixed for the Spanish Notas collection.
+        options:
+          values:
+            - name: es
+              label: Spanish (es)
+      - name: routeSlug
+        component: writing_route_slug
+      - name: translationKey
+        component: writing_translation_key
+      - name: publishedAt
+        component: writing_published_at
+      - name: updatedAt
+        component: writing_updated_at
+      - name: draft
+        component: writing_draft
+      - name: category
+        component: writing_category
+      - name: tags
+        component: writing_tags
+      - name: image
+        component: writing_image
+      - name: relatedProjectTranslationKey
+        component: writing_related_project
+      - name: body
+        component: writing_body
 
 settings:
   content:

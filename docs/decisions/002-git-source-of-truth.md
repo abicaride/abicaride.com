@@ -13,8 +13,8 @@ parallel content system.
 ## Decision
 
 The GitHub repository is the production source of truth. Figma describes design
-intention, and a future CMS may edit repository files, but deployment always
-uses a Git commit.
+intention, and Pages CMS edits repository files for supported collections, but
+deployment always uses a Git commit.
 
 ## Why
 

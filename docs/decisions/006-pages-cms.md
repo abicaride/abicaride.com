@@ -6,10 +6,10 @@ Accepted
 
 ## Context
 
-Abi should be able to make routine project changes without editing Markdown by
-hand. The repository already stores portable bilingual Markdown, validated
+Abi should be able to make routine project and article changes without editing
+Markdown by hand. The repository stores portable bilingual Markdown, validated
 frontmatter and local source images. GitHub must remain the source of truth, and
-Astro's schema, image pipeline and deployment workflow must remain authoritative.
+Astro's schemas, image pipeline and deployment workflow must remain authoritative.
 
 Controlled validations on `cms-poc` and `cms-create-entry-test` verified existing
 and newly created EN/ES projects, fixed locales, generated filenames, nested
@@ -19,21 +19,21 @@ uploads, project and media deletion, Git commits and successful Astro builds.
 ## Decision
 
 Adopt hosted Pages CMS as an external editorial interface for the English and
-Spanish project collections.
+Spanish Projects and Writing collections.
 
 - `.pages.yml` adapts to `src/content.config.ts`; Astro is not changed to fit the
   CMS.
-- Project filenames are generated from each localized `routeSlug`; the generated
-  filename field stays hidden to avoid duplicate editor input.
-- Pages CMS edits the existing Markdown, frontmatter and
-  `src/assets/images/projects/` files through GitHub.
+- Project and article filenames are generated from each localized `routeSlug`;
+  the generated filename field stays hidden to avoid duplicate editor input.
+- Pages CMS edits the existing Markdown, frontmatter and collection-specific
+  source images through GitHub.
 - Routine CMS saves target `main` and therefore use the existing GitHub Actions
   build and deployment pipeline.
 - The GitHub App remains limited to the `abicaride.com` repository.
 - Each editor signs into Pages CMS with their own GitHub identity; repository
   permissions and branch protection determine write access.
-- Writing, static pages, navigation and arbitrary page structures remain outside
-  the adopted CMS scope.
+- Static pages, navigation and arbitrary page structures remain outside the
+  adopted CMS scope.
 
 Pages CMS is not an Astro dependency, content database, backend or authentication
 system for website visitors.
@@ -44,7 +44,8 @@ The proof of concept demonstrated that Pages CMS can sit cleanly over the curren
 architecture:
 
 - English and Spanish remain separate, fixed-locale collections;
-- new projects start as drafts and receive filenames from localized route slugs;
+- new projects and articles start as drafts and receive filenames from localized
+  route slugs;
 - Markdown remains human-readable;
 - generic nested metrics and galleries round-trip correctly;
 - existing and newly uploaded images retain paths accepted by Astro's `image()`
@@ -71,7 +72,7 @@ architecture:
 
 ### Positive
 
-- a friendlier routine project-editing workflow for Abi;
+- a friendlier routine project-and-article editing workflow for Abi;
 - Git remains the source of truth and deployment trigger;
 - Astro validation and image processing remain intact;
 - content remains portable without Pages CMS;
@@ -80,7 +81,7 @@ architecture:
 ### Negative / trade-offs
 
 - the editorial interface depends on an external service and GitHub App;
-- translated project pairing still requires an editorial convention;
+- translated project and article pairing still requires an editorial convention;
 - hosted saves normalize some YAML and Markdown formatting, creating moderate
   but understandable diff noise;
 - upload, frontmatter update and media cleanup can create separate Git commits;

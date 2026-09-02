@@ -14,7 +14,8 @@ language switching and search metadata.
 Use explicit `/en/` and `/es/` route prefixes. Share page composition while
 keeping localized copy independently editable. Pair translated projects with a
 shared `translationKey` and give each entry its own `routeSlug`, narrative and
-image alternatives.
+image alternatives. Apply the same pairing model to Writing articles, with
+localized section paths: `/en/writing/` and `/es/notas/`.
 
 ## Why
 
@@ -35,7 +36,8 @@ separate implementations.
 
 - clear, stable localized URLs;
 - independent editorial control of each translation;
-- paired canonical, `hreflang` and language-switcher targets;
+- paired canonical, `hreflang` and language-switcher targets for projects and
+  articles;
 - shared presentation and accessibility behaviour.
 
 ### Negative / trade-offs

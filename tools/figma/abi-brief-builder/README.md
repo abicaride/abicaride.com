@@ -68,9 +68,9 @@ source Git commit and repository source-of-truth statement.
   and its approved favicon from `public/favicon.svg` during packaging,
   preventing duplicated Figma token values or brand-mark vectors from drifting.
 - **Publish current Components reference** documents only patterns already
-  reused in Astro: fixed-order localized navigation, the two-state Light/Dark
-  switch, primary and secondary actions, project previews, analytics consent,
-  back-to-top and the contact footer.
+  reused in Astro: fixed-order localized navigation including Writing / Notas,
+  the two-state Light/Dark switch, primary and secondary actions, project
+  previews, analytics consent, back-to-top and the contact footer.
 - **Publish current Moodboard direction** replaces the managed V2 research
   summary with the implemented positioning, homepage structure and remaining
   content questions.
@@ -78,7 +78,8 @@ source Git commit and repository source-of-truth statement.
   production Homepage reference with the packaged hero image.
 - The shared footer reference includes its contact close, approved brand-mark
   watermark, identity signature, labelled privacy/language/build utilities and
-  stacked mobile treatment.
+  stacked mobile treatment. Utility groups are separated by clean whitespace,
+  without horizontal or vertical divider lines.
 - **Publish current imaginArt snapshot** creates or replaces the editable
   production case-study reference, including the public evidence caveats.
 - **Publish current About snapshot** creates or replaces editable desktop and

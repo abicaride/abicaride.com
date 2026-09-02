@@ -258,7 +258,7 @@ const MOODBOARD = {
   openQuestions: [
     "final Abilene review of public case-study voice",
     "rights-cleared supporting imagery and gallery evidence for professional cases",
-    "future Writing collection and its first publishable material",
+    "first publishable Writing / Notas article",
   ],
   photography: {
     note:
@@ -3745,7 +3745,6 @@ function createFinalContactFooter(parent, y) {
     x: 80,
     y: 356,
   });
-  createRule(footer, { x: 80, y: 535, width: 1280, color: FINAL_COLOR.burgundyTint });
   createTransparentBrandMark(footer, {
     name: "Footer identity mark — desktop · approved transparent brand mark",
     x: 80,
@@ -3763,7 +3762,7 @@ function createFinalContactFooter(parent, y) {
     y: 606,
   });
   addFinalBody(footer, {
-    characters: "Content strategy · Communications · Business",
+    characters: "Content · Communications · Marketing · Business",
     fontSize: 13,
     lineHeight: 22,
     color: FINAL_COLOR.surface,
@@ -3771,10 +3770,6 @@ function createFinalContactFooter(parent, y) {
     x: 158,
     y: 643,
   });
-  for (const separatorX of [450, 720, 880]) {
-    const separator = createRule(footer, { x: separatorX, y: 580, width: 1, height: 145, color: FINAL_COLOR.burgundyTint });
-    separator.opacity = 0.42;
-  }
   addFinalBody(footer, {
     characters: "PRIVACY",
     font: FONT.montserratMedium,
@@ -3815,7 +3810,7 @@ function createFinalContactFooter(parent, y) {
     x: 755,
     y: 622,
   });
-  createRule(footer, { x: 755, y: 654, width: 24, height: 2, color: FINAL_COLOR.canvas });
+  createRule(footer, { name: "Active language underline — EN", x: 755, y: 654, width: 24, height: 2, color: FINAL_COLOR.canvas });
   addFinalBody(footer, {
     characters: "HOW IT’S MADE",
     font: FONT.montserratMedium,
@@ -3835,8 +3830,6 @@ function createFinalContactFooter(parent, y) {
     x: 915,
     y: 620,
   });
-  const metaDivider = createRule(footer, { x: 80, y: 760, width: 1280, color: FINAL_COLOR.burgundyTint });
-  metaDivider.opacity = 0.42;
   addFinalBody(footer, {
     characters: "© 2026 Abilene Caride. All rights reserved.",
     fontSize: 13,
@@ -3913,8 +3906,8 @@ function createImplementedHeaderReference(parent, options) {
     width: 330,
   });
   for (const [label, itemX] of [
-    ["Home", 700],
-    ["Work", 795],
+    ["Work", 700],
+    ["Writing", 795],
     ["About", 890],
     ["Contact", 990],
   ]) {
@@ -4493,8 +4486,8 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     width: 260,
   });
   for (const [label, itemX] of [
-    ["Home", 700],
-    ["Work", 795],
+    ["Work", 700],
+    ["Writing", 795],
     ["About", 890],
     ["Contact", 990],
   ]) {
@@ -5785,7 +5778,8 @@ function createAboutHeader(parent, dark = false) {
     width: 280,
   });
   for (const [label, itemX] of [
-    ["Work", 795],
+    ["Work", 700],
+    ["Writing", 795],
     ["About", 890],
     ["Contact", 990],
   ]) {
@@ -6195,22 +6189,17 @@ function createAboutMobileFooter(parent, y) {
   addFinalBody(footer, { characters: "LET’S TALK", font: FONT.montserratMedium, fontSize: 13, lineHeight: 21, color: FINAL_COLOR.canvas, width: 310, x: 28, y: 65 });
   addFinalHeading(footer, { characters: "Have a project, an idea,\nor just want to say hello?", fontSize: 38, lineHeight: 48, color: FINAL_COLOR.canvas, width: 330, x: 28, y: 120 });
   addFinalBody(footer, { characters: "abicaride@gmail.com  →", font: FONT.montserratMedium, fontSize: 19, lineHeight: 30, color: FINAL_COLOR.canvas, width: 330, x: 28, y: 330 });
-  createRule(footer, { x: 28, y: 450, width: 334, color: FINAL_COLOR.burgundyTint });
   createTransparentBrandMark(footer, { name: "Footer identity mark — mobile · approved transparent brand mark", x: 28, y: 490, size: 46, opacity: 1 });
   addFinalHeading(footer, { characters: "Abilene Caride", fontSize: 17, lineHeight: 25, color: FINAL_COLOR.canvas, width: 260, x: 92, y: 492 });
-  addFinalBody(footer, { characters: "Content strategy · Communications · Business", fontSize: 12, lineHeight: 21, color: FINAL_COLOR.surface, width: 270, x: 92, y: 526 });
-  createRule(footer, { x: 28, y: 610, width: 334, color: FINAL_COLOR.burgundyTint });
+  addFinalBody(footer, { characters: "Content · Communications · Marketing · Business", fontSize: 12, lineHeight: 21, color: FINAL_COLOR.surface, width: 270, x: 92, y: 526 });
   addFinalBody(footer, { characters: "PRIVACY", font: FONT.montserratMedium, fontSize: 11, lineHeight: 19, color: FINAL_COLOR.canvas, width: 220, x: 28, y: 650 });
   addFinalBody(footer, { characters: "Privacy & cookies\nCookie settings", fontSize: 13, lineHeight: 40, color: FINAL_COLOR.surface, width: 250, x: 28, y: 686 });
   createLineIcon(footer, { icon: "settings", x: 160, y: 733, size: 17, strokeWidth: 1.5, color: FINAL_COLOR.surface });
-  createRule(footer, { x: 28, y: 780, width: 334, color: FINAL_COLOR.burgundyTint });
   addFinalBody(footer, { characters: "LANGUAGE", font: FONT.montserratMedium, fontSize: 11, lineHeight: 19, color: FINAL_COLOR.canvas, width: 220, x: 28, y: 820 });
   addFinalBody(footer, { characters: "EN   /   ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 150, x: 28, y: 855 });
-  createRule(footer, { x: 28, y: 885, width: 22, height: 2, color: FINAL_COLOR.canvas });
-  createRule(footer, { x: 28, y: 925, width: 334, color: FINAL_COLOR.burgundyTint });
+  createRule(footer, { name: "Active language underline — EN", x: 28, y: 885, width: 22, height: 2, color: FINAL_COLOR.canvas });
   addFinalBody(footer, { characters: "HOW IT’S MADE", font: FONT.montserratMedium, fontSize: 11, lineHeight: 19, color: FINAL_COLOR.canvas, width: 220, x: 28, y: 962 });
   addFinalBody(footer, { characters: "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 330, x: 28, y: 998 });
-  createRule(footer, { x: 28, y: 1105, width: 334, color: FINAL_COLOR.burgundyTint });
   addFinalBody(footer, { characters: "© 2026 Abilene Caride. All rights reserved.", fontSize: 12, lineHeight: 21, color: FINAL_COLOR.surface, width: 320, x: 28, y: 1138 });
   return footer;
 }

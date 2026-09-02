@@ -24,6 +24,7 @@ export const ui = {
     nav: {
       home: 'Home',
       projects: 'Work',
+      writing: 'Writing',
       about: 'About',
       contact: 'Contact',
     },
@@ -31,7 +32,7 @@ export const ui = {
       rights: 'All rights reserved.',
       eyebrow: "Let's talk",
       heading: 'Have a project, an idea, or just want to say hello?',
-      profession: 'Content strategy · Communications · Business',
+      profession: 'Content · Communications · Marketing · Business',
       privacyLabel: 'Privacy',
       privacy: 'Privacy & cookies',
       cookieSettings: 'Cookie settings',
@@ -185,6 +186,16 @@ export const ui = {
       moreEyebrow: 'More work',
       moreTitle: 'Shorter exercises in UX writing and content design.',
     },
+    writing: {
+      title: 'Writing',
+      description: 'Ideas, lessons and observations about content, communication and UX.',
+      back: 'Back to Writing',
+      readArticle: 'Read article',
+      empty: 'New writing will appear here soon.',
+      relatedWork: 'Related work',
+      updated: 'Updated',
+      tagsLabel: 'Topics',
+    },
     backToTop: 'Back to top',
     project: {
       back: 'Back to work',
@@ -213,6 +224,7 @@ export const ui = {
     nav: {
       home: 'Inicio',
       projects: 'Trabajo',
+      writing: 'Notas',
       about: 'Sobre mí',
       contact: 'Contacto',
     },
@@ -220,7 +232,7 @@ export const ui = {
       rights: 'Todos los derechos reservados.',
       eyebrow: 'Hablemos',
       heading: '¿Tienes un proyecto, una idea o simplemente quieres saludar?',
-      profession: 'Estrategia de contenidos · Comunicación · Negocio',
+      profession: 'Contenido · Comunicación · Marketing · Negocio',
       privacyLabel: 'Privacidad',
       privacy: 'Privacidad y cookies',
       cookieSettings: 'Configurar cookies',
@@ -375,6 +387,16 @@ export const ui = {
       moreEyebrow: 'Más trabajo',
       moreTitle: 'Ejercicios breves de UX writing y diseño de contenido.',
     },
+    writing: {
+      title: 'Notas',
+      description: 'Ideas, aprendizajes y observaciones sobre contenido, comunicación y UX.',
+      back: 'Volver a Notas',
+      readArticle: 'Leer nota',
+      empty: 'Pronto habrá nuevas notas por aquí.',
+      relatedWork: 'Trabajo relacionado',
+      updated: 'Actualizado',
+      tagsLabel: 'Temas',
+    },
     backToTop: 'Volver arriba',
     project: {
       back: 'Volver al trabajo',
@@ -407,6 +429,15 @@ export function getCvPath(locale: Locale): string {
 export function getLocalizedPath(locale: Locale, path = ''): string {
   const normalizedPath = path.replace(/^\/+|\/+$/g, '');
   return normalizedPath ? `/${locale}/${normalizedPath}/` : `/${locale}/`;
+}
+
+export function getWritingIndexPath(locale: Locale): string {
+  return getLocalizedPath(locale, locale === 'en' ? 'writing' : 'notas');
+}
+
+export function getWritingArticlePath(locale: Locale, routeSlug: string): string {
+  const section = locale === 'en' ? 'writing' : 'notas';
+  return getLocalizedPath(locale, `${section}/${routeSlug}`);
 }
 
 export function switchLocalePath(pathname: string, targetLocale: Locale): string {

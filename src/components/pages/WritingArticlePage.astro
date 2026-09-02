@@ -1,0 +1,146 @@
+---
+import { Picture } from 'astro:assets';
+import { render } from 'astro:content';
+import {
+  getWritingIndexPath,
+  ui,
+  type Locale,
+} from '../../i18n/config';
+import {
+  formatWritingDate,
+  getProjectPathForWriting,
+  getRelatedProject,
+  type WritingEntry,
+} from '../../lib/writing';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+interface Props {
+  locale: Locale;
+  article: WritingEntry;
+  alternatePath: string;
+}
+
+const { locale, article, alternatePath } = Astro.props;
+const copy = ui[locale];
+const { Content } = await render(article);
+const relatedProject = await getRelatedProject(
+  locale,
+  article.data.relatedProjectTranslationKey,
+);
+const hasUpdatedDate = Boolean(
+  article.data.updatedAt && article.data.updatedAt > article.data.publishedAt,
+);
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const articleStructuredData = {
+  '@type': 'Article',
+  '@id': `${canonicalUrl}#article`,
+  headline: article.data.title,
+  description: article.data.description,
+  datePublished: article.data.publishedAt.toISOString(),
+  dateModified: (article.data.updatedAt ?? article.data.publishedAt).toISOString(),
+  author: {
+    '@type': 'Person',
+    name: copy.siteName,
+  },
+  inLanguage: locale,
+  mainEntityOfPage: canonicalUrl,
+};
+---
+
+<BaseLayout
+  title={article.data.title}
+  description={article.data.description}
+  locale={locale}
+  alternatePath={alternatePath}
+  ogType="article"
+  socialImage={article.data.image?.src}
+  socialImageAlt={article.data.image?.alt}
+  pageStructuredData={articleStructuredData}
+>
+  <article class="article-shell">
+    <a class="back-link" href={getWritingIndexPath(locale)}>
+      <span aria-hidden="true">← </span>{copy.writing.back}
+    </a>
+
+    <header class="article-header">
+      <div class="article-meta">
+        {article.data.category && <span>{article.data.category}</span>}
+        {article.data.category && <span aria-hidden="true">·</span>}
+        <time datetime={article.data.publishedAt.toISOString()}>
+          {formatWritingDate(article.data.publishedAt, locale)}
+        </time>
+        {hasUpdatedDate && article.data.updatedAt && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>
+              {copy.writing.updated}{' '}
+              <time datetime={article.data.updatedAt.toISOString()}>
+                {formatWritingDate(article.data.updatedAt, locale)}
+              </time>
+            </span>
+          </>
+        )}
+      </div>
+      <h1>{article.data.title}</h1>
+      <p class="standfirst">{article.data.description}</p>
+    </header>
+
+    {article.data.image && (
+      <figure class="article-image">
+        <Picture
+          src={article.data.image.src}
+          formats={['avif', 'webp']}
+          fallbackFormat="jpg"
+          widths={[480, 720, 960, 1200]}
+          sizes="(min-width: 56rem) 800px, calc(100vw - 40px)"
+          quality={80}
+          alt={article.data.image.alt}
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
+      </figure>
+    )}
+
+    <div class="article-body"><Content /></div>
+
+    {article.data.tags.length > 0 && (
+      <ul class="tags" aria-label={copy.writing.tagsLabel}>
+        {article.data.tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+    )}
+
+    {relatedProject && (
+      <aside class="related-work">
+        <p>{copy.writing.relatedWork}</p>
+        <a class="arrow-link" href={getProjectPathForWriting(locale, relatedProject)}>
+          {relatedProject.data.title}
+        </a>
+      </aside>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .article-shell { display: grid; width: min(100%, var(--size-content)); margin-inline: auto; padding: var(--space-section) var(--space-page); gap: var(--space-10); }
+  .back-link { justify-self: start; color: var(--color-green-deep); font-family: var(--font-heading); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); text-decoration: none; }
+  .article-header { display: grid; max-width: 64rem; gap: var(--space-5); }
+  .article-header h1 { font-size: var(--font-size-2xl); }
+  .article-meta { display: flex; color: var(--color-ink-muted); font-size: var(--font-size-sm); gap: var(--space-2); flex-wrap: wrap; }
+  .standfirst { max-width: var(--size-prose); color: var(--color-ink-muted); font-size: var(--font-size-lg); }
+  .article-image { width: min(100%, 50rem); margin-block: var(--space-6); }
+  .article-image :global(img) { width: 100%; height: auto; background: var(--color-surface); }
+  .article-body { display: grid; max-width: var(--size-prose); gap: var(--space-5); font-size: clamp(1.05rem, 1rem + .25vw, 1.2rem); }
+  .article-body :global(h2) { margin-block-start: var(--space-10); }
+  .article-body :global(h3) { margin-block-start: var(--space-8); }
+  .article-body :global(ul), .article-body :global(ol) { display: grid; padding-inline-start: var(--space-6); gap: var(--space-3); }
+  .article-body :global(blockquote) { margin: var(--space-5) 0; padding-inline-start: var(--space-6); border-inline-start: .2rem solid var(--color-green-soft); color: var(--color-ink-muted); }
+  .article-body :global(a) { overflow-wrap: anywhere; }
+  .article-body :global(img) { height: auto; margin-block: var(--space-5); }
+  .tags { display: flex; max-width: var(--size-prose); margin: var(--space-6) 0 0; padding: var(--space-6) 0 0; border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-2) var(--space-4); flex-wrap: wrap; list-style: none; }
+  .tags li { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .tags li:not(:last-child)::after { content: '·'; margin-inline-start: var(--space-4); color: var(--color-green); }
+  .related-work { display: grid; max-width: var(--size-prose); margin-block-start: var(--space-6); padding-block: var(--space-8); border-block: var(--border-width) solid var(--color-border); gap: var(--space-3); }
+  .related-work > p { color: var(--color-ink-muted); font-size: var(--font-size-sm); }
+  .related-work .arrow-link { justify-self: start; }
+</style>

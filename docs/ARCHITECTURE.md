@@ -47,8 +47,8 @@ and long pages may add an `IntersectionObserver`-driven Back to top control.
 ### Git as the production source of truth
 
 Code, content, configuration and relevant assets live in the GitHub repository.
-Figma expresses design intention, and Pages CMS edits Git-managed project files;
-neither replaces the repository.
+Figma expresses design intention, and Pages CMS edits Git-managed project and
+article files; neither replaces the repository.
 
 ### Content separated from presentation
 
@@ -69,7 +69,7 @@ flowchart TD
     ABI --> EDIT["Codex or developer"]
     ABI --> CMS["Pages CMS"]
     FIGMA -->|"Approved visual direction"| EDIT
-    CMS -->|"Edits project content"| REPO
+    CMS -->|"Edits project and article content"| REPO
     EDIT -->|"Code and content"| REPO["GitHub repository"]
     CONTENT["Markdown + frontmatter"] --> REPO
     ASSETS["Source images"] --> REPO
@@ -102,7 +102,7 @@ Astro is the only production dependency in `package.json`.
 
 - Astro Content Collections;
 - Markdown bodies and validated frontmatter;
-- a bilingual `projects` collection;
+- bilingual `projects` and `writing` collections;
 - structured bilingual data in `src/data/`;
 - source-controlled local assets processed by Astro.
 
@@ -128,15 +128,14 @@ Astro is the only production dependency in `package.json`.
 
 ### Editorial — External workflow
 
-- a Projects-only Pages CMS configuration for routine EN/ES project changes;
+- Pages CMS collections for routine EN/ES project and article changes;
 - GitHub authentication and repository permissions for each editor;
 - the existing Markdown, frontmatter and source images as the edited data.
 
 ### Under consideration
 
-- a separate Writing collection for articles, notes or insights;
 - which selected static-page content, if any, should become CMS-editable;
-- preview and editorial validation behaviour.
+- preview and editorial validation behaviour beyond the current draft workflow.
 
 ## Repository structure
 
@@ -147,9 +146,12 @@ src/
 │   ├── case-studies/       Intentional bespoke case-study renderers
 │   └── pages/              Shared EN/ES page composition
 ├── content/
-│   └── projects/
-│       ├── en/             English project Markdown
-│       └── es/             Spanish project Markdown
+│   ├── projects/
+│   │   ├── en/             English project Markdown
+│   │   └── es/             Spanish project Markdown
+│   └── writing/
+│       ├── en/             English editorial Markdown
+│       └── es/             Spanish editorial Markdown
 ├── data/                   Other structured bilingual content
 ├── i18n/                   Locale types, UI copy and path helpers
 ├── layouts/                Global HTML document layout
@@ -171,7 +173,8 @@ Important boundaries:
 - `src/components/` owns reusable UI concepts.
 - `src/i18n/config.ts` owns locale types, shared UI copy and localized paths.
 - `src/content/projects/{locale}/` owns project narratives and metadata.
-- `src/content.config.ts` owns the project schema.
+- `src/content/writing/{locale}/` owns editorial articles and metadata.
+- `src/content.config.ts` owns both collection schemas.
 - `src/data/` owns structured bilingual information outside collections.
 - `src/styles/tokens.css` owns reusable design values; component styles remain
   scoped to their components.
@@ -209,7 +212,7 @@ and a fallback appropriate to its risk:
 | Interaction | Authoritative implementation | Required behaviour |
 | --- | --- | --- |
 | Root language gateway | `src/pages/index.astro` | Select the first supported browser preference, default to English, remain non-indexable and preserve manual EN/ES plus no-JavaScript links without storage or tracking |
-| Primary and language navigation | `src/components/SiteHeader.astro`, `src/i18n/config.ts` and localized routing helpers | Use semantic links, expose active state and resolve the real translated path, including project slugs |
+| Primary and language navigation | `src/components/SiteHeader.astro`, `src/i18n/config.ts` and localized routing helpers | Use semantic links, expose active state and resolve the real translated path, including project and article slugs |
 | Theme preference | `ThemeInitializer.astro`, `ThemeControl.astro` and semantic tokens in `src/styles/tokens.css` | Apply an explicit Light/Dark `abi-theme` preference before paint; when none exists, follow the browser/OS preference and its live changes across routes and locales |
 | Homepage/contact CTAs | Native links and fragment anchors in page components | Preserve standard browser behaviour; email uses `mailto:` and selected work remains directly addressable |
 | Back to top | `BaseLayout.astro` trigger plus `BackToTop.astro` | Reveal after the introductory region leaves view, remain keyboard accessible, respect reduced motion and avoid obstructing consent UI |
@@ -286,15 +289,32 @@ metadata, while `ImaginartCaseStudy.astro` and typed bilingual data in
 forcing a story-specific layout into Markdown and introducing an arbitrary page
 builder or CMS schema.
 
-### Writing collection — Planned
+### Writing collection — Implemented
 
-A separate Content Collection may later contain articles, notes or insights.
-It is not implemented and no route or schema exists today.
+Editorial entries live separately from projects under:
 
-Writing should remain separate from projects because articles have a different
-editorial lifecycle, metadata model and navigation purpose. A future decision
-must validate its real fields, bilingual strategy and publishing needs before
-implementation.
+```text
+src/content/writing/en/
+src/content/writing/es/
+```
+
+The intentionally small schema contains localized title and description,
+`locale`, localized `routeSlug`, shared `translationKey`, publication and
+optional update dates, draft state, optional category, tags, optional
+Astro-managed hero image and an optional related project `translationKey`.
+The Markdown body is the article; no page-builder blocks or runtime database are
+used.
+
+`getPublishedWriting()` filters drafts and sorts newest first.
+`getWritingStaticPaths()` generates localized static routes and resolves the
+translated counterpart. English articles use `/en/writing/<slug>/`; Spanish
+articles use `/es/notas/<slug>/`. If a published counterpart is absent, the
+language switcher and alternate path fall back to the other locale's section
+index. A related project is resolved at build time from the Projects collection,
+never from a hardcoded URL.
+
+The Writing and Notas indexes and every non-draft article are included in the
+existing sitemap. Draft entries generate neither routes nor sitemap URLs.
 
 ## Internationalization
 
@@ -320,11 +340,12 @@ flowchart LR
     LAYOUT --> HTML["Localized static HTML"]
 ```
 
-Projects use independent translated entries rather than runtime machine
-translation. Entries share a `translationKey` while retaining their own
-`routeSlug`, narrative, labels and image alternatives. When a counterpart
-exists, the language switcher and alternate metadata point to its real route;
-otherwise project routing falls back to the other locale's project index.
+Projects and Writing use independent translated entries rather than runtime
+machine translation. Entries share a `translationKey` within their collection
+while retaining their own `routeSlug`, narrative, labels and image alternatives.
+When a counterpart exists, the language switcher and alternate metadata point
+to its real route; otherwise routing falls back to the corresponding collection
+index in the other locale.
 
 Most shared UI copy lives in both branches of `ui` in `src/i18n/config.ts`.
 Some existing component-level locale conditionals remain; they are a small
@@ -395,9 +416,10 @@ manages DNS outside the repository and does not replace the deploy pipeline.
 
 ## CMS architecture — Adopted external workflow
 
-Pages CMS is the external editorial layer for projects. Repository-root
-`.pages.yml` maps the existing English and Spanish collections without changing
-the Astro schema. Pages CMS is not installed in the Astro application.
+Pages CMS is the external editorial layer for Projects and Writing.
+Repository-root `.pages.yml` maps their separate English and Spanish collections
+without changing the Astro schemas. Pages CMS is not installed in the Astro
+application.
 
 ```mermaid
 flowchart LR
@@ -413,17 +435,19 @@ or database. Each editor authenticates with their own GitHub account. The GitHub
 App is repository-scoped rather than branch-scoped; GitHub permissions and branch
 rules control whether an editor can commit to `main`.
 
-Pages CMS defaults newly created projects to `draft: true`; this is the
-editorial safety default. The Astro schema retains a `false` fallback only so
-older repository files that omit the field remain backwards compatible. Route
-slugs, locale, translation keys, draft state, featured state and order are
-publication controls and require deliberate review.
+Pages CMS defaults newly created projects and articles to `draft: true`; this is
+the editorial safety default. The Projects schema retains a `false` fallback
+only so older repository files that omit the field remain backwards compatible;
+Writing also defaults to draft because it has no legacy entries. Route slugs,
+locale, translation keys and draft state are publication controls and require
+deliberate review, as do project featured state and order.
 
 See [the validation report](CMS-POC.md) for the tested matrix and image-path
 findings.
 
-The adopted scope is projects only. A future Writing collection and making
-selected static-page content editable remain separate decisions.
+The adopted scope covers Projects and Writing. Each has separate EN/ES forms,
+source-image media and a draft-first creation workflow. Making selected static
+pages editable remains a separate decision.
 
 See [ADR 006](decisions/006-pages-cms.md) for alternatives and trade-offs.
 

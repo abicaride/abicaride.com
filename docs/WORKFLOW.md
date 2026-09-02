@@ -9,8 +9,8 @@ The simple mental model is:
 > **The website lives in GitHub.**
 >
 > Figma is where we decide how it should look. Pages CMS is where Abi edits
-> routine project content. Codex or a developer helps change what the website
-> can do. Astro builds it. GitHub Actions publishes it.
+> routine project and article content. Codex or a developer helps change what
+> the website can do. Astro builds it. GitHub Actions publishes it.
 
 ## What exists today?
 
@@ -21,11 +21,11 @@ The simple mental model is:
 | GitHub | Implemented | The source files and their history |
 | Astro | Implemented | Turning content and code into the static website |
 | GitHub Actions | Implemented | Publishing changes pushed to `main` |
-| Pages CMS | Implemented externally | Routine English and Spanish project content |
-| Writing section | Planned | Articles, notes or insights separate from projects |
+| Pages CMS | Implemented externally | Routine English and Spanish project and article content |
+| Writing section | Implemented | Curated articles and notes, separate from projects |
 
-Pages CMS edits the existing project Markdown and source images in GitHub.
-Writing and non-project pages are not CMS-managed. See the
+Pages CMS edits the existing project and Writing Markdown and source images in
+GitHub. Static pages remain outside the CMS. See the
 [Pages CMS validation report](CMS-POC.md).
 
 ## The simplest rule
@@ -39,7 +39,7 @@ Writing and non-project pages are not CMS-managed. See the
 ```mermaid
 flowchart TD
     Q{"What do you want to change?"}
-    Q -->|"Project words, images or metadata"| CMS["Pages CMS"]
+    Q -->|"Project or article words, images or metadata"| CMS["Pages CMS"]
     Q -->|"Other existing content"| DIRECT["Codex or direct editing"]
     Q -->|"How something should look"| FIGMA["Figma"]
     Q -->|"What the website can do"| DEV["Codex or development"]
@@ -58,7 +58,7 @@ Codex inspect the existing architecture before it proposes or makes a change.
 
 | What Abi wants | Best starting point |
 | --- | --- |
-| Edit an existing project's words, metadata or images | Pages CMS |
+| Edit an existing project's or article's words, metadata or images | Pages CMS |
 | Prepare paired content, translate with review or make a broader copy change | Codex in the repository |
 | Explore a visual direction | Figma, then Codex after approval |
 | Add or change behaviour, layout, routes or content types | Codex in the repository |
@@ -88,6 +88,8 @@ Useful guardrails for an Abi-authored Codex request are:
   outcomes, clients or audited metrics;
 - keep a new project as a draft until its English and Spanish content, imagery
   and public voice have been reviewed;
+- keep a new article as a draft until its content, metadata and available
+  translation have been reviewed;
 - treat route slugs, featured status, ordering and `draft` as publishing controls;
 - ask to see both a narrow mobile view and a desktop view for visual changes;
 - expect Codex to report build results and anything it could not verify.
@@ -159,17 +161,20 @@ or generated project routes.
 
 ## Publish an article
 
-**Status: Planned**
-
-There is no Writing collection or article route yet. The intended future flow is:
+Writing and Notas are separate from project case studies and use the same
+Git-backed editorial workflow:
 
 ```text
 Abi → CMS Writing → article → GitHub → Astro → website
 ```
 
-Before this is possible, development must add and validate a separate Writing
-content collection and its bilingual routes. Articles will remain separate from
-professional project case studies.
+Create the English and Spanish Markdown entries in their respective Pages CMS
+collections. Give the pair the same `translationKey`; each entry may use a
+natural localized `routeSlug`. New entries default to `draft: true`, so review
+the article, metadata and imagery before publishing. Published articles become
+static `/en/writing/<slug>/` or `/es/notas/<slug>/` routes. When a translation
+does not yet exist, the language switcher returns to the other language's
+Writing or Notas index.
 
 ## Change how the homepage looks
 

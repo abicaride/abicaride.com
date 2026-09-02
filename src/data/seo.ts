@@ -5,7 +5,7 @@ interface SeoMetadata {
   description: string;
 }
 
-type PageSeoKey = 'home' | 'about' | 'projects' | 'contact' | 'privacy';
+type PageSeoKey = 'home' | 'about' | 'projects' | 'writing' | 'contact' | 'privacy';
 
 export const pageSeo: Record<Locale, Record<PageSeoKey, SeoMetadata>> = {
   en: {
@@ -23,6 +23,11 @@ export const pageSeo: Record<Locale, Record<PageSeoKey, SeoMetadata>> = {
       title: 'Content & Communications Portfolio',
       description:
         'Explore Abilene Caride’s portfolio of B2B content strategy, communications, marketing and selected UX writing and content design projects.',
+    },
+    writing: {
+      title: 'Writing on Content, Communications & UX',
+      description:
+        'Read selected ideas, professional lessons and observations from Abilene Caride on content strategy, communications, marketing and UX writing.',
     },
     contact: {
       title: 'Contact a Content Designer in Barcelona',
@@ -50,6 +55,11 @@ export const pageSeo: Record<Locale, Record<PageSeoKey, SeoMetadata>> = {
       title: 'Portfolio de contenidos y comunicación',
       description:
         'Explora el portfolio de Abilene Caride: estrategia de contenidos B2B, comunicación, marketing y proyectos de UX writing y diseño de contenidos.',
+    },
+    writing: {
+      title: 'Notas sobre contenidos, comunicación y UX',
+      description:
+        'Lee ideas, aprendizajes profesionales y observaciones de Abilene Caride sobre estrategia de contenidos, comunicación, marketing y UX writing.',
     },
     contact: {
       title: 'Contacto para contenidos y comunicación',

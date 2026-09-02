@@ -735,7 +735,7 @@ for (const expected of [
   "LANGUAGE",
   "HOW IT’S MADE",
   "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
-  "Content strategy · Communications · Business",
+  "Content · Communications · Marketing · Business",
   "PALETTE HIERARCHY · DURABLE RULE",
   "NEUTRALS · dominant backgrounds",
   "DEEP GREEN · primary identity · navigation · links · primary CTA",
@@ -808,8 +808,8 @@ assert.equal(heroName.fontSize, 32);
 assert.equal(heroName.x, 122);
 assert.equal(heroName.y, 42);
 const heroNavigation = [
-  ["Home", 700],
-  ["Work", 795],
+  ["Work", 700],
+  ["Writing", 795],
   ["About", 890],
   ["Contact", 990],
 ];
@@ -1146,7 +1146,7 @@ const currentComponentsText = currentComponentsNodes
   .join("\n");
 for (const expected of [
   `Design release ${designRelease.version}`,
-  "Home",
+  "Writing",
   "Get in touch",
   "View my work",
   "Making specialist B2B communication clearer",
@@ -1161,6 +1161,7 @@ for (const expected of [
   "EN   /   ES",
   "HOW IT’S MADE",
   "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
+  "Content · Communications · Marketing · Business",
 ]) {
   assert.ok(currentComponentsText.includes(expected), `Missing current Components content: ${expected}`);
 }
@@ -1180,6 +1181,13 @@ assert.equal(
   currentComponentsNodes.filter((node) => node.name === "Icon — settings").length,
   2,
 );
+for (const footer of currentComponentsNodes.filter((node) => node.name.startsWith("Contact footer —"))) {
+  assert.equal(
+    allNodes(footer).filter((node) => node.name === "Divider").length,
+    0,
+    `Footer separators must be absent in ${footer.name}`,
+  );
+}
 await execute(currentComponents);
 assert.equal(generatedSections(currentComponents).length, 1);
 assert.equal(currentComponents.notifications.at(-1).error, false);
@@ -1314,7 +1322,7 @@ assert.equal(
 );
 assert.equal(
   currentComponentsNodes.filter((node) => node.name === "Active language underline — EN").length,
-  2,
+  4,
 );
 const currentImaginartPage = allNodes(currentImaginartSection).find(
   (node) => node.name === "imaginArt case study — desktop · current production snapshot",

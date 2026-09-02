@@ -1,12 +1,19 @@
 import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
-import { getLocalizedPath, type Locale } from '../i18n/config';
+import {
+  getLocalizedPath,
+  getWritingArticlePath,
+  getWritingIndexPath,
+  type Locale,
+} from '../i18n/config';
+import { getAllPublishedWriting } from '../lib/writing';
 
 type LocalizedPaths = Partial<Record<Locale, string>>;
 
 const staticRoutePairs: LocalizedPaths[] = [
   { en: getLocalizedPath('en'), es: getLocalizedPath('es') },
   { en: getLocalizedPath('en', 'projects'), es: getLocalizedPath('es', 'projects') },
+  { en: getWritingIndexPath('en'), es: getWritingIndexPath('es') },
   { en: getLocalizedPath('en', 'about'), es: getLocalizedPath('es', 'about') },
   { en: getLocalizedPath('en', 'contact'), es: getLocalizedPath('es', 'contact') },
   { en: getLocalizedPath('en', 'privacy'), es: getLocalizedPath('es', 'privacidad') },
@@ -45,6 +52,7 @@ export const GET: APIRoute = async ({ site }) => {
   }
 
   const projects = await getCollection('projects', ({ data }) => !data.draft);
+  const writing = await getAllPublishedWriting();
   const projectPairs = new Map<string, LocalizedPaths>();
 
   for (const project of projects) {
@@ -56,9 +64,21 @@ export const GET: APIRoute = async ({ site }) => {
     projectPairs.set(project.data.translationKey, paths);
   }
 
+  const writingPairs = new Map<string, LocalizedPaths>();
+
+  for (const article of writing) {
+    const paths = writingPairs.get(article.data.translationKey) ?? {};
+    paths[article.data.locale] = getWritingArticlePath(
+      article.data.locale,
+      article.data.routeSlug,
+    );
+    writingPairs.set(article.data.translationKey, paths);
+  }
+
   const routePairs = [
     ...staticRoutePairs,
     ...[...projectPairs.values()].sort((a, b) => (a.en ?? a.es ?? '').localeCompare(b.en ?? b.es ?? '')),
+    ...[...writingPairs.values()].sort((a, b) => (a.en ?? a.es ?? '').localeCompare(b.en ?? b.es ?? '')),
   ];
   const entries = routePairs.flatMap((paths) =>
     (['en', 'es'] as const)

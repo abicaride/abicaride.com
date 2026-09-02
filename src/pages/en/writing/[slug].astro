@@ -1,0 +1,12 @@
+---
+import WritingArticlePage from '../../../components/pages/WritingArticlePage.astro';
+import { getWritingStaticPaths, type WritingRouteProps } from '../../../lib/writing';
+
+export function getStaticPaths() {
+  return getWritingStaticPaths('en');
+}
+
+const { article, alternatePath } = Astro.props as WritingRouteProps;
+---
+
+<WritingArticlePage locale="en" article={article} alternatePath={alternatePath} />

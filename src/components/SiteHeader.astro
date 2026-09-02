@@ -1,5 +1,5 @@
 ---
-import { getLocalizedPath, languageNames, switchLocalePath, ui, type Locale } from '../i18n/config';
+import { getLocalizedPath, getWritingIndexPath, languageNames, switchLocalePath, ui, type Locale } from '../i18n/config';
 import brandMarkSvg from '../assets/brand/abilene-mark.svg?raw';
 import ThemeControl from './ThemeControl.astro';
 
@@ -23,8 +23,8 @@ const normalizePath = (path: string) => path.replace(/\/+$/, '') || '/';
 const normalizedCurrentPath = normalizePath(currentPath);
 const homePath = getLocalizedPath(locale);
 const navigation = [
-  { label: copy.nav.home, href: homePath },
   { label: copy.nav.projects, href: getLocalizedPath(locale, 'projects') },
+  { label: copy.nav.writing, href: getWritingIndexPath(locale) },
   { label: copy.nav.about, href: getLocalizedPath(locale, 'about') },
   { label: copy.nav.contact, href: getLocalizedPath(locale, 'contact') },
 ];

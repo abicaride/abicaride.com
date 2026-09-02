@@ -29,11 +29,12 @@ Keep responsibilities within these boundaries:
   header/footer and global consent component. Keep page-specific presentation out
   of the layout.
 - `src/components/` owns reusable site components such as navigation, footer,
-  consent UI and project previews.
+  consent UI, project previews and editorial article presentation.
 - `src/i18n/config.ts` owns locale types, shared interface copy and localized
   path helpers.
 - `src/content/projects/{locale}/` owns project narratives and project metadata.
-  `src/content.config.ts` owns their schema.
+  `src/content/writing/{locale}/` owns editorial articles and article metadata.
+  `src/content.config.ts` owns both schemas.
 - `src/data/` owns structured bilingual content that is not a content collection.
 - `src/lib/` owns shared build-time data and routing helpers.
 - `src/styles/tokens.css` owns design values. `src/styles/global.css` owns the
@@ -67,8 +68,9 @@ implementation rules.
 - Use `getLocalizedPath()` for internal localized URLs.
 - When translated slugs differ, pass an explicit `alternatePath` so navigation,
   canonical and hreflang metadata point to the real counterpart.
-- Pair translated projects with the same `translationKey`. Keep locale-specific
-  `routeSlug`, image alt text and narrative in the content collection.
+- Pair translated projects and articles with the same `translationKey` within
+  their respective collection. Keep locale-specific `routeSlug`, image alt text
+  and narrative in the content collection.
 - The static `src/pages/404.astro` is intentionally one bilingual fallback.
 
 ## Content and components
@@ -77,13 +79,15 @@ implementation rules.
   data or content files; Astro components render them.
 - Add project entries through the `projects` content collection rather than
   hardcoding project cards or project pages.
-- Preserve the content schema and update it deliberately when new project fields
-  are required.
-- `src/content.config.ts` is authoritative. When project fields or their structure
-  change, review and update `.pages.yml` in the same change so the CMS mapping
-  remains compatible. Adapt Pages CMS to Astro's validation; do not weaken the
-  schema to fit the CMS. If a future field cannot be represented safely, document
-  the incompatibility before changing the architecture.
+- Add editorial articles through the separate `writing` content collection;
+  do not mix them into Projects or turn the schema into a page builder.
+- Preserve the content schemas and update them deliberately when new project or
+  article fields are required.
+- `src/content.config.ts` is authoritative. When Projects or Writing fields or
+  their structure change, review and update `.pages.yml` in the same change so
+  the CMS mapping remains compatible. Adapt Pages CMS to Astro's validation; do
+  not weaken the schema to fit the CMS. If a future field cannot be represented
+  safely, document the incompatibility before changing the architecture.
 - Reuse an existing component when it already owns the relevant responsibility.
   Create a new component when it represents a reusable concept, not merely to
   shorten a file.
@@ -91,9 +95,9 @@ implementation rules.
 
 ### Pages CMS editing lane
 
-- Pages CMS is an external, Projects-only editor over the same Git-managed
-  Markdown and source images. It is not a separate database and cannot create
-  new presentation or application capabilities.
+- Pages CMS is an external editor for the Projects and Writing collections over
+  the same Git-managed Markdown and source images. It is not a separate database
+  and cannot create new presentation or application capabilities.
 - `.pages.yml` should expose only fields that the Astro collection already
   validates. Development adds a capability to Astro first; the CMS may expose
   a bounded editorial control afterwards.
@@ -102,12 +106,17 @@ implementation rules.
   Spanish versions and public voice have been reviewed. The Astro schema's
   `draft: false` fallback exists only for backwards compatibility with older
   files that omit the field.
+- Pages CMS also creates new Writing entries with `draft: true`; the Writing
+  schema uses the same safe default because the collection has no legacy entries.
 - Treat `routeSlug`, `translationKey`, `locale`, `draft`, `featured` and `order`
   as publication controls, not casual copy fields. Do not change a public URL,
   publish a draft or alter homepage prominence unless the request is explicit.
 - Keep English and Spanish projects paired. Do not invent missing professional
   facts or silently publish an unreviewed translation; leave incomplete work in
   draft and report what still needs review.
+- Pair English and Spanish articles through `translationKey`. Localized slugs may
+  differ; when one translation is missing, the language switcher falls back to
+  the other locale's Writing or Notas index.
 
 ## Rendering, JavaScript and privacy
 
@@ -265,8 +274,8 @@ that operational detail in implementation code.
 
 - Before editing, inspect nearby components, helpers, tokens and content so the
   change follows established patterns.
-- Classify the request before acting: routine project content, other content,
-  visual/design work, application capability or workflow/infrastructure. Use
+- Classify the request before acting: routine Projects or Writing content, other
+  content, visual/design work, application capability or workflow/infrastructure. Use
   Pages CMS, repository content, Figma or Astro code according to the ownership
   boundaries above; do not solve a content change by inventing architecture.
 - Preserve unrelated user changes in a dirty worktree. Keep changes local and

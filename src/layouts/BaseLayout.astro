@@ -21,6 +21,7 @@ interface Props {
   socialImageAlt?: string;
   ogType?: 'website' | 'article' | 'profile';
   profilePage?: boolean;
+  pageStructuredData?: Record<string, unknown>;
 }
 
 const {
@@ -36,6 +37,7 @@ const {
   socialImageAlt = ui[locale].socialImageAlt,
   ogType = 'website',
   profilePage = false,
+  pageStructuredData,
 } = Astro.props;
 const currentPath = Astro.url.pathname;
 const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
@@ -99,6 +101,7 @@ const structuredData = {
           },
         ]
       : []),
+    ...(pageStructuredData ? [pageStructuredData] : []),
   ],
 };
 ---

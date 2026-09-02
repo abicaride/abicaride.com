@@ -6,14 +6,17 @@ Accepted
 
 ## Context
 
-Project case studies need structured metadata, localized routes and long-form
-narrative content without hardcoding each project into an Astro page.
+Project case studies and editorial articles need structured metadata, localized
+routes and long-form narrative content without hardcoding each entry into an
+Astro page.
 
 ## Decision
 
-Store projects as Markdown entries in an Astro Content Collection. Validate
-frontmatter with `src/content.config.ts`, keep the Markdown body as the primary
-narrative and render entries through shared components.
+Store projects and Writing articles as Markdown entries in separate Astro
+Content Collections. Validate frontmatter with `src/content.config.ts`, keep the
+Markdown body as the primary narrative and render entries through shared
+components. Keep their schemas separate because their editorial metadata and
+presentation differ.
 
 ## Why
 
@@ -35,7 +38,7 @@ CMS.
 - invalid metadata fails during the build;
 - routes and components share a typed content contract;
 - narrative content remains readable outside Astro;
-- future CMS forms can target the same frontmatter.
+- CMS forms can target the same validated frontmatter.
 
 ### Negative / trade-offs
 

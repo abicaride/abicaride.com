@@ -94,10 +94,10 @@ const architecturePath = getLocalizedPath(locale, locale === 'en' ? 'architectur
   h2 { color: var(--color-footer-text); font-size: clamp(2.5rem, 2rem + 3vw, 5rem); }
   .email { display: inline-flex; min-height: 2.75rem; width: fit-content; align-items: center; gap: var(--space-2); color: var(--color-footer-text); font-family: var(--font-heading); font-size: clamp(1.15rem, 1rem + 0.55vw, 1.55rem); font-weight: var(--font-weight-semibold); text-decoration: none; }
   .email:hover { color: var(--color-footer-text); text-decoration: underline; text-underline-offset: .22em; }
-  .utility { display: grid; padding-block-start: var(--space-10); border-block-start: var(--border-width) solid color-mix(in srgb, var(--color-burgundy-tint) 58%, transparent); gap: var(--space-8); color: color-mix(in srgb, var(--color-footer-text) 86%, transparent); font-size: var(--font-size-sm); }
+  .utility { display: grid; padding-block-start: var(--space-10); gap: var(--space-8); color: color-mix(in srgb, var(--color-footer-text) 86%, transparent); font-size: var(--font-size-sm); }
   .utility-groups { display: grid; gap: var(--space-6); }
   .utility-group { display: grid; align-content: start; gap: var(--space-3); }
-  .utility-group + .utility-group { padding-block-start: var(--space-6); border-block-start: var(--border-width) solid color-mix(in srgb, var(--color-burgundy-tint) 42%, transparent); }
+  .utility-group + .utility-group { padding-block-start: var(--space-6); }
   .utility-label { color: var(--color-footer-text); font-family: var(--font-heading); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; }
   .identity { grid-template-columns: var(--space-12) minmax(0, 1fr); align-items: center; }
   .identity > div { display: grid; gap: var(--space-1); }
@@ -119,7 +119,7 @@ const architecturePath = getLocalizedPath(locale, locale === 'en' ? 'architectur
   .locale-links a { min-width: 2.75rem; justify-content: center; font-family: var(--font-heading); font-weight: var(--font-weight-medium); text-decoration: none; }
   .locale-links a[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 0.12rem; text-underline-offset: 0.4rem; }
   .build-note { max-width: 28rem; text-decoration-style: dotted; }
-  .utility-meta { padding-block-start: var(--space-8); border-block-start: var(--border-width) solid color-mix(in srgb, var(--color-burgundy-tint) 42%, transparent); color: color-mix(in srgb, var(--color-footer-text) 72%, transparent); }
+  .utility-meta { padding-block-start: var(--space-8); color: color-mix(in srgb, var(--color-footer-text) 72%, transparent); }
   .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
   @media (min-width: 56rem) {
@@ -128,7 +128,7 @@ const architecturePath = getLocalizedPath(locale, locale === 'en' ? 'architectur
     .utility-group { min-width: 0; padding-inline: var(--space-8); }
     .utility-group:first-child { padding-inline-start: 0; }
     .utility-group:last-child { padding-inline-end: 0; }
-    .utility-group + .utility-group { padding-block-start: 0; border-block-start: 0; border-inline-start: var(--border-width) solid color-mix(in srgb, var(--color-burgundy-tint) 42%, transparent); }
+    .utility-group + .utility-group { padding-block-start: 0; }
   }
 
   @media (min-width: 40rem) and (max-width: 55.999rem) {
