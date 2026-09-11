@@ -165,26 +165,28 @@ const { labels } = Astro.props;
     border-color: var(--color-green-deep);
   }
 
-  :global(.site-header.overlay) .theme-switch {
-    color: var(--color-overlay-text);
-  }
+  @media (min-width: 46.0625rem) {
+    :global(.site-header.overlay) .theme-switch {
+      color: var(--color-overlay-text);
+    }
 
-  :global(.site-header.overlay) .switch-track {
-    border-color: color-mix(in srgb, var(--color-overlay-text) 48%, transparent);
-    background: color-mix(in srgb, var(--color-overlay-shadow) 52%, transparent);
-  }
+    :global(.site-header.overlay) .switch-track {
+      border-color: color-mix(in srgb, var(--color-overlay-text) 48%, transparent);
+      background: color-mix(in srgb, var(--color-overlay-shadow) 52%, transparent);
+    }
 
-  :global(.site-header.overlay) .switch-thumb {
-    background: var(--color-overlay-text);
-  }
+    :global(.site-header.overlay) .switch-thumb {
+      background: var(--color-overlay-text);
+    }
 
-  :global(.site-header.overlay) .theme-switch[aria-checked='false'] .sun,
-  :global(.site-header.overlay) .theme-switch[aria-checked='true'] .moon {
-    color: var(--color-overlay-shadow);
-  }
+    :global(.site-header.overlay) .theme-switch[aria-checked='false'] .sun,
+    :global(.site-header.overlay) .theme-switch[aria-checked='true'] .moon {
+      color: var(--color-overlay-shadow);
+    }
 
-  :global(.site-header.overlay) .theme-switch:focus-visible {
-    outline-color: var(--color-overlay-text);
+    :global(.site-header.overlay) .theme-switch:focus-visible {
+      outline-color: var(--color-overlay-text);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

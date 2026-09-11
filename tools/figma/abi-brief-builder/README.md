@@ -69,7 +69,8 @@ source Git commit and repository source-of-truth statement.
   preventing duplicated Figma token values or brand-mark vectors from drifting.
 - **Publish current Components reference** documents only patterns already
   reused in Astro: fixed-order localized navigation including Writing / Notas,
-  the two-state Light/Dark switch, primary and secondary actions, project
+  the two-state Light/Dark switch, the compact mobile header in closed/open EN
+  and ES states across both themes, primary and secondary actions, project
   previews, analytics consent, back-to-top and the contact footer.
 - **Publish current Moodboard direction** replaces the managed V2 research
   summary with the implemented positioning, homepage structure and remaining

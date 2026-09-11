@@ -1138,7 +1138,7 @@ assert.equal(generatedSections(currentComponents).length, 1);
 const currentComponentsSection = generatedSections(currentComponents)[0];
 assert.equal(currentComponentsSection.name, "[CURRENT] V2 — Current implemented components");
 assert.equal(currentComponentsSection.width, 1740);
-assert.equal(currentComponentsSection.height, 4780);
+assert.equal(currentComponentsSection.height, 5500);
 const currentComponentsNodes = allNodes(currentComponentsSection);
 const currentComponentsText = currentComponentsNodes
   .filter((node) => node.type === "TEXT")
@@ -1162,9 +1162,41 @@ for (const expected of [
   "HOW IT’S MADE",
   "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
   "Content · Communications · Marketing · Business",
+  "HEADER / NAVIGATION · MOBILE ≤ 46REM",
+  "LIGHT · EN · CLOSED",
+  "DARK · ES · CLOSED",
+  "LIGHT · EN · OPEN",
+  "DARK · ES · OPEN",
+  "IMPLEMENTED INTERACTION",
+  "Trabajo",
+  "Notas",
+  "Sobre mí",
 ]) {
   assert.ok(currentComponentsText.includes(expected), `Missing current Components content: ${expected}`);
 }
+for (const [name, width, height] of [
+  ["Mobile header — Light · EN · Closed", 390, 76],
+  ["Mobile header — Dark · ES · Closed", 390, 76],
+  ["Mobile header — Light · EN · Open", 390, 390],
+  ["Mobile header — Dark · ES · Open", 390, 390],
+]) {
+  const reference = currentComponentsNodes.find((node) => node.name === name);
+  assert.ok(reference, `Missing mobile header reference: ${name}`);
+  assert.equal(reference.width, width);
+  assert.equal(reference.height, height);
+}
+assert.equal(
+  currentComponentsNodes.filter((node) => node.name.startsWith("Mobile menu toggle —")).length,
+  4,
+);
+assert.equal(
+  currentComponentsNodes.filter((node) => node.name === "Mobile menu toggle — Open").length,
+  2,
+);
+assert.equal(
+  currentComponentsNodes.filter((node) => node.name === "Mobile menu toggle — Close").length,
+  2,
+);
 const footerWatermarks = currentComponentsNodes.filter((node) =>
   node.name.startsWith("Footer watermark —"),
 );
@@ -1318,7 +1350,7 @@ for (const expected of [
 }
 assert.equal(
   currentComponentsNodes.filter((node) => node.name.startsWith("Theme switch —")).length,
-  2,
+  4,
 );
 assert.equal(
   currentComponentsNodes.filter((node) => node.name === "Active language underline — EN").length,

@@ -17,6 +17,10 @@ export const ui = {
     skipToContent: 'Skip to content',
     primaryNavigation: 'Primary navigation',
     languageNavigation: 'Language selection',
+    mobileNavigation: {
+      open: 'Open navigation',
+      close: 'Close navigation',
+    },
     theme: {
       light: 'Light theme. Switch to dark theme.',
       dark: 'Dark theme. Switch to light theme.',
@@ -217,6 +221,10 @@ export const ui = {
     skipToContent: 'Saltar al contenido',
     primaryNavigation: 'Navegación principal',
     languageNavigation: 'Selección de idioma',
+    mobileNavigation: {
+      open: 'Abrir navegación',
+      close: 'Cerrar navegación',
+    },
     theme: {
       light: 'Tema claro. Cambiar al tema oscuro.',
       dark: 'Tema oscuro. Cambiar al tema claro.',

@@ -3931,6 +3931,132 @@ function createImplementedHeaderReference(parent, options) {
   return header;
 }
 
+function createMobileMenuIcon(parent, options) {
+  const path = options.open
+    ? '<path d="M5 5l14 14M19 5 5 19"/>'
+    : '<path d="M3 5h18M3 12h18M3 19h18"/>';
+  const icon = figma.createNodeFromSvg(
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke="${options.color}" stroke-width="2" stroke-linecap="round">${path}</g></svg>`,
+  );
+  parent.appendChild(icon);
+  icon.name = `Mobile menu toggle — ${options.open ? "Close" : "Open"}`;
+  icon.resize(24, 24);
+  icon.x = options.x;
+  icon.y = options.y;
+  return icon;
+}
+
+function createImplementedMobileHeaderReference(parent, options) {
+  const palette = options.palette || FINAL_COLOR;
+  const dark = Boolean(options.dark);
+  const open = Boolean(options.open);
+  const spanish = options.locale === "es";
+  const labels = spanish
+    ? ["Trabajo", "Notas", "Sobre mí", "Contacto"]
+    : ["Work", "Writing", "About", "Contact"];
+  const themeName = dark ? "Dark" : "Light";
+  const localeName = spanish ? "ES" : "EN";
+  const stateName = open ? "Open" : "Closed";
+  const header = createCanvasFrame(parent, {
+    name: `Mobile header — ${themeName} · ${localeName} · ${stateName}`,
+    x: options.x,
+    y: options.y,
+    width: 390,
+    height: open ? 390 : 76,
+    fill: palette.canvas,
+    stroke: palette.border,
+    clipsContent: true,
+  });
+  createHeaderBrand(header, {
+    x: 20,
+    markY: 24,
+    textY: 22,
+    size: 28,
+    fontSize: 23,
+    lineHeight: 30,
+    markColor: palette.greenDeep,
+    labelColor: palette.greenDeep,
+    width: 240,
+  });
+  createMobileMenuIcon(header, {
+    x: 346,
+    y: 26,
+    open,
+    color: palette.greenDeep,
+  });
+
+  if (!open) return header;
+
+  createRule(header, {
+    name: "Mobile navigation panel boundary",
+    x: 0,
+    y: 75,
+    width: 390,
+    height: 1,
+    color: palette.border,
+  });
+  labels.forEach((label, index) => {
+    addFinalBody(header, {
+      characters: label,
+      font: FONT.montserratMedium,
+      fontSize: 18,
+      lineHeight: 28,
+      color: palette.greenDeep,
+      width: 342,
+      x: 24,
+      y: 97 + index * 48,
+    });
+  });
+  createRule(header, {
+    name: `Active page underline — ${labels[0]}`,
+    x: 24,
+    y: 128,
+    width: spanish ? 70 : 44,
+    height: 2,
+    color: palette.greenDeep,
+  });
+  addFinalBody(header, {
+    characters: "EN",
+    font: FONT.montserratMedium,
+    fontSize: 13,
+    lineHeight: 22,
+    color: palette.greenDeep,
+    width: 28,
+    x: 24,
+    y: 323,
+  });
+  addFinalBody(header, {
+    characters: "/",
+    font: FONT.montserratMedium,
+    fontSize: 13,
+    lineHeight: 22,
+    color: palette.inkMuted,
+    width: 14,
+    x: 62,
+    y: 323,
+  });
+  addFinalBody(header, {
+    characters: "ES",
+    font: FONT.montserratMedium,
+    fontSize: 13,
+    lineHeight: 22,
+    color: palette.greenDeep,
+    width: 28,
+    x: 86,
+    y: 323,
+  });
+  createRule(header, {
+    name: `Active language underline — mobile ${localeName}`,
+    x: spanish ? 86 : 24,
+    y: 352,
+    width: 23,
+    height: 2,
+    color: palette.greenDeep,
+  });
+  createThemeSwitch(header, { x: 298, y: 318, dark, palette });
+  return header;
+}
+
 async function publishCurrentComponents() {
   if (figma.editorType !== "figma") {
     throw new Error("The current Components reference can only be published in Figma Design.");
@@ -3948,7 +4074,7 @@ async function publishCurrentComponents() {
     "V2 — Current implemented components",
     placement.point,
     1740,
-    4780,
+    5500,
     FINAL_COLOR.surface,
     GENERATED_KIND.currentComponents,
   );
@@ -3976,11 +4102,59 @@ async function publishCurrentComponents() {
     createImplementedHeaderReference(section, { y: 390, palette: FINAL_COLOR, dark: false });
     createImplementedHeaderReference(section, { y: 590, palette: DARK_COLOR, dark: true });
 
-    addFinalLabel(section, "BUTTONS", 150, 880, 260);
+    addFinalLabel(section, "HEADER / NAVIGATION · MOBILE ≤ 46REM", 150, 850, 520);
+    addFinalLabel(section, "LIGHT · EN · CLOSED", 150, 900, 390);
+    addFinalLabel(section, "DARK · ES · CLOSED", 600, 900, 390);
+    createImplementedMobileHeaderReference(section, {
+      x: 150,
+      y: 935,
+      palette: FINAL_COLOR,
+      dark: false,
+      open: false,
+      locale: "en",
+    });
+    createImplementedMobileHeaderReference(section, {
+      x: 600,
+      y: 935,
+      palette: DARK_COLOR,
+      dark: true,
+      open: false,
+      locale: "es",
+    });
+    addFinalLabel(section, "LIGHT · EN · OPEN", 150, 1045, 390);
+    addFinalLabel(section, "DARK · ES · OPEN", 600, 1045, 390);
+    createImplementedMobileHeaderReference(section, {
+      x: 150,
+      y: 1080,
+      palette: FINAL_COLOR,
+      dark: false,
+      open: true,
+      locale: "en",
+    });
+    createImplementedMobileHeaderReference(section, {
+      x: 600,
+      y: 1080,
+      palette: DARK_COLOR,
+      dark: true,
+      open: true,
+      locale: "es",
+    });
+    addFinalLabel(section, "IMPLEMENTED INTERACTION", 1050, 900, 420);
+    addFinalBody(section, {
+      characters: "Logo, Abilene Caride and the menu toggle share one row. The full-width panel uses the page canvas in both themes. The hamburger becomes an X; aria-expanded and aria-controls expose state; Escape returns focus; selecting a link or crossing the desktop breakpoint closes the menu. Reduced-motion removes the icon transition.",
+      fontSize: 17,
+      lineHeight: 29,
+      color: FINAL_COLOR.inkMuted,
+      width: 480,
+      x: 1050,
+      y: 945,
+    });
+
+    addFinalLabel(section, "BUTTONS", 150, 1580, 260);
     const buttonStage = createCanvasFrame(section, {
       name: "Primary and secondary CTA reference",
       x: 150,
-      y: 940,
+      y: 1640,
       width: 1440,
       height: 250,
       fill: FINAL_COLOR.canvas,
@@ -4020,11 +4194,11 @@ async function publishCurrentComponents() {
       y: 76,
     });
 
-    addFinalLabel(section, "PROJECT PREVIEW", 150, 1280, 320);
+    addFinalLabel(section, "PROJECT PREVIEW", 150, 1980, 320);
     const project = createCanvasFrame(section, {
       name: "Project preview reference",
       x: 150,
-      y: 1340,
+      y: 2040,
       width: 760,
       height: 500,
       fill: FINAL_COLOR.canvas,
@@ -4060,11 +4234,11 @@ async function publishCurrentComponents() {
       y: 390,
     });
 
-    addFinalLabel(section, "ANALYTICS CONSENT", 990, 1280, 360);
+    addFinalLabel(section, "ANALYTICS CONSENT", 990, 1980, 360);
     const consent = createCanvasFrame(section, {
       name: "Accessible analytics consent reference",
       x: 990,
-      y: 1340,
+      y: 2040,
       width: 600,
       height: 500,
       fill: FINAL_COLOR.canvas,
@@ -4112,11 +4286,11 @@ async function publishCurrentComponents() {
       lineHeight: 24,
     });
 
-    addFinalLabel(section, "BACK TO TOP", 150, 1960, 300);
+    addFinalLabel(section, "BACK TO TOP", 150, 2660, 300);
     const controlStage = createCanvasFrame(section, {
       name: "Back-to-top interaction reference",
       x: 150,
-      y: 2020,
+      y: 2720,
       width: 1440,
       height: 230,
       fill: FINAL_COLOR.canvas,
@@ -4145,10 +4319,10 @@ async function publishCurrentComponents() {
       y: 78,
     });
 
-    addFinalLabel(section, "FOOTER · DESKTOP", 150, 2360, 300);
-    createFinalContactFooter(section, 2420).x = 150;
-    addFinalLabel(section, "FOOTER · MOBILE", 150, 3320, 300);
-    const mobileFooter = createAboutMobileFooter(section, 3380);
+    addFinalLabel(section, "FOOTER · DESKTOP", 150, 3060, 300);
+    createFinalContactFooter(section, 3120).x = 150;
+    addFinalLabel(section, "FOOTER · MOBILE", 150, 4020, 300);
+    const mobileFooter = createAboutMobileFooter(section, 4080);
     mobileFooter.x = 150;
     addFinalBody(section, {
       characters: "The same transparent brand mark becomes smaller and more cropped on narrow screens. It remains decorative, low-opacity and clear of email, privacy, cookie settings and build information.",
@@ -4157,7 +4331,7 @@ async function publishCurrentComponents() {
       color: FINAL_COLOR.inkMuted,
       width: 780,
       x: 620,
-      y: 3480,
+      y: 4180,
     });
   });
 
