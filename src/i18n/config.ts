@@ -35,7 +35,7 @@ export const ui = {
     footer: {
       rights: 'All rights reserved.',
       eyebrow: "Let's talk",
-      heading: 'Have a project, an idea, or just want to say hello?',
+      heading: 'Have a role, project or idea worth talking about?',
       profession: 'Content · Communications · Marketing · Business',
       privacyLabel: 'Privacy',
       privacy: 'Privacy & cookies',
@@ -100,8 +100,22 @@ export const ui = {
       leadTitle: 'Making specialist B2B communication clearer',
       leadSummary:
         'Product content, editorial email improvements and event communication for a specialist audiovisual audience.',
-      secondaryEyebrow: 'Selected work',
-      secondaryTitle: 'More ways of making digital communication useful.',
+      capabilitiesEyebrow: 'Across the work',
+      capabilitiesTitle: 'What I work across',
+      capabilities: [
+        {
+          title: 'Content strategy',
+          text: 'I work on structure, hierarchy and messaging, turning complex information into content people can use.',
+        },
+        {
+          title: 'Communications',
+          text: 'My experience covers web, email, campaigns and events, including the coordination needed across channels.',
+        },
+        {
+          title: 'UX thinking',
+          text: 'I look at what people need to understand and do next, removing unnecessary friction so communication helps them move forward.',
+        },
+      ],
       allProjectsLink: 'See all work',
       aboutEyebrow: 'A little about me',
       aboutTitle: 'Clear thinking, honest communication and a practical way forward.',
@@ -239,7 +253,7 @@ export const ui = {
     footer: {
       rights: 'Todos los derechos reservados.',
       eyebrow: 'Hablemos',
-      heading: '¿Tienes un proyecto, una idea o simplemente quieres saludar?',
+      heading: '¿Tienes una oportunidad profesional, un proyecto o una idea de la que merezca la pena hablar?',
       profession: 'Contenido · Comunicación · Marketing · Negocio',
       privacyLabel: 'Privacidad',
       privacy: 'Privacidad y cookies',
@@ -304,8 +318,22 @@ export const ui = {
       leadTitle: 'Hacer más clara la comunicación B2B especializada',
       leadSummary:
         'Contenido de producto, mejoras editoriales en email y comunicación de eventos para una audiencia audiovisual especializada.',
-      secondaryEyebrow: 'Trabajo seleccionado',
-      secondaryTitle: 'Más formas de hacer útil la comunicación digital.',
+      capabilitiesEyebrow: 'En mi trabajo',
+      capabilitiesTitle: 'Ámbitos en los que trabajo',
+      capabilities: [
+        {
+          title: 'Estrategia de contenidos',
+          text: 'Trabajo la estructura, la jerarquía y los mensajes para convertir información compleja en contenido útil.',
+        },
+        {
+          title: 'Comunicación',
+          text: 'Mi experiencia abarca web, email, campañas y eventos, incluida la coordinación necesaria entre canales.',
+        },
+        {
+          title: 'Enfoque UX',
+          text: 'Pienso en qué necesitan entender las personas y cuál es su siguiente paso, eliminando fricción innecesaria para ayudarles a avanzar.',
+        },
+      ],
       allProjectsLink: 'Ver todo el trabajo',
       aboutEyebrow: 'Un poco sobre mí',
       aboutTitle: 'Ideas claras, comunicación honesta y una manera práctica de avanzar.',

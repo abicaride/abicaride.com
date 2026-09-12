@@ -3727,7 +3727,7 @@ function createFinalContactFooter(parent, y) {
     y: 82,
   });
   addFinalHeading(footer, {
-    characters: "Have a project, an idea,\nor just want to say hello?",
+    characters: "Have a role, project or idea\nworth talking about?",
     fontSize: 54,
     lineHeight: 66,
     color: FINAL_COLOR.canvas,
@@ -4161,10 +4161,10 @@ async function publishCurrentComponents() {
       stroke: FINAL_COLOR.border,
     });
     createPill(buttonStage, {
-      label: "Get in touch  →",
+      label: "View my work  →",
       x: 64,
       y: 70,
-      width: 240,
+      width: 250,
       height: 72,
       fill: FINAL_COLOR.greenDeep,
       stroke: FINAL_COLOR.greenDeep,
@@ -4173,10 +4173,10 @@ async function publishCurrentComponents() {
       lineHeight: 28,
     });
     createPill(buttonStage, {
-      label: "View my work  →",
-      x: 330,
+      label: "Get in touch  →",
+      x: 340,
       y: 70,
-      width: 250,
+      width: 240,
       height: 72,
       fill: FINAL_COLOR.canvas,
       stroke: FINAL_COLOR.greenDeep,
@@ -4605,7 +4605,8 @@ async function buildApprovedFoundations() {
   );
 }
 
-function createFinalHomepage(parent, x, y, heroImageHash) {
+function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
+  const currentProduction = Boolean(options.currentProduction);
   const page = createCanvasFrame(parent, {
     name: "Final homepage — desktop pre-production",
     x,
@@ -4707,30 +4708,57 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     x: 80,
     y: 448,
   });
-  createPill(hero, {
-    label: "Get in touch  →",
-    x: 80,
-    y: 570,
-    width: 220,
-    height: 64,
-    fill: FINAL_COLOR.greenDeep,
-    stroke: FINAL_COLOR.greenDeep,
-    color: FINAL_COLOR.canvas,
-    fontSize: 18,
-    lineHeight: 28,
-  });
-  createPill(hero, {
-    label: "View my work  ↓",
-    x: 320,
-    y: 570,
-    width: 240,
-    height: 64,
-    fill: FINAL_COLOR.canvas,
-    stroke: FINAL_COLOR.greenDeep,
-    color: FINAL_COLOR.greenDeep,
-    fontSize: 18,
-    lineHeight: 28,
-  });
+  if (currentProduction) {
+    createPill(hero, {
+      label: "View my work  →",
+      x: 80,
+      y: 570,
+      width: 240,
+      height: 64,
+      fill: FINAL_COLOR.greenDeep,
+      stroke: FINAL_COLOR.greenDeep,
+      color: FINAL_COLOR.canvas,
+      fontSize: 18,
+      lineHeight: 28,
+    });
+    createPill(hero, {
+      label: "Get in touch  →",
+      x: 340,
+      y: 570,
+      width: 220,
+      height: 64,
+      fill: FINAL_COLOR.canvas,
+      stroke: FINAL_COLOR.greenDeep,
+      color: FINAL_COLOR.greenDeep,
+      fontSize: 18,
+      lineHeight: 28,
+    });
+  } else {
+    createPill(hero, {
+      label: "Get in touch  →",
+      x: 80,
+      y: 570,
+      width: 220,
+      height: 64,
+      fill: FINAL_COLOR.greenDeep,
+      stroke: FINAL_COLOR.greenDeep,
+      color: FINAL_COLOR.canvas,
+      fontSize: 18,
+      lineHeight: 28,
+    });
+    createPill(hero, {
+      label: "View my work  ↓",
+      x: 320,
+      y: 570,
+      width: 240,
+      height: 64,
+      fill: FINAL_COLOR.canvas,
+      stroke: FINAL_COLOR.greenDeep,
+      color: FINAL_COLOR.greenDeep,
+      fontSize: 18,
+      lineHeight: 28,
+    });
+  }
   if (!hasHeroImage) {
     addFinalLabel(hero, "IMPORT ABILENEHERO.PNG ON THIS PAGE AND REBUILD", 820, 180, 520);
     addFinalHeading(hero, {
@@ -4809,63 +4837,124 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
   });
 
   const secondary = createCanvasFrame(page, {
-    name: "Secondary work — equal hierarchy",
+    name: currentProduction ? "Capabilities — editorial rows" : "Secondary work — equal hierarchy",
     x: 0,
     y: 1640,
     width: 1440,
     height: 620,
     fill: FINAL_COLOR.canvas,
   });
-  addFinalLabel(secondary, "SELECTED WORK", 80, 72, 430);
-  addFinalHeading(secondary, {
-    characters: "More ways of making digital communication useful.",
-    fontSize: 34,
-    lineHeight: 43,
-    width: 780,
-    x: 80,
-    y: 105,
-  });
-  const secondaryItems = [
-    ["Secondary work — Cognitive biases in ecommerce", "Cognitive biases in ecommerce", "Behavioural design · UX audit · Figma", 80],
-    ["Secondary work — Error Messages", "Error Messages", "UX writing · clarity · recovery", 740],
-  ];
-  secondaryItems.forEach(([name, title, meta, itemX]) => {
-    const item = createCanvasFrame(secondary, {
-      name,
-      x: itemX,
-      y: 190,
-      width: 620,
-      height: 340,
+  if (currentProduction) {
+    addFinalLabel(secondary, "ACROSS THE WORK", 80, 54, 430);
+    addFinalHeading(secondary, {
+      characters: "What I work across",
+      fontSize: 34,
+      lineHeight: 43,
+      width: 780,
+      x: 80,
+      y: 87,
     });
-    createRule(item, { x: 0, y: 0, width: 620, color: FINAL_COLOR.border });
-    addFinalHeading(item, {
-      characters: title,
-      fontSize: 38,
-      lineHeight: 48,
-      width: 560,
-      x: 0,
-      y: 45,
+    const capabilities = [
+      ["Content strategy", "I work on structure, hierarchy and messaging, turning complex information into content people can use."],
+      ["Communications", "My experience covers web, email, campaigns and events, including the coordination needed across channels."],
+      ["UX thinking", "I look at what people need to understand and do next, removing unnecessary friction so communication helps them move forward."],
+    ];
+    capabilities.forEach(([title, body], index) => {
+      const rowY = 175 + index * 115;
+      createRule(secondary, {
+        name: `Capability divider — ${title}`,
+        x: 80,
+        y: rowY,
+        width: 1280,
+        color: FINAL_COLOR.border,
+      });
+      addFinalHeading(secondary, {
+        characters: title,
+        fontSize: 26,
+        lineHeight: 35,
+        width: 300,
+        x: 80,
+        y: rowY + 31,
+      });
+      addFinalBody(secondary, {
+        characters: body,
+        fontSize: 17,
+        lineHeight: 28,
+        color: FINAL_COLOR.inkMuted,
+        width: 820,
+        x: 440,
+        y: rowY + 24,
+      });
     });
-    addFinalBody(item, {
-      characters: meta,
-      fontSize: 18,
-      lineHeight: 29,
-      color: FINAL_COLOR.inkMuted,
-      width: 520,
-      x: 0,
-      y: 170,
+    createRule(secondary, {
+      name: "Capability list closing divider",
+      x: 80,
+      y: 520,
+      width: 1280,
+      color: FINAL_COLOR.border,
     });
-    addFinalBody(item, {
-      characters: "View project  ↗",
+    addFinalBody(secondary, {
+      characters: "See all work  →",
       font: FONT.montserratMedium,
       fontSize: 16,
       lineHeight: 25,
       color: FINAL_COLOR.greenDeep,
       width: 250,
-      x: 0,
-      y: 270,
+      x: 80,
+      y: 555,
     });
-  });
+  } else {
+    addFinalLabel(secondary, "SELECTED WORK", 80, 72, 430);
+    addFinalHeading(secondary, {
+      characters: "More ways of making digital communication useful.",
+      fontSize: 34,
+      lineHeight: 43,
+      width: 780,
+      x: 80,
+      y: 105,
+    });
+    const secondaryItems = [
+      ["Secondary work — Cognitive biases in ecommerce", "Cognitive biases in ecommerce", "Behavioural design · UX audit · Figma", 80],
+      ["Secondary work — Error Messages", "Error Messages", "UX writing · clarity · recovery", 740],
+    ];
+    secondaryItems.forEach(([name, title, meta, itemX]) => {
+      const item = createCanvasFrame(secondary, {
+        name,
+        x: itemX,
+        y: 190,
+        width: 620,
+        height: 340,
+      });
+      createRule(item, { x: 0, y: 0, width: 620, color: FINAL_COLOR.border });
+      addFinalHeading(item, {
+        characters: title,
+        fontSize: 38,
+        lineHeight: 48,
+        width: 560,
+        x: 0,
+        y: 45,
+      });
+      addFinalBody(item, {
+        characters: meta,
+        fontSize: 18,
+        lineHeight: 29,
+        color: FINAL_COLOR.inkMuted,
+        width: 520,
+        x: 0,
+        y: 170,
+      });
+      addFinalBody(item, {
+        characters: "View project  ↗",
+        font: FONT.montserratMedium,
+        fontSize: 16,
+        lineHeight: 25,
+        color: FINAL_COLOR.greenDeep,
+        width: 250,
+        x: 0,
+        y: 270,
+      });
+    });
+  }
 
   const about = createCanvasFrame(page, {
     name: "About — neutral tonal transition",
@@ -4956,7 +5045,9 @@ function createFinalHomepage(parent, x, y, heroImageHash) {
     y: 215,
   });
   addFinalBody(note, {
-    characters: "Mobile: hero CTAs may stack; secondary projects stack with equal hierarchy; contact CTA precedes comfortably spaced utility links; the smaller back-to-top control keeps bottom-right position without obscuring content or consent UI. Spanish contact working copy: HABLEMOS · ¿Tienes un proyecto, una idea o simplemente quieres saludar?",
+    characters: currentProduction
+      ? "Mobile: hero CTAs may stack; the capabilities collapse to single-column editorial rows; contact CTA precedes comfortably spaced utility links; the smaller back-to-top control keeps bottom-right position without obscuring content or consent UI. Spanish footer copy: HABLEMOS · ¿Tienes una oportunidad profesional, un proyecto o una idea de la que merezca la pena hablar?"
+      : "Mobile: hero CTAs may stack; secondary projects stack with equal hierarchy; contact CTA precedes comfortably spaced utility links; the smaller back-to-top control keeps bottom-right position without obscuring content or consent UI. Spanish contact working copy: HABLEMOS · ¿Tienes un proyecto, una idea o simplemente quieres saludar?",
     fontSize: 15,
     lineHeight: 25,
     color: FINAL_COLOR.inkMuted,
@@ -6361,7 +6452,7 @@ function createAboutMobileFooter(parent, y) {
     size: 270,
   });
   addFinalBody(footer, { characters: "LET’S TALK", font: FONT.montserratMedium, fontSize: 13, lineHeight: 21, color: FINAL_COLOR.canvas, width: 310, x: 28, y: 65 });
-  addFinalHeading(footer, { characters: "Have a project, an idea,\nor just want to say hello?", fontSize: 38, lineHeight: 48, color: FINAL_COLOR.canvas, width: 330, x: 28, y: 120 });
+  addFinalHeading(footer, { characters: "Have a role, project\nor idea worth talking about?", fontSize: 38, lineHeight: 48, color: FINAL_COLOR.canvas, width: 330, x: 28, y: 120 });
   addFinalBody(footer, { characters: "abicaride@gmail.com  →", font: FONT.montserratMedium, fontSize: 19, lineHeight: 30, color: FINAL_COLOR.canvas, width: 330, x: 28, y: 330 });
   createTransparentBrandMark(footer, { name: "Footer identity mark — mobile · approved transparent brand mark", x: 28, y: 490, size: 46, opacity: 1 });
   addFinalHeading(footer, { characters: "Abilene Caride", fontSize: 17, lineHeight: 25, color: FINAL_COLOR.canvas, width: 260, x: 92, y: 492 });
@@ -6848,7 +6939,9 @@ async function publishCurrentHomepage() {
       x: 150,
       y: 135,
     });
-    const page = createFinalHomepage(section, 150, 360, heroImageHash);
+    const page = createFinalHomepage(section, 150, 360, heroImageHash, {
+      currentProduction: true,
+    });
     page.name = "Homepage — desktop · current production snapshot";
   });
   placement.existing?.remove();

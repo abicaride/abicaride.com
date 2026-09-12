@@ -76,7 +76,9 @@ source Git commit and repository source-of-truth statement.
   summary with the implemented positioning, homepage structure and remaining
   content questions.
 - **Publish current Homepage snapshot** creates or replaces the editable
-  production Homepage reference with the packaged hero image.
+  production Homepage reference with the packaged hero image, Work-first hero
+  actions, one imaginArt lead case and the implemented editorial capabilities
+  rows.
 - The shared footer reference includes its contact close, approved brand-mark
   watermark, identity signature, labelled privacy/language/build utilities and
   stacked mobile treatment. Utility groups are separated by clean whitespace,

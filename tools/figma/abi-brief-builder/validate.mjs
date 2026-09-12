@@ -1162,6 +1162,8 @@ for (const expected of [
   "HOW IT’S MADE",
   "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
   "Content · Communications · Marketing · Business",
+  "Have a role, project or idea",
+  "worth talking about?",
   "HEADER / NAVIGATION · MOBILE ≤ 46REM",
   "LIGHT · EN · CLOSED",
   "DARK · ES · CLOSED",
@@ -1288,12 +1290,43 @@ for (const expected of [
   "Homepage — current production snapshot",
   "I help companies connect with their audiences through clear, honest communication.",
   "MARKETING, B2B CONTENT & COMMUNICATIONS · IMAGINART",
-  "More ways of making digital communication useful.",
+  "What I work across",
+  "Content strategy",
+  "Communications",
+  "UX thinking",
+  "See all work",
   "Clear thinking, honest communication and a practical way forward.",
   "I’m Galician and live in Barcelona.",
+  "Have a role, project or idea",
+  "worth talking about?",
 ]) {
   assert.ok(currentHomepageText.includes(expected), `Missing current Homepage content: ${expected}`);
 }
+assert.ok(!currentHomepageText.includes("Cognitive biases in ecommerce"));
+assert.ok(!currentHomepageText.includes("Error Messages"));
+assert.ok(!currentHomepageText.includes("Have a project, an idea,"));
+assert.ok(
+  currentHomepageNodes.some((node) => node.name === "Capabilities — editorial rows"),
+  "The current Homepage must represent the editorial capabilities section",
+);
+assert.ok(
+  !currentHomepageNodes.some((node) => node.name === "Secondary work — equal hierarchy"),
+  "The current Homepage must not retain the secondary project-card section",
+);
+const currentPrimaryHeroCta = currentHomepageNodes.find(
+  (node) => node.type === "FRAME" && node.name === "View my work  →",
+);
+const currentSecondaryHeroCta = currentHomepageNodes.find(
+  (node) => node.type === "FRAME" && node.name === "Get in touch  →",
+);
+assert.equal(currentPrimaryHeroCta.x, 80);
+assert.equal(currentSecondaryHeroCta.x, 340);
+assert.equal(currentPrimaryHeroCta.fills[0].color.r, 16 / 255);
+assert.equal(currentPrimaryHeroCta.fills[0].color.g, 58 / 255);
+assert.equal(currentPrimaryHeroCta.fills[0].color.b, 32 / 255);
+assert.equal(currentSecondaryHeroCta.fills[0].color.r, 247 / 255);
+assert.equal(currentSecondaryHeroCta.fills[0].color.g, 243 / 255);
+assert.equal(currentSecondaryHeroCta.fills[0].color.b, 234 / 255);
 const currentHero = currentHomepageNodes.find((node) => node.name.includes("Hero — full-bleed"));
 assert.equal(currentHero.fills[0].type, "IMAGE");
 assert.equal(currentHero.fills[0].imageHash, "packaged-production-image");

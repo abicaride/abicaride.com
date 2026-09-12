@@ -13,9 +13,6 @@ const copy = ui[locale];
 const seo = pageSeo[locale].home;
 const projects = (await getCollection('projects', ({ data }) => data.locale === locale && data.featured && !data.draft)).sort((a, b) => a.data.order - b.data.order);
 const leadProject = projects.find((project) => project.data.translationKey === 'imaginart-b2b-content');
-const secondaryProjects = ['cognitive-biases', 'error-messages']
-  .map((key) => projects.find((project) => project.data.translationKey === key))
-  .filter((project): project is NonNullable<typeof project> => Boolean(project));
 ---
 
 <BaseLayout title={seo.title} description={seo.description} locale={locale} headerVariant="overlay" showBackToTop profilePage>
@@ -39,8 +36,8 @@ const secondaryProjects = ['cognitive-biases', 'error-messages']
         <h1 id="page-title">{copy.home.heroHeading}</h1>
         <p class="role">{copy.home.title}</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="mailto:abicaride@gmail.com">{copy.home.contactLink}<span aria-hidden="true">→</span></a>
-          <a class="button button-secondary" href="#selected-work">{copy.home.projectsLink}<span aria-hidden="true">→</span></a>
+          <a class="button button-primary" href="#selected-work">{copy.home.projectsLink}<span aria-hidden="true">→</span></a>
+          <a class="button button-secondary" href="mailto:abicaride@gmail.com">{copy.home.contactLink}<span aria-hidden="true">→</span></a>
         </div>
       </div>
     </div>
@@ -58,13 +55,18 @@ const secondaryProjects = ['cognitive-biases', 'error-messages']
       </section>
     )}
 
-    <section class="secondary-work" aria-labelledby="secondary-title">
+    <section class="capabilities" aria-labelledby="capabilities-title">
       <header class="section-heading compact-heading">
-        <p class="eyebrow">{copy.home.secondaryEyebrow}</p>
-        <h2 id="secondary-title">{copy.home.secondaryTitle}</h2>
+        <p class="eyebrow">{copy.home.capabilitiesEyebrow}</p>
+        <h2 id="capabilities-title">{copy.home.capabilitiesTitle}</h2>
       </header>
-      <div class="secondary-grid">
-        {secondaryProjects.map((project) => <ProjectPreview project={project} locale={locale} variant="secondary" />)}
+      <div class="capability-list">
+        {copy.home.capabilities.map((capability) => (
+          <article class="capability">
+            <h3>{capability.title}</h3>
+            <p>{capability.text}</p>
+          </article>
+        ))}
       </div>
       <a class="arrow-link all-work" href={getLocalizedPath(locale, 'projects')}>{copy.home.allProjectsLink}</a>
     </section>
@@ -92,11 +94,14 @@ const secondaryProjects = ['cognitive-biases', 'error-messages']
   .role { color: var(--color-ink); font-family: var(--font-heading); font-size: var(--font-size-md); font-weight: var(--font-weight-medium); }
   .hero-actions { display: flex; gap: var(--space-4); flex-wrap: wrap; }
   .home-content { display: grid; max-width: var(--size-content); margin-inline: auto; padding: var(--space-section) var(--space-page); gap: var(--space-section); }
-  .lead-work, .secondary-work { display: grid; gap: var(--space-10); }
+  .lead-work, .capabilities { display: grid; gap: var(--space-10); }
   .section-heading { display: grid; max-width: 54rem; gap: var(--space-4); }
   .section-heading > p:last-child { max-width: var(--size-prose); color: var(--color-ink-muted); font-size: var(--font-size-md); }
   .compact-heading { max-width: 48rem; }
-  .secondary-grid { display: grid; gap: var(--space-16) var(--space-8); }
+  .capability-list { border-block-end: var(--border-width) solid var(--color-border); }
+  .capability { display: grid; padding-block: var(--space-8); border-block-start: var(--border-width) solid var(--color-border); gap: var(--space-4); }
+  .capability h3 { font-size: clamp(1.4rem, 1.2rem + .7vw, 2rem); }
+  .capability p { max-width: var(--size-prose); color: var(--color-ink-muted); font-size: var(--font-size-md); }
   .all-work { justify-self: start; }
   .about-intro { display: grid; padding: var(--space-section) max(var(--space-page), calc((100vw - var(--size-content)) / 2 + var(--space-page))); background: var(--color-surface); gap: var(--space-10); }
   .about-intro > div { display: grid; align-content: start; gap: var(--space-4); }
@@ -110,7 +115,7 @@ const secondaryProjects = ['cognitive-biases', 'error-messages']
     .hero-shade { background: linear-gradient(90deg, color-mix(in srgb, var(--color-canvas) 96%, transparent) 0%, color-mix(in srgb, var(--color-canvas) 84%, transparent) 32%, transparent 66%); }
     .hero-inner { padding-block-start: calc(var(--size-header) + var(--space-16)); align-items: center; }
     .hero-copy { width: min(52%, 45rem); }
-    .secondary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .capability { grid-template-columns: minmax(12rem, .7fr) minmax(0, 1.3fr); align-items: start; gap: var(--space-12); }
     .about-intro { grid-template-columns: minmax(0, .9fr) minmax(20rem, 1.1fr); gap: var(--space-16); }
   }
 
