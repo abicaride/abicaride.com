@@ -5,7 +5,7 @@ locale: en
 routeSlug: error-messages
 translationKey: error-messages
 category: UX writing exercise
-featured: true
+featured: false
 order: 3
 draft: false
 image:

@@ -8,7 +8,7 @@ category: UX writing · Proyecto de postgrado
 year: 2022
 featured: false
 order: 4
-draft: false
+draft: true
 image:
   src: ../../../assets/images/projects/website-analysis.jpg
   alt: Páginas del documento de análisis de la web Juventud por el Clima

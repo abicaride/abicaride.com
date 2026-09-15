@@ -10,14 +10,14 @@ type PageSeoKey = 'home' | 'about' | 'projects' | 'writing' | 'contact' | 'priva
 export const pageSeo: Record<Locale, Record<PageSeoKey, SeoMetadata>> = {
   en: {
     home: {
-      title: 'Content Designer & Communications',
+      title: 'Content, Communications & Marketing | Abilene Caride',
       description:
-        'Content designer and communications specialist in Barcelona, working across content strategy, UX writing, marketing and B2B/B2C content.',
+        'Barcelona-based content and communications specialist with experience in B2B marketing, web content, email, SEO and UX writing.',
     },
     about: {
-      title: 'About a Content Designer in Barcelona',
+      title: 'About Abilene Caride | Content & Communications',
       description:
-        'Meet Abilene Caride, a Barcelona-based content designer with experience in communications, marketing, UX writing and B2B/B2C content.',
+        'Meet Abilene Caride, a Barcelona-based content and communications professional with experience in marketing, web content, UX writing and B2B communication.',
     },
     projects: {
       title: 'Content & Communications Portfolio',
@@ -30,9 +30,9 @@ export const pageSeo: Record<Locale, Record<PageSeoKey, SeoMetadata>> = {
         'Read selected ideas, professional lessons and observations from Abilene Caride on content strategy, communications, marketing and UX writing.',
     },
     contact: {
-      title: 'Contact a Content Designer in Barcelona',
+      title: 'Contact Abilene Caride | Content & Communications',
       description:
-        'Contact Abilene Caride in Barcelona to discuss content design, content strategy, communications, marketing or UX writing opportunities.',
+        'Contact Abilene Caride in Barcelona about content, communications, marketing, web content or UX writing opportunities.',
     },
     privacy: {
       title: 'Privacy, Cookies & Analytics',
@@ -42,14 +42,14 @@ export const pageSeo: Record<Locale, Record<PageSeoKey, SeoMetadata>> = {
   },
   es: {
     home: {
-      title: 'Diseño de contenidos y comunicación',
+      title: 'Contenidos, comunicación y marketing | Abilene Caride',
       description:
-        'Diseñadora de contenidos y especialista en comunicación en Barcelona, con experiencia en estrategia, UX writing, marketing y contenido B2B y B2C.',
+        'Especialista en contenidos y comunicación en Barcelona, con experiencia en marketing B2B, web, email, SEO y UX writing.',
     },
     about: {
-      title: 'Sobre mí: diseño de contenidos en Barcelona',
+      title: 'Sobre Abilene Caride | Contenidos y comunicación',
       description:
-        'Conoce a Abilene Caride, diseñadora de contenidos en Barcelona con experiencia en comunicación, marketing, UX writing y contenido B2B y B2C.',
+        'Conoce a Abilene Caride, profesional de contenidos y comunicación en Barcelona con experiencia en marketing, contenido web, UX writing y comunicación B2B.',
     },
     projects: {
       title: 'Portfolio de contenidos y comunicación',
@@ -62,9 +62,9 @@ export const pageSeo: Record<Locale, Record<PageSeoKey, SeoMetadata>> = {
         'Lee ideas, aprendizajes profesionales y observaciones de Abilene Caride sobre estrategia de contenidos, comunicación, marketing y UX writing.',
     },
     contact: {
-      title: 'Contacto para contenidos y comunicación',
+      title: 'Contacto | Contenidos y comunicación',
       description:
-        'Contacta con Abilene Caride en Barcelona para hablar de diseño y estrategia de contenidos, comunicación, marketing o UX writing.',
+        'Contacta con Abilene Caride en Barcelona para hablar de contenidos, comunicación, marketing, web o UX writing.',
     },
     privacy: {
       title: 'Privacidad, cookies y analítica',

@@ -1288,7 +1288,10 @@ const currentHomepageText = currentHomepageNodes
   .join("\n");
 for (const expected of [
   "Homepage — current production snapshot",
-  "I help companies connect with their audiences through clear, honest communication.",
+  "I turn complex information and business needs into clear and persuasive content.",
+  "I don’t write for the sake of sounding good. I use research, audience insight and performance data to decide what to say and how to say it.",
+  "Convierto información compleja y necesidades de negocio en contenidos claros y persuasivos.",
+  "No escribo solo para que algo suene bien. Utilizo investigación, conocimiento de la audiencia y datos de rendimiento para decidir qué decir y cómo decirlo.",
   "MARKETING, B2B CONTENT & COMMUNICATIONS · IMAGINART",
   "What I work across",
   "Content strategy",
@@ -1302,6 +1305,7 @@ for (const expected of [
 ]) {
   assert.ok(currentHomepageText.includes(expected), `Missing current Homepage content: ${expected}`);
 }
+assert.equal(currentHomepageSection.width, 2730);
 assert.ok(!currentHomepageText.includes("Cognitive biases in ecommerce"));
 assert.ok(!currentHomepageText.includes("Error Messages"));
 assert.ok(!currentHomepageText.includes("Have a project, an idea,"));
@@ -1330,6 +1334,41 @@ assert.equal(currentSecondaryHeroCta.fills[0].color.b, 234 / 255);
 const currentHero = currentHomepageNodes.find((node) => node.name.includes("Hero — full-bleed"));
 assert.equal(currentHero.fills[0].type, "IMAGE");
 assert.equal(currentHero.fills[0].imageHash, "packaged-production-image");
+assert.ok(
+  !currentHomepageNodes.some((node) => node.name === "Hero — warm readability gradient"),
+  "The current Homepage hero must not retain the obsolete readability gradient",
+);
+const currentDesktopRole = currentHomepageNodes.find(
+  (node) => node.type === "TEXT" && node.characters === "CONTENT, COMMUNICATIONS & MARKETING SPECIALIST" && node.x === 80,
+);
+const currentDesktopHeading = currentHomepageNodes.find(
+  (node) => node.type === "TEXT" && node.characters === "I turn complex information and business needs into clear and persuasive content." && node.x === 80,
+);
+const currentDesktopSupporting = currentHomepageNodes.find(
+  (node) => node.type === "TEXT" && node.characters.startsWith("I don’t write for the sake") && node.x === 80,
+);
+assert.ok(currentDesktopRole.y < currentDesktopHeading.y);
+assert.ok(currentDesktopHeading.y < currentDesktopSupporting.y);
+assert.ok(currentDesktopSupporting.y < currentPrimaryHeroCta.y);
+const currentMobileEn = currentHomepageNodes.find(
+  (node) => node.name === "Homepage hero — mobile image-first · EN · Light",
+);
+const currentMobileEs = currentHomepageNodes.find(
+  (node) => node.name === "Homepage hero — mobile image-first · ES · Dark",
+);
+assert.equal(currentMobileEn.width, 390);
+assert.equal(currentMobileEs.width, 390);
+for (const mobile of [currentMobileEn, currentMobileEs]) {
+  const mobileNodes = allNodes(mobile);
+  const mobileHeader = mobileNodes.find((node) => node.name.startsWith("Mobile header —"));
+  const mobileImage = mobileNodes.find((node) => node.name === "Homepage hero image — mobile · image first");
+  assert.equal(mobileHeader.y, 0);
+  assert.equal(mobileHeader.height, 76);
+  assert.equal(mobileImage.y, 76);
+  assert.equal(mobileImage.height, 260);
+  assert.equal(mobileImage.fills[0].type, "IMAGE");
+  assert.equal(mobileImage.fills[0].imageHash, "packaged-production-image");
+}
 assert.ok(
   currentHomepageNodes.some(
     (node) => node.name === "Footer watermark — desktop · approved transparent brand mark",

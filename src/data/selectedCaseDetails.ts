@@ -56,7 +56,7 @@ export const selectedCaseDetails: Record<Locale, Record<SelectedCaseKey, Selecte
         ],
       },
       competencies: {
-        title: 'What this work shows',
+        title: 'Areas of work',
         items: ['Content strategy', 'Technical communication', 'Campaign execution'],
       },
     },
@@ -120,7 +120,7 @@ export const selectedCaseDetails: Record<Locale, Record<SelectedCaseKey, Selecte
         ],
       },
       competencies: {
-        title: 'Lo que demuestra este trabajo',
+        title: 'Áreas de trabajo',
         items: ['Estrategia de contenidos', 'Comunicación técnica', 'Ejecución de campañas'],
       },
     },

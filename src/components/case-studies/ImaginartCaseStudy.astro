@@ -44,7 +44,7 @@ const caseIndex = details.caseIndex!;
       <h2 id="collaboration-title">{copy.collaboration.title}</h2>
       <p>{copy.collaboration.introduction}</p>
     </div>
-    <div class="collaboration-flow" role="group" aria-label={copy.collaboration.note}>
+    <div class="collaboration-flow" role="group" aria-label={copy.collaboration.note ?? copy.collaboration.title}>
       <div class="inputs">
         <div class="diagram-node"><LineIcon name="structure"/><strong>{copy.collaboration.engineering}</strong><span>{copy.collaboration.engineeringDetail}</span></div>
         <div class="diagram-node"><LineIcon name="people"/><strong>{copy.collaboration.sales}</strong><span>{copy.collaboration.salesDetail}</span></div>
@@ -54,7 +54,7 @@ const caseIndex = details.caseIndex!;
       <span class="flow-arrow" aria-hidden="true">→</span>
       <div class="diagram-node"><LineIcon name="honest"/><strong>{copy.collaboration.management}</strong><span>{copy.collaboration.managementDetail}</span></div>
     </div>
-    <p class="diagram-note">{copy.collaboration.note}</p>
+    {copy.collaboration.note && <p class="diagram-note">{copy.collaboration.note}</p>}
   </section>
 
   <section id="newsletter" class="newsletter story-section" aria-labelledby="newsletter-title">
@@ -104,7 +104,7 @@ const caseIndex = details.caseIndex!;
       <span aria-hidden="true">↓</span>
       <div class="product-structure"><h3>{copy.catalogue.structure}</h3><ul>{copy.catalogue.fields.map((field) => <li>{field}</li>)}</ul></div>
     </div>
-    <p class="takeaway">{copy.catalogue.takeaway}</p>
+    {copy.catalogue.takeaway && <p class="takeaway">{copy.catalogue.takeaway}</p>}
   </section>
 
   <section id="technical-adaptation" class="lumens story-section" aria-labelledby="lumens-title">

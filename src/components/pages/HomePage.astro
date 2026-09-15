@@ -30,11 +30,11 @@ const leadProject = projects.find((project) => project.data.translationKey === '
       decoding="async"
       fetchpriority="high"
     />
-    <div class="hero-shade" aria-hidden="true"></div>
     <div class="hero-inner">
       <div class="hero-copy">
+        <p class="eyebrow role">{copy.home.title}</p>
         <h1 id="page-title">{copy.home.heroHeading}</h1>
-        <p class="role">{copy.home.title}</p>
+        <p class="hero-supporting">{copy.home.heroSupporting}</p>
         <div class="hero-actions">
           <a class="button button-primary" href="#selected-work">{copy.home.projectsLink}<span aria-hidden="true">→</span></a>
           <a class="button button-secondary" href="mailto:abicaride@gmail.com">{copy.home.contactLink}<span aria-hidden="true">→</span></a>
@@ -85,13 +85,13 @@ const leadProject = projects.find((project) => project.data.translationKey === '
 </BaseLayout>
 
 <style>
-  .hero { position: relative; min-height: 55rem; overflow: hidden; background: var(--color-canvas); }
-  .hero :global(.hero-picture) { position: absolute; inset: 0 auto auto 0; width: 100%; height: auto; object-fit: contain; object-position: center top; }
-  .hero-shade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 7rem, color-mix(in srgb, var(--color-canvas) 32%, transparent) 13rem, var(--color-canvas) 20rem, var(--color-canvas) 100%); }
-  .hero-inner { position: relative; z-index: 1; display: flex; min-height: inherit; max-width: var(--size-wide); margin-inline: auto; padding: 19rem var(--space-page) var(--space-16); align-items: flex-end; }
-  .hero-copy { display: grid; width: min(100%, 44rem); gap: var(--space-6); }
-  h1 { color: var(--color-green-deep); font-size: var(--font-size-hero); }
-  .role { color: var(--color-ink); font-family: var(--font-heading); font-size: var(--font-size-md); font-weight: var(--font-weight-medium); }
+  .hero { position: relative; overflow: hidden; background: var(--color-canvas); }
+  .hero :global(.hero-picture) { display: block; width: 100%; height: auto; object-fit: contain; object-position: center top; }
+  .hero-inner { position: relative; z-index: 1; max-width: var(--size-wide); margin-inline: auto; padding: var(--space-8) var(--space-page) var(--space-16); }
+  .hero-copy { display: grid; width: min(100%, 44rem); gap: var(--space-4); }
+  h1 { color: var(--color-green-deep); font-size: min(var(--font-size-2xl), 9vw); }
+  .role { color: var(--color-green-deep); }
+  .hero-supporting { max-width: 54ch; color: var(--color-ink-muted); font-size: var(--font-size-md); }
   .hero-actions { display: flex; gap: var(--space-4); flex-wrap: wrap; }
   .home-content { display: grid; max-width: var(--size-content); margin-inline: auto; padding: var(--space-section) var(--space-page); gap: var(--space-section); }
   .lead-work, .capabilities { display: grid; gap: var(--space-10); }
@@ -111,9 +111,8 @@ const leadProject = projects.find((project) => project.data.translationKey === '
 
   @media (min-width: 48rem) {
     .hero { min-height: clamp(48rem, 65vw, 58rem); }
-    .hero :global(.hero-picture) { inset: 0; height: 100%; object-fit: cover; object-position: 58% center; }
-    .hero-shade { background: linear-gradient(90deg, color-mix(in srgb, var(--color-canvas) 96%, transparent) 0%, color-mix(in srgb, var(--color-canvas) 84%, transparent) 32%, transparent 66%); }
-    .hero-inner { padding-block-start: calc(var(--size-header) + var(--space-16)); align-items: center; }
+    .hero :global(.hero-picture) { position: absolute; inset: 0; height: 100%; object-fit: cover; object-position: 58% center; }
+    .hero-inner { display: flex; min-height: inherit; padding-block-start: calc(var(--size-header) + var(--space-16)); align-items: center; }
     .hero-copy { width: min(52%, 45rem); }
     .capability { grid-template-columns: minmax(12rem, .7fr) minmax(0, 1.3fr); align-items: start; gap: var(--space-12); }
     .about-intro { grid-template-columns: minmax(0, .9fr) minmax(20rem, 1.1fr); gap: var(--space-16); }

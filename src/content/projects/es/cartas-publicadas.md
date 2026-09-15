@@ -32,5 +32,3 @@ Se publicaron cinco cartas sobre acoso escolar, miedo, titulaciones, contaminaci
 - *Títulos de papel mojado*, en La Nueva España
 - *Contaminación*, en Faro de Vigo
 - *Barcelonaland*, en El Periódico
-
-El ejercicio reforzó el valor de adaptar un argumento a su contexto sin perder la voz de quien escribe.

@@ -5,7 +5,7 @@ locale: es
 routeSlug: sesgos-cognitivos
 translationKey: cognitive-biases
 category: Ejercicio de UX writing
-featured: true
+featured: false
 order: 2
 draft: false
 image:

@@ -32,5 +32,3 @@ Five letters were published, covering bullying, fear, education credentials, pol
 - *Títulos de papel mojado*, in La Nueva España
 - *Contaminación*, in Faro de Vigo
 - *Barcelonaland*, in El Periódico
-
-The exercise reinforced the value of adapting an argument to its context while keeping the writer’s own voice intact.

@@ -178,6 +178,26 @@ const HOMEPAGE = {
   workingLine:
     "I help companies connect with their audiences through clear, honest communication.",
   specialistLine: "Content, communications and marketing specialist",
+  currentHero: {
+    en: {
+      role: "Content, communications & marketing specialist",
+      heading:
+        "I turn complex information and business needs into clear and persuasive content.",
+      supporting:
+        "I don’t write for the sake of sounding good. I use research, audience insight and performance data to decide what to say and how to say it.",
+      primaryCta: "View my work  →",
+      secondaryCta: "Get in touch  →",
+    },
+    es: {
+      role: "Especialista en contenidos, comunicación y marketing",
+      heading:
+        "Convierto información compleja y necesidades de negocio en contenidos claros y persuasivos.",
+      supporting:
+        "No escribo solo para que algo suene bien. Utilizo investigación, conocimiento de la audiencia y datos de rendimiento para decidir qué decir y cómo decirlo.",
+      primaryCta: "Ver mi trabajo  →",
+      secondaryCta: "Hablemos  →",
+    },
+  },
   cta: "Get in touch",
   leadCase: "imaginArt",
   leadDescriptor: "Marketing, B2B content & communications",
@@ -4626,27 +4646,29 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     clipsContent: true,
   });
   const hasHeroImage = applyImageFill(hero, heroImageHash);
-  const heroScrim = createCanvasFrame(hero, {
-    name: "Hero — warm readability gradient",
-    x: 0,
-    y: 0,
-    width: 960,
-    height: 860,
-  });
-  heroScrim.fills = [
-    {
-      type: "GRADIENT_LINEAR",
-      gradientStops: [
-        { position: 0, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.98 } },
-        { position: 0.62, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.84 } },
-        { position: 1, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0 } },
-      ],
-      gradientTransform: [
-        [1, 0, 0],
-        [0, 1, 0],
-      ],
-    },
-  ];
+  if (!currentProduction) {
+    const heroScrim = createCanvasFrame(hero, {
+      name: "Hero — warm readability gradient",
+      x: 0,
+      y: 0,
+      width: 960,
+      height: 860,
+    });
+    heroScrim.fills = [
+      {
+        type: "GRADIENT_LINEAR",
+        gradientStops: [
+          { position: 0, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.98 } },
+          { position: 0.62, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.84 } },
+          { position: 1, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0 } },
+        ],
+        gradientTransform: [
+          [1, 0, 0],
+          [0, 1, 0],
+        ],
+      },
+    ];
+  }
 
   createHeaderBrand(hero, {
     x: 80,
@@ -4660,12 +4682,10 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     shadowColor: FINAL_COLOR.greenDeep,
     width: 260,
   });
-  for (const [label, itemX] of [
-    ["Work", 700],
-    ["Writing", 795],
-    ["About", 890],
-    ["Contact", 990],
-  ]) {
+  const heroNavigation = currentProduction
+    ? [["Work", 760], ["About", 860], ["Contact", 960]]
+    : [["Work", 700], ["Writing", 795], ["About", 890], ["Contact", 990]];
+  for (const [label, itemX] of heroNavigation) {
     addFinalBody(hero, {
       characters: label,
       font: FONT.montserratMedium,
@@ -4689,30 +4709,30 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
   addFinalBody(hero, { characters: "ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 32, x: 1180, y: 45 });
   createRule(hero, { name: "Active language underline — EN", x: 1100, y: 75, width: 24, height: 2, color: FINAL_COLOR.surface });
   createThemeSwitch(hero, { x: 1240, y: 40, dark: false, palette: overlayPalette });
-  addFinalHeading(hero, {
-    characters: HOMEPAGE.workingLine,
-    fontSize: 54,
-    lineHeight: 64,
-    color: FINAL_COLOR.greenDeep,
-    width: 660,
-    x: 80,
-    y: 170,
-  });
-  addFinalBody(hero, {
-    characters: HOMEPAGE.specialistLine,
-    font: FONT.medium,
-    fontSize: 24,
-    lineHeight: 64,
-    color: FINAL_COLOR.greenDeep,
-    width: 660,
-    x: 80,
-    y: 448,
-  });
   if (currentProduction) {
-    createPill(hero, {
-      label: "View my work  →",
+    addFinalLabel(hero, HOMEPAGE.currentHero.en.role.toUpperCase(), 80, 160, 690, FINAL_COLOR.greenDeep);
+    addFinalHeading(hero, {
+      characters: HOMEPAGE.currentHero.en.heading,
+      fontSize: 50,
+      lineHeight: 60,
+      color: FINAL_COLOR.greenDeep,
+      width: 700,
       x: 80,
-      y: 570,
+      y: 205,
+    });
+    addFinalBody(hero, {
+      characters: HOMEPAGE.currentHero.en.supporting,
+      fontSize: 18,
+      lineHeight: 31,
+      color: FINAL_COLOR.inkMuted,
+      width: 620,
+      x: 80,
+      y: 475,
+    });
+    createPill(hero, {
+      label: HOMEPAGE.currentHero.en.primaryCta,
+      x: 80,
+      y: 650,
       width: 240,
       height: 64,
       fill: FINAL_COLOR.greenDeep,
@@ -4722,9 +4742,9 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
       lineHeight: 28,
     });
     createPill(hero, {
-      label: "Get in touch  →",
+      label: HOMEPAGE.currentHero.en.secondaryCta,
       x: 340,
-      y: 570,
+      y: 650,
       width: 220,
       height: 64,
       fill: FINAL_COLOR.canvas,
@@ -4734,6 +4754,25 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
       lineHeight: 28,
     });
   } else {
+    addFinalHeading(hero, {
+      characters: HOMEPAGE.workingLine,
+      fontSize: 54,
+      lineHeight: 64,
+      color: FINAL_COLOR.greenDeep,
+      width: 660,
+      x: 80,
+      y: 170,
+    });
+    addFinalBody(hero, {
+      characters: HOMEPAGE.specialistLine,
+      font: FONT.medium,
+      fontSize: 24,
+      lineHeight: 64,
+      color: FINAL_COLOR.greenDeep,
+      width: 660,
+      x: 80,
+      y: 448,
+    });
     createPill(hero, {
       label: "Get in touch  →",
       x: 80,
@@ -5056,6 +5095,96 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     y: 315,
   });
 
+  return page;
+}
+
+function createCurrentHomepageMobileHero(parent, x, y, heroImageHash, options) {
+  const spanish = options.locale === "es";
+  const dark = Boolean(options.dark);
+  const palette = dark ? DARK_COLOR : FINAL_COLOR;
+  const copy = spanish ? HOMEPAGE.currentHero.es : HOMEPAGE.currentHero.en;
+  const page = createCanvasFrame(parent, {
+    name: `Homepage hero — mobile image-first · ${spanish ? "ES" : "EN"} · ${dark ? "Dark" : "Light"}`,
+    x,
+    y,
+    width: 390,
+    height: 1180,
+    fill: palette.canvas,
+    stroke: palette.border,
+    clipsContent: true,
+  });
+
+  createImplementedMobileHeaderReference(page, {
+    x: 0,
+    y: 0,
+    palette,
+    dark,
+    open: false,
+    locale: options.locale,
+  });
+  const image = createCanvasFrame(page, {
+    name: "Homepage hero image — mobile · image first",
+    x: 0,
+    y: 76,
+    width: 390,
+    height: 260,
+    fill: palette.surface,
+    clipsContent: true,
+  });
+  applyImageFill(image, heroImageHash);
+
+  addFinalLabel(page, copy.role.toUpperCase(), 24, 380, 342, palette.greenDeep);
+  addFinalHeading(page, {
+    characters: copy.heading,
+    fontSize: 34,
+    lineHeight: 43,
+    color: palette.greenDeep,
+    width: 342,
+    x: 24,
+    y: 425,
+  });
+  addFinalBody(page, {
+    characters: copy.supporting,
+    fontSize: 17,
+    lineHeight: 28,
+    color: palette.inkMuted,
+    width: 342,
+    x: 24,
+    y: 690,
+  });
+  createPill(page, {
+    label: copy.primaryCta,
+    x: 24,
+    y: 920,
+    width: 342,
+    height: 56,
+    fill: palette.greenDeep,
+    stroke: palette.greenDeep,
+    color: palette.canvas,
+    fontSize: 16,
+    lineHeight: 25,
+  });
+  createPill(page, {
+    label: copy.secondaryCta,
+    x: 24,
+    y: 996,
+    width: 342,
+    height: 56,
+    fill: palette.canvas,
+    stroke: palette.greenDeep,
+    color: palette.greenDeep,
+    fontSize: 16,
+    lineHeight: 25,
+  });
+  addFinalBody(page, {
+    characters: "Responsive reference · copy remains in the hero · solid mobile header · no portrait overlay",
+    fontSize: 12,
+    lineHeight: 20,
+    color: palette.inkMuted,
+    width: 342,
+    x: 24,
+    y: 1090,
+  });
   return page;
 }
 
@@ -6916,7 +7045,7 @@ async function publishCurrentHomepage() {
   const section = createSection(
     "Homepage — production snapshot",
     placement.point,
-    1740,
+    2730,
     5060,
     CASE_COLOR.surface,
     GENERATED_KIND.currentHomepage,
@@ -6931,7 +7060,7 @@ async function publishCurrentHomepage() {
       y: 70,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, src/components/SiteHeader.astro, localized production copy, both production theme palettes and the bundled hero source image. The transparent 34px header logo uses its original deep green in Light, retains the matching green shadow and keeps EN / ES before the theme switch.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, src/components/SiteHeader.astro, localized production copy, both production theme palettes and the bundled hero source image. Desktop keeps the overlay composition without a gradient; mobile keeps the solid header, image-first order and non-overlay copy.`,
       fontSize: 18,
       lineHeight: 29,
       color: FINAL_COLOR.inkMuted,
@@ -6943,6 +7072,25 @@ async function publishCurrentHomepage() {
       currentProduction: true,
     });
     page.name = "Homepage — desktop · current production snapshot";
+    addFinalLabel(section, "MOBILE · EN · LIGHT · 390 PX", 1740, 315, 390);
+    addFinalLabel(section, "MOBILE · ES · DARK · 390 PX", 2190, 315, 390);
+    createCurrentHomepageMobileHero(section, 1740, 360, heroImageHash, {
+      locale: "en",
+      dark: false,
+    });
+    createCurrentHomepageMobileHero(section, 2190, 360, heroImageHash, {
+      locale: "es",
+      dark: true,
+    });
+    addFinalBody(section, {
+      characters: "The implementation keeps the same semantic sequence at 320, 375, 390 and 430 px while allowing natural wrapping and stacked tap targets.",
+      fontSize: 14,
+      lineHeight: 23,
+      color: FINAL_COLOR.inkMuted,
+      width: 840,
+      x: 1740,
+      y: 1580,
+    });
   });
   placement.existing?.remove();
   figma.currentPage.selection = [section];

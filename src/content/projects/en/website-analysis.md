@@ -8,7 +8,7 @@ category: UX writing · Postgraduate project
 year: 2022
 featured: false
 order: 4
-draft: false
+draft: true
 image:
   src: ../../../assets/images/projects/website-analysis.jpg
   alt: Pages from the Juventud por el Clima website analysis document

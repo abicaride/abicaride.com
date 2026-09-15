@@ -43,7 +43,7 @@ const currentPath = Astro.url.pathname;
 const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 const resolvedAlternatePath = alternatePath ?? switchLocalePath(currentPath, otherLocale);
 const localizedPaths = { [locale]: currentPath, [otherLocale]: resolvedAlternatePath } as Record<Locale, string>;
-const fullTitle = title === ui[locale].siteName ? title : `${title} | ${ui[locale].siteName}`;
+const fullTitle = title === ui[locale].siteName || title.includes('|') ? title : `${title} | ${ui[locale].siteName}`;
 const canonicalUrl = new URL(currentPath, Astro.site);
 const defaultUrl = new URL(localizedPaths[defaultLocale], Astro.site);
 const socialImageResult = typeof socialImage === 'string'
