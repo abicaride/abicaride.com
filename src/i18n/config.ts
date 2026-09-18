@@ -126,7 +126,7 @@ export const ui = {
     },
     about: {
       title: 'About',
-      description: 'About Abilene Caride, her path into communication and the clear, honest and practical way she works.',
+      description: 'About Abilene Caride, her path into communication and the clear, transparent and practical way she works.',
       eyebrow: 'About',
       heading: 'My background is in communication, marketing and content, with UX shaping how I approach the work.',
       introduction:
@@ -144,10 +144,10 @@ export const ui = {
         { title: 'Today', detail: 'Content · Communications · Marketing · UX thinking', icon: 'compass' },
       ],
       principlesEyebrow: 'How I work',
-      principlesTitle: 'Clear. Honest. Practical.',
+      principlesTitle: 'Clear. Transparent. Practical.',
       principles: [
         { title: 'Clear', text: 'If the reader has to work too hard to understand it, the content isn’t finished.', icon: 'clear' },
-        { title: 'Honest', text: 'I prefer straightforward language to copy that tries too hard to sound impressive.', icon: 'honest' },
+        { title: 'Transparent', text: 'I prefer straightforward language to copy that tries too hard to sound impressive.', icon: 'honest' },
         { title: 'Practical', text: 'Content has to work for the person reading it and for the team or business behind it.', icon: 'practical' },
       ],
       experienceTitle: 'Experience',
@@ -345,7 +345,7 @@ export const ui = {
     },
     about: {
       title: 'Sobre mí',
-      description: 'Sobre Abilene Caride, su camino hacia la comunicación y su forma clara, honesta y práctica de trabajar.',
+      description: 'Sobre Abilene Caride, su camino hacia la comunicación y su forma clara, transparente y práctica de trabajar.',
       eyebrow: 'Sobre mí',
       heading: 'Mi experiencia cruza comunicación, marketing y contenidos, con el UX influyendo en cómo abordo el trabajo.',
       introduction:
@@ -363,10 +363,10 @@ export const ui = {
         { title: 'Hoy', detail: 'Contenidos · Comunicación · Marketing · Enfoque UX', icon: 'compass' },
       ],
       principlesEyebrow: 'Cómo trabajo',
-      principlesTitle: 'Clara. Honesta. Práctica.',
+      principlesTitle: 'Clara. Transparente. Práctica.',
       principles: [
         { title: 'Clara', text: 'Si quien lee tiene que esforzarse demasiado para entenderlo, el contenido todavía no está terminado.', icon: 'clear' },
-        { title: 'Honesta', text: 'Prefiero un lenguaje directo a un texto que se esfuerza demasiado por sonar impresionante.', icon: 'honest' },
+        { title: 'Transparente', text: 'Prefiero un lenguaje directo a un texto que se esfuerza demasiado por sonar impresionante.', icon: 'honest' },
         { title: 'Práctica', text: 'El contenido tiene que funcionar para quien lo lee y para el equipo o negocio que hay detrás.', icon: 'practical' },
       ],
       experienceTitle: 'Experiencia',
