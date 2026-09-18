@@ -1334,10 +1334,17 @@ assert.equal(currentSecondaryHeroCta.fills[0].color.b, 234 / 255);
 const currentHero = currentHomepageNodes.find((node) => node.name.includes("Hero — full-bleed"));
 assert.equal(currentHero.fills[0].type, "IMAGE");
 assert.equal(currentHero.fills[0].imageHash, "packaged-production-image");
-assert.ok(
-  !currentHomepageNodes.some((node) => node.name === "Hero — warm readability gradient"),
-  "The current Homepage hero must not retain the obsolete readability gradient",
+const currentHeroFade = currentHomepageNodes.find(
+  (node) => node.name === "Hero — canvas fade · current production",
 );
+assert.equal(currentHeroFade.fills[0].type, "GRADIENT_LINEAR");
+assert.equal(
+  JSON.stringify(currentHeroFade.fills[0].gradientStops.map((stop) => [stop.position, stop.color.a])),
+  JSON.stringify([[0, 1], [0.2, 0.96], [0.36, 0.78], [0.5, 0.38], [0.64, 0], [1, 0]]),
+);
+assert.equal(currentHeroFade.width, 1440);
+assert.equal(currentHeroFade.height, 860);
+assert.ok(!currentHomepageNodes.some((node) => node.name === "Hero — warm readability gradient"));
 const currentDesktopRole = currentHomepageNodes.find(
   (node) => node.type === "TEXT" && node.characters === "CONTENT, COMMUNICATIONS & MARKETING SPECIALIST" && node.x === 80,
 );

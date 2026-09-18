@@ -4646,7 +4646,32 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     clipsContent: true,
   });
   const hasHeroImage = applyImageFill(hero, heroImageHash);
-  if (!currentProduction) {
+  if (currentProduction) {
+    const heroFade = createCanvasFrame(hero, {
+      name: "Hero — canvas fade · current production",
+      x: 0,
+      y: 0,
+      width: 1440,
+      height: 860,
+    });
+    heroFade.fills = [
+      {
+        type: "GRADIENT_LINEAR",
+        gradientStops: [
+          { position: 0, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 1 } },
+          { position: 0.2, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.96 } },
+          { position: 0.36, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.78 } },
+          { position: 0.5, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.38 } },
+          { position: 0.64, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0 } },
+          { position: 1, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0 } },
+        ],
+        gradientTransform: [
+          [1, 0, 0],
+          [0, 1, 0],
+        ],
+      },
+    ];
+  } else {
     const heroScrim = createCanvasFrame(hero, {
       name: "Hero — warm readability gradient",
       x: 0,
@@ -7060,7 +7085,7 @@ async function publishCurrentHomepage() {
       y: 70,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, src/components/SiteHeader.astro, localized production copy, both production theme palettes and the bundled hero source image. Desktop keeps the overlay composition without a gradient; mobile keeps the solid header, image-first order and non-overlay copy.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, src/components/SiteHeader.astro, localized production copy, both production theme palettes and the bundled hero source image. Desktop keeps the overlay composition with a canvas-colour fade limited to the left side of the photograph; mobile keeps the solid header, image-first order and non-overlay copy.`,
       fontSize: 18,
       lineHeight: 29,
       color: FINAL_COLOR.inkMuted,

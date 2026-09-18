@@ -111,6 +111,21 @@ const leadProject = projects.find((project) => project.data.translationKey === '
 
   @media (min-width: 48rem) {
     .hero { min-height: clamp(48rem, 65vw, 58rem); }
+    .hero::after {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        var(--color-canvas) 0%,
+        color-mix(in srgb, var(--color-canvas) 96%, transparent) 20%,
+        color-mix(in srgb, var(--color-canvas) 78%, transparent) 36%,
+        color-mix(in srgb, var(--color-canvas) 38%, transparent) 50%,
+        transparent 64%
+      );
+      pointer-events: none;
+      content: '';
+    }
     .hero :global(.hero-picture) { position: absolute; inset: 0; height: 100%; object-fit: cover; object-position: 58% center; }
     .hero-inner { display: flex; min-height: inherit; padding-block-start: calc(var(--size-header) + var(--space-16)); align-items: center; }
     .hero-copy { width: min(52%, 45rem); }
