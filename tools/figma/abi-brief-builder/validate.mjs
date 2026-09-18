@@ -1187,6 +1187,35 @@ for (const [name, width, height] of [
   assert.equal(reference.width, width);
   assert.equal(reference.height, height);
 }
+for (const [headerName, expectedItems] of [
+  ["Mobile header — Light · EN · Open", [["About", 97], ["Work", 145], ["Writing", 193], ["Contact", 241]]],
+  ["Mobile header — Dark · ES · Open", [["Sobre mí", 97], ["Trabajo", 145], ["Notas", 193], ["Contacto", 241]]],
+]) {
+  const header = currentComponentsNodes.find((node) => node.name === headerName);
+  const headerNodes = allNodes(header);
+  const brandName = headerNodes.find((node) => node.name === "Header brand name");
+  assert.equal(brandName.fontSize, 25);
+  for (const [label, y] of expectedItems) {
+    assert.ok(
+      headerNodes.some((node) => node.type === "TEXT" && node.characters === label && node.y === y),
+      `Missing ordered mobile navigation item in ${headerName}: ${label}`,
+    );
+  }
+}
+for (const theme of ["Light", "Dark"]) {
+  const header = currentComponentsNodes.find(
+    (node) => node.name === `Header and localized navigation — ${theme}`,
+  );
+  const headerNodes = allNodes(header);
+  const brandName = headerNodes.find((node) => node.name === "Header brand name");
+  assert.equal(brandName.fontSize, 34);
+  for (const [label, x] of [["About", 700], ["Work", 795], ["Writing", 875], ["Contact", 990]]) {
+    assert.ok(
+      headerNodes.some((node) => node.type === "TEXT" && node.characters === label && node.x === x),
+      `Missing ordered desktop navigation item in ${theme}: ${label}`,
+    );
+  }
+}
 assert.equal(
   currentComponentsNodes.filter((node) => node.name.startsWith("Mobile menu toggle —")).length,
   4,
@@ -1363,7 +1392,13 @@ const currentDesktopBrandName = currentDesktopHeroNodes.find(
 );
 assert.ok(currentDesktopBrandMark);
 assert.ok(currentDesktopBrandName);
-for (const [label, x] of [["Work", 970], ["About", 1060], ["Contact", 1150], ["EN", 1220], ["/", 1268], ["ES", 1300]]) {
+assert.equal(currentDesktopBrandName.fontSize, 34);
+assert.equal(currentDesktopBrandName.fills[0].color.r, 16 / 255);
+assert.equal(currentDesktopBrandName.fills[0].color.g, 58 / 255);
+assert.equal(currentDesktopBrandName.fills[0].color.b, 32 / 255);
+assert.equal((currentDesktopBrandName.effects || []).length, 0);
+assert.equal(currentDesktopBrandMark.effects.length, 1);
+for (const [label, x] of [["About", 850], ["Work", 940], ["Writing", 1025], ["Contact", 1115], ["EN", 1220], ["/", 1268], ["ES", 1300]]) {
   assert.ok(
     currentDesktopHeroNodes.some((node) => node.type === "TEXT" && node.characters === label && node.x === x),
     `Missing widened current Homepage header item: ${label}`,

@@ -846,10 +846,10 @@ function createHeaderBrand(parent, options) {
     y: options.textY,
   });
   label.name = options.labelName || "Header brand name";
-  if (options.shadowColor) {
-    mark.effects = headerShadowEffects(options.shadowColor);
-    label.effects = headerShadowEffects(options.shadowColor);
-  }
+  const markShadowColor = options.markShadowColor || options.shadowColor;
+  const labelShadowColor = options.labelShadowColor || options.shadowColor;
+  if (markShadowColor) mark.effects = headerShadowEffects(markShadowColor);
+  if (labelShadowColor) label.effects = headerShadowEffects(labelShadowColor);
   return { mark, label };
 }
 
@@ -3919,16 +3919,16 @@ function createImplementedHeaderReference(parent, options) {
     markY: 65,
     textY: 62,
     size: 34,
-    fontSize: 32,
+    fontSize: 34,
     lineHeight: 40,
     markColor: palette.greenDeep,
     labelColor: palette.greenDeep,
     width: 330,
   });
   for (const [label, itemX] of [
-    ["Work", 700],
-    ["Writing", 795],
-    ["About", 890],
+    ["About", 700],
+    ["Work", 795],
+    ["Writing", 875],
     ["Contact", 990],
   ]) {
     addFinalBody(header, {
@@ -3972,8 +3972,8 @@ function createImplementedMobileHeaderReference(parent, options) {
   const open = Boolean(options.open);
   const spanish = options.locale === "es";
   const labels = spanish
-    ? ["Trabajo", "Notas", "Sobre mí", "Contacto"]
-    : ["Work", "Writing", "About", "Contact"];
+    ? ["Sobre mí", "Trabajo", "Notas", "Contacto"]
+    : ["About", "Work", "Writing", "Contact"];
   const themeName = dark ? "Dark" : "Light";
   const localeName = spanish ? "ES" : "EN";
   const stateName = open ? "Open" : "Closed";
@@ -3992,7 +3992,7 @@ function createImplementedMobileHeaderReference(parent, options) {
     markY: 24,
     textY: 22,
     size: 28,
-    fontSize: 23,
+    fontSize: 25,
     lineHeight: 30,
     markColor: palette.greenDeep,
     labelColor: palette.greenDeep,
@@ -4700,15 +4700,16 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     markY: 38,
     textY: 42,
     size: 34,
-    fontSize: 32,
-    lineHeight: 26,
+    fontSize: currentProduction ? 34 : 32,
+    lineHeight: currentProduction ? 40 : 26,
     markColor: FINAL_COLOR.greenDeep,
-    labelColor: FINAL_COLOR.canvas,
-    shadowColor: FINAL_COLOR.greenDeep,
+    labelColor: currentProduction ? FINAL_COLOR.greenDeep : FINAL_COLOR.canvas,
+    markShadowColor: FINAL_COLOR.greenDeep,
+    labelShadowColor: currentProduction ? undefined : FINAL_COLOR.greenDeep,
     width: 260,
   });
   const heroNavigation = currentProduction
-    ? [["Work", 970], ["About", 1060], ["Contact", 1150]]
+    ? [["About", 850], ["Work", 940], ["Writing", 1025], ["Contact", 1115]]
     : [["Work", 700], ["Writing", 795], ["About", 890], ["Contact", 990]];
   for (const [label, itemX] of heroNavigation) {
     addFinalBody(hero, {
@@ -6195,16 +6196,16 @@ function createAboutHeader(parent, dark = false) {
     markY: 44,
     textY: 42,
     size: 34,
-    fontSize: 32,
+    fontSize: 34,
     lineHeight: 38,
     markColor: color,
     labelColor: color,
     width: 280,
   });
   for (const [label, itemX] of [
-    ["Work", 700],
-    ["Writing", 795],
-    ["About", 890],
+    ["About", 700],
+    ["Work", 795],
+    ["Writing", 875],
     ["Contact", 990],
   ]) {
     addFinalBody(parent, {
@@ -7090,7 +7091,7 @@ async function publishCurrentHomepage() {
       y: 70,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, src/components/SiteHeader.astro, localized production copy, both production theme palettes and the bundled hero source image. Desktop uses the wider site shell, aligns the hero copy with the brand mark and keeps a slightly translucent canvas-colour fade limited to the left side of the photograph; mobile keeps the solid header, image-first order and non-overlay copy.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, src/components/SiteHeader.astro, localized production copy, both production theme palettes and the bundled hero source image. Desktop uses the wider site shell, aligns the hero copy with the brand mark, keeps a slightly translucent canvas-colour fade limited to the left side of the photograph and presents the About / Work / Writing / Contact navigation order. The Light overlay uses the original green brand colour without a name shadow. Mobile keeps the solid header, image-first order and non-overlay copy.`,
       fontSize: 18,
       lineHeight: 29,
       color: FINAL_COLOR.inkMuted,

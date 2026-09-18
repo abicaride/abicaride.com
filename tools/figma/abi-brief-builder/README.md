@@ -68,7 +68,8 @@ source Git commit and repository source-of-truth statement.
   and its approved favicon from `public/favicon.svg` during packaging,
   preventing duplicated Figma token values or brand-mark vectors from drifting.
 - **Publish current Components reference** documents only patterns already
-  reused in Astro: fixed-order localized navigation including Writing / Notas,
+  reused in Astro: fixed-order localized navigation in About / Work / Writing /
+  Contact order, translated as Sobre mí / Trabajo / Notas / Contacto,
   the two-state Light/Dark switch, the compact mobile header in closed/open EN
   and ES states across both themes, primary and secondary actions, project
   previews, analytics consent, back-to-top and the contact footer.
