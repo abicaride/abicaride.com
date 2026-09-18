@@ -4658,10 +4658,10 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
       {
         type: "GRADIENT_LINEAR",
         gradientStops: [
-          { position: 0, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 1 } },
-          { position: 0.2, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.96 } },
-          { position: 0.36, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.78 } },
-          { position: 0.5, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.38 } },
+          { position: 0, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.9 } },
+          { position: 0.2, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.86 } },
+          { position: 0.36, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.7 } },
+          { position: 0.5, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0.34 } },
           { position: 0.64, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0 } },
           { position: 1, color: { ...hexToRgb(FINAL_COLOR.canvas), a: 0 } },
         ],
@@ -4696,7 +4696,7 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
   }
 
   createHeaderBrand(hero, {
-    x: 80,
+    x: currentProduction ? 32 : 80,
     markY: 38,
     textY: 42,
     size: 34,
@@ -4708,7 +4708,7 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     width: 260,
   });
   const heroNavigation = currentProduction
-    ? [["Work", 760], ["About", 860], ["Contact", 960]]
+    ? [["Work", 970], ["About", 1060], ["Contact", 1150]]
     : [["Work", 700], ["Writing", 795], ["About", 890], ["Contact", 990]];
   for (const [label, itemX] of heroNavigation) {
     addFinalBody(hero, {
@@ -4729,34 +4729,38 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     greenDeep: FINAL_COLOR.surface,
     inkMuted: FINAL_COLOR.surface,
   };
-  addFinalBody(hero, { characters: "EN", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 32, x: 1100, y: 45 });
-  addFinalBody(hero, { characters: "/", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 16, x: 1148, y: 45 });
-  addFinalBody(hero, { characters: "ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 32, x: 1180, y: 45 });
-  createRule(hero, { name: "Active language underline — EN", x: 1100, y: 75, width: 24, height: 2, color: FINAL_COLOR.surface });
-  createThemeSwitch(hero, { x: 1240, y: 40, dark: false, palette: overlayPalette });
+  const heroActions = currentProduction
+    ? { en: 1220, slash: 1268, es: 1300, theme: 1340 }
+    : { en: 1100, slash: 1148, es: 1180, theme: 1240 };
+  addFinalBody(hero, { characters: "EN", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 32, x: heroActions.en, y: 45 });
+  addFinalBody(hero, { characters: "/", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 16, x: heroActions.slash, y: 45 });
+  addFinalBody(hero, { characters: "ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 32, x: heroActions.es, y: 45 });
+  createRule(hero, { name: "Active language underline — EN", x: heroActions.en, y: 75, width: 24, height: 2, color: FINAL_COLOR.surface });
+  createThemeSwitch(hero, { x: heroActions.theme, y: 40, dark: false, palette: overlayPalette });
   if (currentProduction) {
-    addFinalLabel(hero, HOMEPAGE.currentHero.en.role.toUpperCase(), 80, 160, 690, FINAL_COLOR.greenDeep);
+    addFinalLabel(hero, HOMEPAGE.currentHero.en.role.toUpperCase(), 32, 160, 690, FINAL_COLOR.greenDeep);
     addFinalHeading(hero, {
       characters: HOMEPAGE.currentHero.en.heading,
       fontSize: 50,
       lineHeight: 60,
       color: FINAL_COLOR.greenDeep,
       width: 700,
-      x: 80,
+      x: 32,
       y: 205,
     });
     addFinalBody(hero, {
       characters: HOMEPAGE.currentHero.en.supporting,
+      font: FONT.montserratMedium,
       fontSize: 18,
       lineHeight: 31,
       color: FINAL_COLOR.inkMuted,
       width: 620,
-      x: 80,
+      x: 32,
       y: 475,
     });
     createPill(hero, {
       label: HOMEPAGE.currentHero.en.primaryCta,
-      x: 80,
+      x: 32,
       y: 650,
       width: 240,
       height: 64,
@@ -4768,7 +4772,7 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     });
     createPill(hero, {
       label: HOMEPAGE.currentHero.en.secondaryCta,
-      x: 340,
+      x: 292,
       y: 650,
       width: 220,
       height: 64,
@@ -5170,6 +5174,7 @@ function createCurrentHomepageMobileHero(parent, x, y, heroImageHash, options) {
   });
   addFinalBody(page, {
     characters: copy.supporting,
+    font: FONT.montserratMedium,
     fontSize: 17,
     lineHeight: 28,
     color: palette.inkMuted,
@@ -7085,7 +7090,7 @@ async function publishCurrentHomepage() {
       y: 70,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, src/components/SiteHeader.astro, localized production copy, both production theme palettes and the bundled hero source image. Desktop keeps the overlay composition with a canvas-colour fade limited to the left side of the photograph; mobile keeps the solid header, image-first order and non-overlay copy.`,
+      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, src/components/SiteHeader.astro, localized production copy, both production theme palettes and the bundled hero source image. Desktop uses the wider site shell, aligns the hero copy with the brand mark and keeps a slightly translucent canvas-colour fade limited to the left side of the photograph; mobile keeps the solid header, image-first order and non-overlay copy.`,
       fontSize: 18,
       lineHeight: 29,
       color: FINAL_COLOR.inkMuted,

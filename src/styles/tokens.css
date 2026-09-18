@@ -67,11 +67,13 @@
   --space-24: 6rem;
   --space-32: 8rem;
   --space-page: clamp(1.25rem, 4vw, 5rem);
+  --space-site-edge: clamp(1.25rem, 2.25vw, 2.5rem);
   --space-section: clamp(4.5rem, 10vw, 9rem);
 
   /* Layout */
   --size-content: 80rem;
   --size-wide: 90rem;
+  --size-site-shell: 110rem;
   --size-prose: 65ch;
   --size-narrow: 48rem;
   --size-header: 6rem;

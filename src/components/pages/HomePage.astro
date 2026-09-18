@@ -87,11 +87,11 @@ const leadProject = projects.find((project) => project.data.translationKey === '
 <style>
   .hero { position: relative; overflow: hidden; background: var(--color-canvas); }
   .hero :global(.hero-picture) { display: block; width: 100%; height: auto; object-fit: contain; object-position: center top; }
-  .hero-inner { position: relative; z-index: 1; max-width: var(--size-wide); margin-inline: auto; padding: var(--space-8) var(--space-page) var(--space-16); }
+  .hero-inner { position: relative; z-index: 1; max-width: var(--size-site-shell); margin-inline: auto; padding: var(--space-8) var(--space-site-edge) var(--space-16); }
   .hero-copy { display: grid; width: min(100%, 44rem); gap: var(--space-4); }
   h1 { color: var(--color-green-deep); font-size: min(var(--font-size-2xl), 9vw); }
   .role { color: var(--color-green-deep); }
-  .hero-supporting { max-width: 54ch; color: var(--color-ink-muted); font-size: var(--font-size-md); }
+  .hero-supporting { max-width: 54ch; color: var(--color-ink-muted); font-size: var(--font-size-md); font-weight: var(--font-weight-medium); }
   .hero-actions { display: flex; gap: var(--space-4); flex-wrap: wrap; }
   .home-content { display: grid; max-width: var(--size-content); margin-inline: auto; padding: var(--space-section) var(--space-page); gap: var(--space-section); }
   .lead-work, .capabilities { display: grid; gap: var(--space-10); }
@@ -117,10 +117,10 @@ const leadProject = projects.find((project) => project.data.translationKey === '
       inset: 0;
       background: linear-gradient(
         90deg,
-        var(--color-canvas) 0%,
-        color-mix(in srgb, var(--color-canvas) 96%, transparent) 20%,
-        color-mix(in srgb, var(--color-canvas) 78%, transparent) 36%,
-        color-mix(in srgb, var(--color-canvas) 38%, transparent) 50%,
+        color-mix(in srgb, var(--color-canvas) 90%, transparent) 0%,
+        color-mix(in srgb, var(--color-canvas) 86%, transparent) 20%,
+        color-mix(in srgb, var(--color-canvas) 70%, transparent) 36%,
+        color-mix(in srgb, var(--color-canvas) 34%, transparent) 50%,
         transparent 64%
       );
       pointer-events: none;

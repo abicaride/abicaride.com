@@ -1323,8 +1323,8 @@ const currentPrimaryHeroCta = currentHomepageNodes.find(
 const currentSecondaryHeroCta = currentHomepageNodes.find(
   (node) => node.type === "FRAME" && node.name === "Get in touch  →",
 );
-assert.equal(currentPrimaryHeroCta.x, 80);
-assert.equal(currentSecondaryHeroCta.x, 340);
+assert.equal(currentPrimaryHeroCta.x, 32);
+assert.equal(currentSecondaryHeroCta.x, 292);
 assert.equal(currentPrimaryHeroCta.fills[0].color.r, 16 / 255);
 assert.equal(currentPrimaryHeroCta.fills[0].color.g, 58 / 255);
 assert.equal(currentPrimaryHeroCta.fills[0].color.b, 32 / 255);
@@ -1340,20 +1340,38 @@ const currentHeroFade = currentHomepageNodes.find(
 assert.equal(currentHeroFade.fills[0].type, "GRADIENT_LINEAR");
 assert.equal(
   JSON.stringify(currentHeroFade.fills[0].gradientStops.map((stop) => [stop.position, stop.color.a])),
-  JSON.stringify([[0, 1], [0.2, 0.96], [0.36, 0.78], [0.5, 0.38], [0.64, 0], [1, 0]]),
+  JSON.stringify([[0, 0.9], [0.2, 0.86], [0.36, 0.7], [0.5, 0.34], [0.64, 0], [1, 0]]),
 );
 assert.equal(currentHeroFade.width, 1440);
 assert.equal(currentHeroFade.height, 860);
 assert.ok(!currentHomepageNodes.some((node) => node.name === "Hero — warm readability gradient"));
 const currentDesktopRole = currentHomepageNodes.find(
-  (node) => node.type === "TEXT" && node.characters === "CONTENT, COMMUNICATIONS & MARKETING SPECIALIST" && node.x === 80,
+  (node) => node.type === "TEXT" && node.characters === "CONTENT, COMMUNICATIONS & MARKETING SPECIALIST" && node.x === 32,
 );
 const currentDesktopHeading = currentHomepageNodes.find(
-  (node) => node.type === "TEXT" && node.characters === "I turn complex information and business needs into clear and persuasive content." && node.x === 80,
+  (node) => node.type === "TEXT" && node.characters === "I turn complex information and business needs into clear and persuasive content." && node.x === 32,
 );
 const currentDesktopSupporting = currentHomepageNodes.find(
-  (node) => node.type === "TEXT" && node.characters.startsWith("I don’t write for the sake") && node.x === 80,
+  (node) => node.type === "TEXT" && node.characters.startsWith("I don’t write for the sake") && node.x === 32,
 );
+const currentDesktopHeroNodes = allNodes(currentHero);
+const currentDesktopBrandMark = currentDesktopHeroNodes.find(
+  (node) => node.name === "Header logo — transparent Abilene brand mark" && node.x === 32,
+);
+const currentDesktopBrandName = currentDesktopHeroNodes.find(
+  (node) => node.name === "Header brand name" && node.x === 74,
+);
+assert.ok(currentDesktopBrandMark);
+assert.ok(currentDesktopBrandName);
+for (const [label, x] of [["Work", 970], ["About", 1060], ["Contact", 1150], ["EN", 1220], ["/", 1268], ["ES", 1300]]) {
+  assert.ok(
+    currentDesktopHeroNodes.some((node) => node.type === "TEXT" && node.characters === label && node.x === x),
+    `Missing widened current Homepage header item: ${label}`,
+  );
+}
+assert.ok(currentDesktopHeroNodes.some((node) => node.name === "Theme switch — Light · Sun active" && node.x === 1340));
+assert.equal(currentDesktopSupporting.fontName.family, "Montserrat");
+assert.equal(currentDesktopSupporting.fontName.style, "Medium");
 assert.ok(currentDesktopRole.y < currentDesktopHeading.y);
 assert.ok(currentDesktopHeading.y < currentDesktopSupporting.y);
 assert.ok(currentDesktopSupporting.y < currentPrimaryHeroCta.y);
@@ -1375,6 +1393,11 @@ for (const mobile of [currentMobileEn, currentMobileEs]) {
   assert.equal(mobileImage.height, 260);
   assert.equal(mobileImage.fills[0].type, "IMAGE");
   assert.equal(mobileImage.fills[0].imageHash, "packaged-production-image");
+  const mobileSupporting = mobileNodes.find(
+    (node) => node.type === "TEXT" && (node.characters.startsWith("I don’t write for the sake") || node.characters.startsWith("No escribo solo")),
+  );
+  assert.equal(mobileSupporting.fontName.family, "Montserrat");
+  assert.equal(mobileSupporting.fontName.style, "Medium");
 }
 assert.ok(
   currentHomepageNodes.some(
