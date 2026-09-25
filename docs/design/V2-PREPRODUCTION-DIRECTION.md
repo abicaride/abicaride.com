@@ -268,9 +268,9 @@ information and the cookie-settings action remain separate: the former is a
 normal link; the latter uses a subtle settings cue and dotted link treatment.
 Repeat the accessible EN/ES switch at the end of the page so changing language
 does not require returning to the header. Preserve the original playful
-architecture-link copy exactly in production: `Made with 🎨 Figma, 🚀 Astro,
-✍️ Pages CMS, 🤖 Codex and lots of ❤️.` and `Hecha con 🎨 Figma, 🚀 Astro, ✍️
-Pages CMS, 🤖 Codex y mucho ❤️.` Do not use a card grid or decorative ellipses.
+architecture-link copy in production with the current editor: `Made with 🎨
+Figma, 🚀 Astro, ✍️ Sveltia CMS, 🤖 Codex and lots of ❤️.` and `Hecha con 🎨
+Figma, 🚀 Astro, ✍️ Sveltia CMS, 🤖 Codex y mucho ❤️.` Do not use a card grid or decorative ellipses.
 Legal, privacy and consent controls must not be removed for visual minimalism.
 
 ## Responsive intent

@@ -8,9 +8,9 @@ The simple mental model is:
 
 > **The website lives in GitHub.**
 >
-> Figma is where we decide how it should look. Pages CMS is where Abi edits
-> routine project and article content. Codex or a developer helps change what
-> the website can do. Astro builds it. GitHub Actions publishes it.
+> Figma is where we decide how it should look. Sveltia CMS is Abi's local
+> rich-text editor for articles. Projects are edited in the repository with
+> Codex or a local editor. Astro builds the site; GitHub Actions publishes it.
 
 ## What exists today?
 
@@ -21,12 +21,12 @@ The simple mental model is:
 | GitHub | Implemented | The source files and their history |
 | Astro | Implemented | Turning content and code into the static website |
 | GitHub Actions | Implemented | Publishing changes pushed to `main` |
-| Pages CMS | Implemented externally | Routine English and Spanish project and article content |
+| Sveltia CMS | Local authoring | Rich-text editing of bilingual Writing/Notas articles |
 | Writing section | Implemented | Curated articles and notes, separate from projects |
 
-Pages CMS edits the existing project and Writing Markdown and source images in
-GitHub. Static pages remain outside the CMS. See the
-[Pages CMS validation report](CMS-POC.md).
+Sveltia edits Writing Markdown and images in a local checkout. Projects and
+static pages stay outside the CMS and can be changed with Codex or a local
+editor. All content remains in the Git-managed repository.
 
 ## The simplest rule
 
@@ -39,13 +39,15 @@ GitHub. Static pages remain outside the CMS. See the
 ```mermaid
 flowchart TD
     Q{"What do you want to change?"}
-    Q -->|"Project or article words, images or metadata"| CMS["Pages CMS"]
-    Q -->|"Other existing content"| DIRECT["Codex or direct editing"]
+    Q -->|"Project words, images or metadata"| DIRECT["Codex or repository editing"]
+    Q -->|"Article words, images or metadata"| SVELTIA["Sveltia CMS — local"]
+    Q -->|"Other existing content"| DIRECT
     Q -->|"How something should look"| FIGMA["Figma"]
     Q -->|"What the website can do"| DEV["Codex or development"]
     FIGMA -->|"Approved direction"| DEV
     DIRECT --> GIT["GitHub"]
-    CMS --> GIT
+    SVELTIA --> REVIEW["Local review and approval"]
+    REVIEW --> GIT
     DEV --> GIT
     GIT --> SITE["Automatic build → abicaride.com"]
 ```
@@ -58,7 +60,8 @@ Codex inspect the existing architecture before it proposes or makes a change.
 
 | What Abi wants | Best starting point |
 | --- | --- |
-| Edit an existing project's or article's words, metadata or images | Pages CMS |
+| Edit a project's words, metadata or images | Codex or repository editing |
+| Write or edit an article with a rich-text editor | Sveltia CMS in the local checkout |
 | Prepare paired content, translate with review or make a broader copy change | Codex in the repository |
 | Explore a visual direction | Figma, then Codex after approval |
 | Add or change behaviour, layout, routes or content types | Codex in the repository |
@@ -90,7 +93,8 @@ Useful guardrails for an Abi-authored Codex request are:
   and public voice have been reviewed;
 - keep a new article as a draft until its content, metadata and available
   translation have been reviewed;
-- treat route slugs, featured status, ordering and `draft` as publishing controls;
+- treat route slugs, featured status, ordering, Projects `draft` and Writing
+  `published` as publishing controls;
 - ask to see both a narrow mobile view and a desktop view for visual changes;
 - expect Codex to report build results and anything it could not verify.
 
@@ -106,8 +110,8 @@ For project content:
 
 ```mermaid
 flowchart LR
-    ABI["Abi"] --> CMS["Pages CMS"]
-    CMS --> FILE["Project content file"]
+    ABI["Abi"] --> CODEX["Codex or local editor"]
+    CODEX --> FILE["Project content file"]
     FILE --> GIT["GitHub"]
     GIT --> SITE["Updated website"]
 ```
@@ -115,23 +119,12 @@ flowchart LR
 The routine project workflow is:
 
 ```text
-Abi → Pages CMS → save → GitHub → automatic build → website
+Abi → Codex or local editor → review → GitHub → automatic build → website
 ```
 
-The CMS edits the same files that exist today. It does not create a second
-content database.
-
-### Access and branch permissions
-
-The Pages CMS GitHub App is installed once for the `abicaride.com` repository;
-there is no separate App installation per branch. Each editor signs into Pages
-CMS with their own GitHub account, and GitHub repository permissions and branch
-protection determine what that person can save.
-
-Abi should use her own GitHub account for editorial work. Albert can edit only
-while his GitHub account retains suitable repository access. Neither editor
-needs ownership transferred. Routine saves to `main` trigger the existing GitHub
-Actions deployment, just like any other commit.
+Project content stays in the repository; there is no project CMS form or
+second content database. A local save is not publication. Abi reviews the
+result before anyone commits or pushes to `main`.
 
 ## Add a case study
 
@@ -139,42 +132,59 @@ Today, a case study is added as an English and Spanish pair of Markdown files,
 plus images in the repository. Codex or a developer can prepare and validate the
 pair.
 
-CMS workflow:
+Repository workflow:
 
 ```mermaid
 flowchart LR
-    ABI["Abi"] --> FORM["Pages CMS project form"]
+    ABI["Abi"] --> FORM["Codex or local editor"]
     FORM --> CONTENT["EN/ES content + images"]
     CONTENT --> GIT["GitHub"]
     GIT --> ASTRO["Astro renders the case study"]
     ASTRO --> SITE["Published website"]
 ```
 
-The project form should cover only information the website already supports,
-such as title, company or client, role, period, metrics, gallery and narrative.
-It should not force invented professional content into optional fields.
-
-Pages CMS creates new entries with `draft: true`. Older files remain compatible
-with Astro's historical `false` fallback when the field is absent, but editors
-should use an explicit draft value. A draft is not included in project listings
-or generated project routes.
+Project frontmatter supports information such as title, company or client,
+role, period, metrics, gallery and narrative. Do not invent content to fill
+optional fields. Set `draft: true` explicitly for new projects; older files
+remain compatible with Astro's historical `false` fallback when the field is
+absent. A draft is not included in listings or generated project routes.
 
 ## Publish an article
 
-Writing and Notas are separate from project case studies and use the same
-Git-backed editorial workflow:
+Writing and Notas are separate from project case studies. Abi writes with
+Sveltia locally while viewing the real Astro article page in a second tab:
 
 ```text
-Abi → CMS Writing → article → GitHub → Astro → website
+Abi → Sveltia → local Markdown + images → Astro preview → review → GitHub → website
 ```
 
-Create the English and Spanish Markdown entries in their respective Pages CMS
-collections. Give the pair the same `translationKey`; each entry may use a
-natural localized `routeSlug`. New entries default to `draft: true`, so review
-the article, metadata and imagery before publishing. Published articles become
-static `/en/writing/<slug>/` or `/es/notas/<slug>/` routes. When a translation
-does not yet exist, the language switcher returns to the other language's
-Writing or Notas index.
+Open `/admin/index.html` on the local Astro server in Chrome or another
+Chromium browser, choose **Work with Local Repository**, and select the checkout
+root. Development-only pencil links in Writing/Notas also open the editor.
+Spanish is the initial content language; switch the entry language in Sveltia
+to edit English. The CMS saves Markdown and images locally but does not commit
+or push. Its content preview is immediate; the adjacent Astro tab shows the
+actual site template. Codex can help Abi change that template without requiring
+her to edit code herself.
+
+After saving, use **View on Live Site** in the editor to open the actual local
+Astro page, including drafts. Despite Sveltia's label, this shortcut points to
+the local development server, not the public website. The top button opens the
+default Spanish version; for English, switch to English and use its content
+options menu's **View on Live Site** action. Refresh the Astro tab after each
+save to see the latest content. The shortcut is unavailable outside local
+development.
+
+Both localized versions share a `translationKey` but can have natural localized
+`routeSlug`s. New entries default to `published: false` (Draft): review the article,
+metadata, imagery and both languages before changing the publication state.
+In the editor, the status switch is off for Draft and on for Public.
+The local Writing/Notas lists show drafts with a Draft/Borrador label so Abi can
+open and review them; production lists and routes include only published work.
+Published articles become static `/en/writing/<slug>/` or
+`/es/notas/<slug>/` routes. When a translation does not yet exist, the language
+switcher returns to the other language's Writing or Notas index. A local CMS
+save is not publication; commit and push only after explicit approval.
 
 ## Change how the homepage looks
 
@@ -335,7 +345,7 @@ These are working tendencies, not rigid job descriptions.
 - professional positioning and project selection;
 - case-study content, writing, images and translations;
 - visual references, Figma exploration and design feedback;
-- routine project editing through Pages CMS.
+- writing articles in Sveltia and reviewing project content in the repository;
 
 ### Albert
 

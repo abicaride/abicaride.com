@@ -1,5 +1,9 @@
 # Pages CMS validation report
 
+> Historical proof of concept. Pages CMS is no longer used; see
+> [ADR 009 — Sveltia for local Writing](decisions/009-sveltia-local-writing.md)
+> for the current editorial workflow.
+
 ## Goal and result
 
 The proof of concept tested Pages CMS as an external editorial layer over the

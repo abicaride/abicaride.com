@@ -63,7 +63,7 @@ const writing = defineCollection({
       translationKey: z.string(),
       publishedAt: z.coerce.date(),
       updatedAt: optionalDate,
-      draft: z.boolean().default(true),
+      published: z.boolean().default(false),
       category: z.string().optional(),
       tags: z.array(z.string()).default([]),
       image: articleImage.optional(),

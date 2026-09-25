@@ -83,32 +83,30 @@ implementation rules.
   do not mix them into Projects or turn the schema into a page builder.
 - Preserve the content schemas and update them deliberately when new project or
   article fields are required.
-- `src/content.config.ts` is authoritative. When Projects or Writing fields or
-  their structure change, review and update `.pages.yml` in the same change so
-  the CMS mapping remains compatible. Adapt Pages CMS to Astro's validation; do
-  not weaken the schema to fit the CMS. If a future field cannot be represented
-  safely, document the incompatibility before changing the architecture.
+- `src/content.config.ts` is authoritative. When Writing fields or their
+  structure change, review and update `public/admin/config.yml` in the same
+  change so Sveltia remains compatible. Do not weaken Astro's schema to fit a
+  CMS form. Projects have no CMS configuration; edit their Markdown in the
+  repository until a project-editor capability is explicitly requested.
 - Reuse an existing component when it already owns the relevant responsibility.
   Create a new component when it represents a reusable concept, not merely to
   shorten a file.
 - Use TypeScript types for component props and shared data contracts.
 
-### Pages CMS editing lane
+### Content editing and publication controls
 
-- Pages CMS is an external editor for the Projects and Writing collections over
-  the same Git-managed Markdown and source images. It is not a separate database
-  and cannot create new presentation or application capabilities.
-- `.pages.yml` should expose only fields that the Astro collection already
-  validates. Development adds a capability to Astro first; the CMS may expose
-  a bounded editorial control afterwards.
-- Pages CMS creates new project entries with `draft: true`. Keep a new or
-  materially revised project in draft until its facts, imagery, English and
-  Spanish versions and public voice have been reviewed. The Astro schema's
+- Edit Projects through their repository Markdown and source images. Keep a new
+  or materially revised project in draft until its facts, imagery, English and
+  Spanish versions and public voice have been reviewed. The Projects schema's
   `draft: false` fallback exists only for backwards compatibility with older
-  files that omit the field.
-- Pages CMS also creates new Writing entries with `draft: true`; the Writing
-  schema uses the same safe default because the collection has no legacy entries.
-- Treat `routeSlug`, `translationKey`, `locale`, `draft`, `featured` and `order`
+  files that omit the field; new entries should set `draft: true` explicitly.
+- Sveltia edits Writing/Notas over the same Git-managed Markdown and source
+  images. It is not a separate database and cannot create new presentation or
+  application capabilities. Its form should expose only fields Astro validates.
+  New Writing entries default to `published: false` (Draft); the enabled
+  status switch writes `published: true` (Public).
+- Treat `routeSlug`, `translationKey`, `locale`, the Projects `draft` field,
+  the Writing `published` field, `featured` and `order`
   as publication controls, not casual copy fields. Do not change a public URL,
   publish a draft or alter homepage prominence unless the request is explicit.
 - Keep English and Spanish projects paired. Do not invent missing professional
@@ -117,6 +115,47 @@ implementation rules.
 - Pair English and Spanish articles through `translationKey`. Localized slugs may
   differ; when one translation is missing, the language switcher falls back to
   the other locale's Writing or Notas index.
+
+### Abi's local Writing CMS
+
+Sveltia is Abi's local rich-text editor for Writing/Notas and the only active
+CMS. Projects are edited in the repository, not through a CMS. Sveltia's
+configuration is in `public/admin/config.yml`, its entry point is
+`public/admin/index.html`, and it edits only the Git-managed `writing`
+collection. Spanish is the initial content
+language; English is edited through the entry's language switcher. Abi writes
+in the CMS and previews the real Astro page in a second local browser tab.
+In development, Writing/Notas lists all entries and labels drafts; production
+lists and routes include only published entries.
+The CMS's local site shortcut is configured by `preview_path` and resolves via
+the development-only `src/pages/writing-preview/` redirect to the correct
+localized article route. Sveltia's top shortcut uses default Spanish; the
+English locale options menu opens the English article. Do not ship the preview
+redirect as a production route or point draft previews at the public site.
+
+When Abi asks to change an article or its "template," translate the request
+into the right layer without requiring her to name files or write Markdown:
+
+- Words, images and metadata belong to the article files in
+  `src/content/writing/{locale}/` (or the CMS form). Keep drafts unpublished and
+  pair translations by `translationKey` while allowing localized `routeSlug`s.
+- The shared article presentation belongs to
+  `src/components/pages/WritingArticlePage.astro`; the Writing/Notas listing
+  belongs to `WritingIndexPage.astro`. A change to either template must work in
+  both languages. Do not make a one-off page or put presentation in Markdown.
+- `src/content.config.ts` is the authoritative field schema. For a new content
+  capability, change the Astro implementation first, then align
+  `public/admin/config.yml`. Keep the CMS scoped to Writing.
+- `src/lib/writing.ts` owns article selection, draft filtering and editor URLs;
+  `src/i18n/config.ts` owns localized routes and shared UI copy. Pencil links
+  are development-only shortcuts, not access control.
+
+Work with Abi through a small loop: understand the desired reader experience,
+make a local change, show the actual EN/ES pages, invite her feedback, then run
+`npm run build`. Explain the result in plain language and name any editorial
+choices she still needs to make. A local CMS save does not authorize publishing;
+do not commit, push, deploy or enable production `/admin/` access without an
+explicit request and review of authentication and media paths.
 
 ## Rendering, JavaScript and privacy
 
@@ -276,8 +315,9 @@ that operational detail in implementation code.
   change follows established patterns.
 - Classify the request before acting: routine Projects or Writing content, other
   content, visual/design work, application capability or workflow/infrastructure. Use
-  Pages CMS, repository content, Figma or Astro code according to the ownership
-  boundaries above; do not solve a content change by inventing architecture.
+  repository content for projects, Sveltia for local articles, Figma or Astro
+  code according to the ownership boundaries above; do not
+  solve a content change by inventing architecture.
 - Preserve unrelated user changes in a dirty worktree. Keep changes local and
   reversible while reviewing them. A local implementation or preview does not
   authorize committing, pushing, deploying, publishing to Figma, changing
@@ -298,9 +338,9 @@ that operational detail in implementation code.
   alternate-language links and internal links.
 - For visual changes, check at least one narrow mobile viewport and one desktop
   viewport.
-- For CMS changes, verify `.pages.yml` still represents the Astro schema, new
-  entries remain drafts by default and existing content builds without
-  frontmatter rewrites.
+- For CMS changes, verify `public/admin/config.yml` still represents the
+  Writing schema, new entries remain drafts by default and existing content
+  builds without frontmatter rewrites.
 - Report architectural decisions, assumptions and any validation that could not
   be completed.
 

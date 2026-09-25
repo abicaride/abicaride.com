@@ -3842,7 +3842,7 @@ function createFinalContactFooter(parent, y) {
     y: 580,
   });
   addFinalBody(footer, {
-    characters: "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →",
+    characters: "Made with 🎨 Figma, 🚀 Astro, ✍️ Sveltia CMS, 🤖 Codex and lots of ❤️.  →",
     fontSize: 14,
     lineHeight: 24,
     color: FINAL_COLOR.surface,
@@ -6624,7 +6624,7 @@ function createAboutMobileFooter(parent, y) {
   addFinalBody(footer, { characters: "EN   /   ES", font: FONT.montserratMedium, fontSize: 13, lineHeight: 22, color: FINAL_COLOR.surface, width: 150, x: 28, y: 855 });
   createRule(footer, { name: "Active language underline — EN", x: 28, y: 885, width: 22, height: 2, color: FINAL_COLOR.canvas });
   addFinalBody(footer, { characters: "HOW IT’S MADE", font: FONT.montserratMedium, fontSize: 11, lineHeight: 19, color: FINAL_COLOR.canvas, width: 220, x: 28, y: 962 });
-  addFinalBody(footer, { characters: "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.  →", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 330, x: 28, y: 998 });
+  addFinalBody(footer, { characters: "Made with 🎨 Figma, 🚀 Astro, ✍️ Sveltia CMS, 🤖 Codex and lots of ❤️.  →", fontSize: 13, lineHeight: 23, color: FINAL_COLOR.surface, width: 330, x: 28, y: 998 });
   addFinalBody(footer, { characters: "© 2026 Abilene Caride. All rights reserved.", fontSize: 12, lineHeight: 21, color: FINAL_COLOR.surface, width: 320, x: 28, y: 1138 });
   return footer;
 }

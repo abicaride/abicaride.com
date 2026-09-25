@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted
+Superseded by [ADR 009 — Sveltia for local Writing](009-sveltia-local-writing.md).
+This record documents the earlier Pages CMS decision and proof of concept; it
+is not current operating guidance.
 
 ## Context
 

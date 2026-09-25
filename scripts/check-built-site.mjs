@@ -88,6 +88,10 @@ try {
   process.exit(1);
 }
 
+if (files.some((file) => path.relative(distDirectory, file).replaceAll(path.sep, '/').startsWith('admin/'))) {
+  errors.push('Local-only CMS editor was included in the production build.');
+}
+
 const htmlFiles = files.filter((file) => file.endsWith('.html'));
 
 for (const file of htmlFiles) {

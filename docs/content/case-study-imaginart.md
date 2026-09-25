@@ -4,7 +4,7 @@
 >
 > This file preserves facts, recalled outcomes, evidence, structural ideas and
 > publication constraints before the English and Spanish case studies are
-> written. It is deliberately outside Astro Content Collections and Pages CMS.
+> written. It is deliberately outside Astro Content Collections and the CMS.
 
 ## Core metadata
 
@@ -708,7 +708,7 @@ professional case.
 3. Create adapted EN and ES versions, not literal translations.
 4. Design original diagrams and visuals.
 5. Decide which public imaginArt links are useful.
-6. Add the finished case through the existing Astro / Pages CMS project model.
+6. Add the finished case through the existing Astro Projects collection.
 
 **The next step is design and narrative exploration, not additional
 infrastructure work.**

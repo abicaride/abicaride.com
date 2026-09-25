@@ -58,10 +58,10 @@ export const architectureCopy: Record<Locale, ArchitectureCopy> = {
           'Visual ideas and design direction are explored here before they become code.',
       },
       {
-        icon: '✍️',
-        name: 'Pages CMS',
+        icon: '📝',
+        name: 'Sveltia CMS',
         description:
-          'Abi edits English and Spanish project content through a friendly form. New projects begin as drafts.',
+          'Abi writes bilingual articles locally in a rich-text editor, with the real Astro page open beside it. New articles begin as drafts.',
       },
       {
         icon: '🐙',
@@ -115,7 +115,7 @@ export const architectureCopy: Record<Locale, ArchitectureCopy> = {
     principles: [
       'Static HTML first, with almost no browser JavaScript.',
       'English and Spanish share the same components instead of duplicating pages.',
-      'Project content stays in portable Markdown files rather than a proprietary database.',
+      'Projects and articles stay in portable Markdown files rather than a proprietary database.',
       'Analytics remains optional and does not load before consent.',
     ],
     sourceTitle: 'Curious enough to inspect the wiring?',
@@ -140,10 +140,10 @@ export const architectureCopy: Record<Locale, ArchitectureCopy> = {
           'Aquí se exploran las ideas visuales y la dirección de diseño antes de convertirlas en código.',
       },
       {
-        icon: '✍️',
-        name: 'Pages CMS',
+        icon: '📝',
+        name: 'Sveltia CMS',
         description:
-          'Abi edita el contenido de los proyectos en español e inglés mediante un formulario sencillo. Los proyectos nuevos empiezan como borradores.',
+          'Abi escribe artículos bilingües en local con un editor visual y la página real de Astro abierta al lado. Los artículos nuevos empiezan como borradores.',
       },
       {
         icon: '🐙',
@@ -197,7 +197,7 @@ export const architectureCopy: Record<Locale, ArchitectureCopy> = {
     principles: [
       'HTML estático primero, con casi nada de JavaScript en el navegador.',
       'El inglés y el español comparten componentes en lugar de duplicar páginas.',
-      'El contenido de los proyectos permanece en archivos Markdown portables, no en una base de datos propietaria.',
+      'Los proyectos y artículos permanecen en archivos Markdown portables, no en una base de datos propietaria.',
       'La analítica es opcional y no se carga antes del consentimiento.',
     ],
     sourceTitle: '¿Te apetece mirar el cableado?',

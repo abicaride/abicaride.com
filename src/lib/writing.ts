@@ -20,11 +20,19 @@ const hasWritingSources = Object.keys(
 export async function getAllPublishedWriting(): Promise<WritingEntry[]> {
   if (!hasWritingSources) return [];
 
-  return getCollection('writing', ({ data }) => !data.draft);
+  return getCollection('writing', ({ data }) => data.published);
 }
 
-export async function getPublishedWriting(locale: Locale): Promise<WritingEntry[]> {
-  const entries = (await getAllPublishedWriting()).filter(
+async function getVisibleWriting(): Promise<WritingEntry[]> {
+  if (!hasWritingSources) return [];
+
+  return import.meta.env.DEV
+    ? getCollection('writing')
+    : getAllPublishedWriting();
+}
+
+export async function getWritingForIndex(locale: Locale): Promise<WritingEntry[]> {
+  const entries = (await getVisibleWriting()).filter(
     ({ data }) => data.locale === locale,
   );
 
@@ -34,7 +42,9 @@ export async function getPublishedWriting(locale: Locale): Promise<WritingEntry[
 }
 
 export async function getWritingStaticPaths(locale: Locale) {
-  const allArticles = await getAllPublishedWriting();
+  // Local authoring can inspect drafts at their eventual URL. Static builds
+  // continue to generate only published articles.
+  const allArticles = await getVisibleWriting();
   const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 
   return allArticles
@@ -81,6 +91,14 @@ export function formatWritingDate(date: Date, locale: Locale): string {
     month: 'long',
     year: 'numeric',
   }).format(date);
+}
+
+export function getWritingEditorPath(article: WritingEntry, locale: Locale): string {
+  // Sveltia identifies a bilingual entry by its default-locale filename,
+  // stored as translationKey even when the public routeSlug is translated.
+  // Its documented _locale hint is included, although this pinned CMS version
+  // currently opens the default Spanish pane until the editor locale is switched.
+  return `/admin/index.html#/collections/writing/entries/${encodeURIComponent(article.data.translationKey)}?_locale=${locale}`;
 }
 
 export function getProjectPathForWriting(

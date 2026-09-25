@@ -13,9 +13,8 @@ proprietary CMS or client-side UI framework.
 ## 📚 Documentation
 
 - [Architecture](docs/ARCHITECTURE.md) — how the technical system is designed
-- [Workflow](docs/WORKFLOW.md) — safe Pages CMS, Codex, deployment and manual Figma release flows
+- [Workflow](docs/WORKFLOW.md) — safe CMS, Codex, deployment and manual Figma release flows
 - [Architecture decisions](docs/decisions/) — why the main decisions were made
-- [Pages CMS validation](docs/CMS-POC.md) — tested Projects-only editorial integration
 - [Agent instructions](AGENTS.md) — rules for AI-assisted changes
 
 ## 🚀 Technology
@@ -26,15 +25,16 @@ proprietary CMS or client-side UI framework.
 - 🎨 Native CSS and CSS custom properties
 - 🔤 Self-hosted Inter and Montserrat typography
 - 🗂️ Astro Content Collections with Markdown and frontmatter
+- ✍️ Sveltia CMS for local article writing; repository editing for projects
 - 🌍 English and Spanish locale-prefixed routes
 - 🖼️ Astro's responsive image pipeline
 - 🔒 Google Analytics 4 with explicit consent
 - ⚙️ GitHub Actions and GitHub Pages
 - ☁️ Cloudflare-managed DNS
 
-Astro is the only production dependency. Pages CMS is an external editorial
-interface for English and Spanish projects; it adds no Astro runtime dependency.
-A separate Writing collection remains planned and is not implemented.
+Astro is the only production dependency. Sveltia CMS is Abi's local rich-text
+editor for the separate bilingual Writing collection; projects are edited in
+the repository. The CMS adds no Astro runtime dependency.
 
 ## 🎨 Public design workspace
 
@@ -88,7 +88,8 @@ Preview the generated site:
 npm run preview
 ```
 
-The static output is written to `dist/`.
+The static output is written to `dist/`. The local Sveltia editor is excluded
+from production builds and is available only on the development server.
 
 ## ⌨️ Available commands
 
@@ -106,12 +107,12 @@ The static output is written to `dist/`.
 ```text
 .
 ├── .github/workflows/deploy.yml    GitHub Pages deployment
-├── .pages.yml                      Pages CMS editorial configuration
 ├── docs/
 │   ├── ARCHITECTURE.md             Technical system reference
 │   ├── WORKFLOW.md                 Human working guide
 │   └── decisions/                  Architecture Decision Records
 ├── public/
+│   ├── admin/                      Local Sveltia Writing editor and configuration
 │   ├── favicon.*                   Stable public assets
 │   └── scripts/
 │       └── analytics-consent.js    Consent and analytics browser logic
@@ -122,13 +123,16 @@ The static output is written to `dist/`.
 │   ├── content/projects/
 │   │   ├── en/                     English project entries
 │   │   └── es/                     Spanish project entries
+│   ├── content/writing/
+│   │   ├── en/                     English article entries
+│   │   └── es/                     Spanish article entries
 │   ├── data/                       Structured bilingual profile data
 │   ├── i18n/                       UI copy, locale types and path helpers
 │   ├── layouts/                    Global document layout
 │   ├── lib/                        Shared build-time and routing helpers
 │   ├── pages/                      English and Spanish route wrappers
 │   ├── styles/                     Design tokens and global CSS
-│   └── content.config.ts           Project collection schema
+│   └── content.config.ts           Project and Writing collection schemas
 ├── tools/figma/
 │   └── abi-brief-builder/          Optional local V2 brief plugin
 ├── AGENTS.md                       Architecture-aware contributor rules
@@ -196,9 +200,10 @@ accessibility, privacy, responsive images and dependency changes.
 
 Abi may also use Codex directly for content preparation and vibe coding. The
 recommended loop is local change → bilingual/mobile/desktop review → build →
-explicit approval to commit and push. Pages CMS remains the simplest editor for
-routine project content; Codex is appropriate when the change spans languages,
-layout, behaviour or architecture. See the [working guide](docs/WORKFLOW.md#work-safely-with-codex)
+explicit approval to commit and push. Sveltia is the local editor for articles;
+projects are edited in the repository with Codex or a local editor. Codex is
+appropriate when the change spans languages, layout, behaviour or architecture.
+See the [working guide](docs/WORKFLOW.md#work-safely-with-codex)
 for prompt examples, publication controls and the quota-independent Figma
 Desktop release procedure.
 

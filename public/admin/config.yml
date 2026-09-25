@@ -1,0 +1,77 @@
+# Local Writing editor. Review authentication and media paths before deploying /admin/.
+backend:
+  name: github
+  repo: abicaride/abicaride.com
+
+media_folder: /src/assets/images/writing
+public_folder: /src/assets/images/writing
+
+output:
+  omit_empty_optional_fields: true
+
+# One entry has separate EN/ES Markdown files matching Astro's content folders.
+# Sveltia writes translationKey when the filenames use localized slugs.
+i18n:
+  structure: multiple_folders
+  locales: [es, en]
+  default_locale: es
+  initial_locales: default
+
+collections:
+  - name: writing
+    label: Notas / Writing
+    folder: /src/content/writing
+    format: yaml-frontmatter
+    identifier_field: title
+    aliases_field: false
+    i18n: true
+    slug: '{{routeSlug | localize}}'
+    # The local-only Astro redirect resolves the different EN/ES section names.
+    preview_path: '/writing-preview/{{locale}}/{{routeSlug | localize}}/'
+    fields:
+      - name: published
+        label: Estado / Status
+        widget: boolean
+        default: false
+        i18n: true
+        preview: false
+        before_input: Borrador / Draft
+        after_input: Público / Public
+      - { name: title, label: Título / Title, widget: string, i18n: true }
+      - name: routeSlug
+        label: Slug de URL / URL slug
+        widget: string
+        i18n: true
+        preview: false
+        pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Usa minúsculas, números y guiones simples. / Use lowercase letters, numbers and single hyphens.']
+        hint: Cambiar un slug publicado cambia su URL. / Changing a published slug changes its URL.
+      - { name: description, label: Entradilla / Standfirst, widget: text, i18n: true }
+      - name: image
+        label: Imagen de cabecera / Hero image
+        widget: object
+        required: false
+        i18n: true
+        fields:
+          - name: src
+            label: Imagen / Image
+            widget: image
+            media_folder: /src/assets/images/writing
+            public_folder: ../../../assets/images/writing
+          - { name: alt, label: Texto alternativo / Alternative text, widget: text }
+      - name: body
+        label: Artículo / Article
+        widget: richtext
+        i18n: true
+        media_folder: /src/assets/images/writing
+        public_folder: ../../../assets/images/writing
+      - { name: locale, widget: hidden, default: '{{locale}}', i18n: true }
+      - { name: category, label: Categoría / Category, widget: string, required: false, i18n: true }
+      - name: tags
+        label: Etiquetas / Tags
+        widget: list
+        required: false
+        i18n: true
+        field: { name: tag, label: Etiqueta / Tag, widget: string }
+      - { name: publishedAt, label: Fecha de publicación / Publication date, widget: datetime, type: date, default: '{{now}}', i18n: duplicate, preview: false }
+      - { name: updatedAt, label: Fecha de actualización / Updated date, widget: datetime, type: date, required: false, i18n: true, preview: false }
+      - { name: relatedProjectTranslationKey, label: Clave del proyecto relacionado / Related project key, widget: string, required: false, i18n: duplicate, preview: false }

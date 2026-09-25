@@ -734,7 +734,7 @@ for (const expected of [
   "Cookie settings",
   "LANGUAGE",
   "HOW IT’S MADE",
-  "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
+  "Made with 🎨 Figma, 🚀 Astro, ✍️ Sveltia CMS, 🤖 Codex and lots of ❤️.",
   "Content · Communications · Marketing · Business",
   "PALETTE HIERARCHY · DURABLE RULE",
   "NEUTRALS · dominant backgrounds",
@@ -1085,7 +1085,7 @@ for (const expected of [
   "Portuguese · A2",
   "Korean · A1",
   "LET’S TALK",
-  "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
+  "Made with 🎨 Figma, 🚀 Astro, ✍️ Sveltia CMS, 🤖 Codex and lots of ❤️.",
   "Back to top",
 ]) {
   assert.ok(aboutText.toLowerCase().includes(expected.toLowerCase()), `Missing final About content: ${expected}`);
@@ -1160,7 +1160,7 @@ for (const expected of [
   "LANGUAGE",
   "EN   /   ES",
   "HOW IT’S MADE",
-  "Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.",
+  "Made with 🎨 Figma, 🚀 Astro, ✍️ Sveltia CMS, 🤖 Codex and lots of ❤️.",
   "Content · Communications · Marketing · Business",
   "Have a role, project or idea",
   "worth talking about?",

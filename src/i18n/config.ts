@@ -42,8 +42,8 @@ export const ui = {
       cookieSettings: 'Cookie settings',
       languageLabel: 'Language',
       buildLabel: 'How it’s made',
-      buildNote: 'Made with 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex and lots of ❤️.',
-      buildDetails: 'Made with Figma, Astro, Pages CMS and Codex. See how this website is made.',
+      buildNote: 'Made with 🎨 Figma, 🚀 Astro, ✍️ Sveltia CMS, 🤖 Codex and lots of ❤️.',
+      buildDetails: 'Made with Figma, Astro, Sveltia CMS and Codex. See how this website is made.',
     },
     consent: {
       title: 'Analytics',
@@ -208,6 +208,9 @@ export const ui = {
     writing: {
       title: 'Writing',
       description: 'Ideas, lessons and observations about content, communication and UX.',
+      openEditorLabel: 'Open the writing editor',
+      editArticle: 'Edit article',
+      draftLabel: 'Draft',
       back: 'Back to Writing',
       readArticle: 'Read article',
       empty: 'New writing will appear here soon.',
@@ -261,8 +264,8 @@ export const ui = {
       cookieSettings: 'Configurar cookies',
       languageLabel: 'Idioma',
       buildLabel: 'Cómo está hecha',
-      buildNote: 'Hecha con 🎨 Figma, 🚀 Astro, ✍️ Pages CMS, 🤖 Codex y mucho ❤️.',
-      buildDetails: 'Hecha con Figma, Astro, Pages CMS y Codex. Descubre cómo está hecha esta web.',
+      buildNote: 'Hecha con 🎨 Figma, 🚀 Astro, ✍️ Sveltia CMS, 🤖 Codex y mucho ❤️.',
+      buildDetails: 'Hecha con Figma, Astro, Sveltia CMS y Codex. Descubre cómo está hecha esta web.',
     },
     consent: {
       title: 'Analítica',
@@ -428,6 +431,9 @@ export const ui = {
     writing: {
       title: 'Notas',
       description: 'Ideas, aprendizajes y observaciones sobre contenido, comunicación y UX.',
+      openEditorLabel: 'Abrir el editor de notas',
+      editArticle: 'Editar nota',
+      draftLabel: 'Borrador',
       back: 'Volver a Notas',
       readArticle: 'Leer nota',
       empty: 'Pronto habrá nuevas notas por aquí.',

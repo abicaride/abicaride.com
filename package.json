@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "postbuild": "node scripts/remove-local-admin-from-build.mjs",
     "check:site": "node scripts/check-built-site.mjs",
     "favicon:generate": "node scripts/generate-favicon-assets.mjs",
     "preview": "astro preview",

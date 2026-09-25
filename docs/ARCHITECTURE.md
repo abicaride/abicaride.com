@@ -47,8 +47,8 @@ and long pages may add an `IntersectionObserver`-driven Back to top control.
 ### Git as the production source of truth
 
 Code, content, configuration and relevant assets live in the GitHub repository.
-Figma expresses design intention, and Pages CMS edits Git-managed project and
-article files; neither replaces the repository.
+Figma expresses design intention, Sveltia edits Git-managed Writing files
+locally, and Projects are edited in the repository. None replaces Git.
 
 ### Content separated from presentation
 
@@ -67,9 +67,9 @@ enhancements.
 flowchart TD
     ABI["Abi"] --> FIGMA["Figma"]
     ABI --> EDIT["Codex or developer"]
-    ABI --> CMS["Pages CMS"]
+    ABI --> CMS["Sveltia CMS — local Writing editor"]
     FIGMA -->|"Approved visual direction"| EDIT
-    CMS -->|"Edits project and article content"| REPO
+    CMS -->|"Edits article Markdown and images"| REPO
     EDIT -->|"Code and content"| REPO["GitHub repository"]
     CONTENT["Markdown + frontmatter"] --> REPO
     ASSETS["Source images"] --> REPO
@@ -81,9 +81,10 @@ flowchart TD
     SITE -->|"Only after consent"| GA["Google Analytics 4"]
 ```
 
-The Pages CMS connection is an external editorial workflow, not an Astro runtime
-dependency. Cloudflare is operational context documented by the project; its
-configuration is external to this repository.
+Sveltia is a local editorial tool, not an Astro runtime dependency. Project
+content is edited directly in the repository. Cloudflare is operational
+context documented by the project; its configuration is external to this
+repository.
 
 ## Technology stack
 
@@ -126,11 +127,12 @@ Astro is the only production dependency in `package.json`.
 - Git and GitHub for source control;
 - Codex or a local editor for implementation work.
 
-### Editorial — External workflow
+### Editorial — Local workflow
 
-- Pages CMS collections for routine EN/ES project and article changes;
-- GitHub authentication and repository permissions for each editor;
-- the existing Markdown, frontmatter and source images as the edited data.
+- Sveltia CMS for rich-text EN/ES Writing/Notas editing in a local checkout;
+- repository editing, with Codex assistance when useful, for Projects;
+- the existing Markdown, frontmatter and source images as the edited data;
+- explicit review, commit and push after local CMS saves.
 
 ### Under consideration
 
@@ -256,7 +258,7 @@ The actual schema in `src/content.config.ts` contains:
 | `period` | No | Human-readable project period |
 | `featured` | Default `false` | Selects prominent projects |
 | `order` | Yes | Positive integer controlling listing order |
-| `draft` | Schema fallback `false` | Excludes unpublished entries from generated pages; Pages CMS creates new entries as `true` |
+| `draft` | Schema fallback `false` | Excludes unpublished entries from generated pages; set `true` explicitly for new projects |
 | `image` | Yes | Astro-managed source plus localized alt text |
 | `metrics` | No | Reusable value, label and optional detail items |
 | `gallery` | No | Astro-managed images with alt text and optional captions |
@@ -410,46 +412,42 @@ flowchart LR
     CHECK -->|"No"| STOP["Stop; previous production remains"]
 ```
 
-The pipeline is independent of whether a commit originates in Pages CMS,
-Codex, VS Code or another Git client. GitHub Pages hosts the output; Cloudflare
+The pipeline is independent of whether a commit originates in Codex, a local
+editor or another Git client. GitHub Pages hosts the output; Cloudflare
 manages DNS outside the repository and does not replace the deploy pipeline.
 
-## CMS architecture — Adopted external workflow
+## CMS architecture — Local Writing editor
 
-Pages CMS is the external editorial layer for Projects and Writing.
-Repository-root `.pages.yml` maps their separate English and Spanish collections
-without changing the Astro schemas. Pages CMS is not installed in the Astro
-application.
+Sveltia CMS is the only active CMS. It edits the Writing collection in a local
+checkout through `public/admin/index.html` and `public/admin/config.yml`.
+Projects remain repository-edited; there is no project CMS form. The Writing
+schema in `src/content.config.ts` remains authoritative, and Sveltia is not an
+Astro runtime dependency.
 
 ```mermaid
 flowchart LR
-    ABI["Abi"] --> CMS["Pages CMS"]
-    CMS --> FILES["Markdown, frontmatter and images"]
-    FILES --> REPO["GitHub repository"]
+    ABI["Abi"] --> CMS["Sveltia CMS — local"]
+    CMS --> FILES["Writing Markdown, frontmatter and images"]
+    FILES --> PREVIEW["Local Astro preview"]
+    PREVIEW --> REVIEW["Abi review + build"]
+    REVIEW --> REPO["Commit and push to GitHub"]
     REPO --> BUILD["Existing Astro build"]
     BUILD --> SITE["abicaride.com"]
 ```
 
 The CMS remains an interface over Git-managed files, not a new source of truth
-or database. Each editor authenticates with their own GitHub account. The GitHub
-App is repository-scoped rather than branch-scoped; GitHub permissions and branch
-rules control whether an editor can commit to `main`.
+or database. Local saves do not commit or deploy. Sveltia starts a new article
+in Spanish, supports an English version in the same entry, and defaults new
+entries to `published: false` (Draft). Abi sees the actual site in a separate local Astro
+tab while writing. The Projects schema retains its `draft: false` fallback
+only for older files; set `draft: true` explicitly on new projects. Route
+slugs, locale, translation keys and publication state are publication controls and
+require deliberate review, as do project featured state and order.
 
-Pages CMS defaults newly created projects and articles to `draft: true`; this is
-the editorial safety default. The Projects schema retains a `false` fallback
-only so older repository files that omit the field remain backwards compatible;
-Writing also defaults to draft because it has no legacy entries. Route slugs,
-locale, translation keys and draft state are publication controls and require
-deliberate review, as do project featured state and order.
-
-See [the validation report](CMS-POC.md) for the tested matrix and image-path
-findings.
-
-The adopted scope covers Projects and Writing. Each has separate EN/ES forms,
-source-image media and a draft-first creation workflow. Making selected static
-pages editable remains a separate decision.
-
-See [ADR 006](decisions/006-pages-cms.md) for alternatives and trade-offs.
+See [ADR 009](decisions/009-sveltia-local-writing.md) for the current editorial
+decision. [ADR 006](decisions/006-pages-cms.md) and the
+[Pages CMS proof of concept](CMS-POC.md) are historical records, not current
+operating instructions.
 
 ## Figma architecture
 
@@ -536,7 +534,8 @@ requirements justify the additional complexity.
 - [ADR 003 — Astro Content Collections](decisions/003-content-collections.md)
 - [ADR 004 — Bilingual content model](decisions/004-bilingual-content-model.md)
 - [ADR 005 — GitHub Pages deployment](decisions/005-github-pages-deployment.md)
-- [ADR 006 — Pages CMS](decisions/006-pages-cms.md)
+- [ADR 006 — Pages CMS (superseded)](decisions/006-pages-cms.md)
 - [ADR 007 — Figma and code workflow](decisions/007-figma-and-code-workflow.md)
+- [ADR 009 — Sveltia local Writing](decisions/009-sveltia-local-writing.md)
 
 For day-to-day use, read [Working with abicaride.com](WORKFLOW.md).
