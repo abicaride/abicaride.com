@@ -76,10 +76,14 @@ source Git commit and repository source-of-truth statement.
 - **Publish current Moodboard direction** replaces the managed V2 research
   summary with the implemented positioning, homepage structure and remaining
   content questions.
-- **Publish current Homepage snapshot** creates or replaces the editable
-  production Homepage reference with the packaged hero image, Work-first hero
-  actions, one imaginArt lead case and the implemented editorial capabilities
-  rows.
+- **Publish current Homepage design reference** creates the editable Homepage
+  reference with the packaged hero and imaginArt cover images, the implemented
+  lead project preview, editorial capabilities, About intro and footer. Mobile
+  hero copy uses vertical Auto Layout; its image keeps the packaged asset ratio,
+  and its intrinsic-width CTA pills use wrapping Auto Layout. The 1440px desktop
+  hero follows the production clamp (928px at a 16px root font). The previous
+  managed Homepage reference is moved beyond the current
+  canvas area and marked `[ARCHIVE]` rather than deleted.
 - The shared footer reference includes its contact close, approved brand-mark
   watermark, identity signature, labelled privacy/language/build utilities and
   stacked mobile treatment. Utility groups are separated by clean whitespace,
@@ -116,7 +120,7 @@ Use the commands only in these destinations:
 | Abi Website Foundations | `01 — Foundations` | Publish current Foundations |
 | Abi Website Foundations | `02 — Components` | Publish current Components reference |
 | Abi Website Moodboard | FigJam canvas | Publish current Moodboard direction |
-| Abi Personal Website | `01 — Homepage` | Publish current Homepage snapshot |
+| Abi Personal Website | `01 — Homepage` | Publish current Homepage design reference |
 | Abi Personal Website | `02 — Case Studies` | Publish current imaginArt snapshot |
 | Abi Personal Website | `03 — About + Archive` | Publish current About snapshot |
 | Abi Personal Website | `03 — About + Archive` | Publish current Contact snapshot |
@@ -146,7 +150,7 @@ of the release path.
 
 5. Import or refresh `manifest.json` in Figma Desktop.
 6. Open the exact target page and run the relevant **Publish current** command.
-7. Run the Homepage, imaginArt, About and Contact production snapshot commands
+7. Run the Homepage design reference and imaginArt, About and Contact snapshot commands
    in the appropriate Personal Website pages.
 8. Verify the generated output visually before treating the release as
    synchronized. Check the status/release label, the represented content,
@@ -170,8 +174,8 @@ a second safety net.
 - The plugin has no network access or external dependencies.
 - It validates the open Figma file, editor type and page before writing.
 - Generated roots are tagged with private plugin data.
-- Current/approved commands build a replacement before removing only their own
-  previously tagged predecessor.
+- Current/approved commands build a replacement before retiring only their own
+  previously tagged predecessor. Homepage preserves its predecessor as `[ARCHIVE]`.
 - Production snapshots recalculate their position against every visible
   top-level canvas item and sit beyond the rightmost edge, so archived,
   approved and manually arranged work cannot be covered by a release.
@@ -188,7 +192,7 @@ a second safety net.
   likeness.
 
 Running a current command is an external write: after the new tagged section is
-created, the command removes its own previous tagged section. It must therefore
+created, the command retires its own previous tagged section. It must therefore
 be run only for an explicit Figma publish/synchronization request. It never
 implies a website deployment, permission change or publication to the Figma
 Community.

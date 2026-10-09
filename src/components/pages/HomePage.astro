@@ -47,8 +47,7 @@ const leadProject = projects.find((project) => project.data.translationKey === '
     {leadProject && (
       <section class="lead-work" id="selected-work" aria-labelledby="lead-title">
         <header class="section-heading">
-          <p class="eyebrow">{copy.home.leadEyebrow}</p>
-          <h2 id="lead-title">{copy.home.leadTitle}</h2>
+          <h2 id="lead-title" class="eyebrow">{copy.home.leadEyebrow}</h2>
           <p>{copy.home.leadSummary}</p>
         </header>
         <ProjectPreview project={leadProject} locale={locale} variant="lead" />
@@ -96,6 +95,7 @@ const leadProject = projects.find((project) => project.data.translationKey === '
   .home-content { display: grid; max-width: var(--size-content); margin-inline: auto; padding: var(--space-section) var(--space-page); gap: var(--space-section); }
   .lead-work, .capabilities { display: grid; gap: var(--space-10); }
   .section-heading { display: grid; max-width: 54rem; gap: var(--space-4); }
+  .lead-work .eyebrow { line-height: var(--line-height-body); }
   .section-heading > p:last-child { max-width: var(--size-prose); color: var(--color-ink-muted); font-size: var(--font-size-md); }
   .compact-heading { max-width: 48rem; }
   .capability-list { border-block-end: var(--border-width) solid var(--color-border); }

@@ -34,8 +34,9 @@ Managed root sections use exactly one status:
 - `[ARCHIVE]` preserves superseded exploration or V1 history.
 
 Packaged publisher output embeds the design release and source Git commit.
-Publisher commands replace only their own tagged predecessor after the new
-section has been created successfully. Untagged manual work is outside the
+Publisher commands retire only their own tagged predecessor after the new
+section has been created successfully. The Homepage command preserves its
+predecessor as an `[ARCHIVE]` section. Untagged manual work is outside the
 publisher's ownership.
 
 Publishing is intentionally manual in an authenticated Figma Desktop session.

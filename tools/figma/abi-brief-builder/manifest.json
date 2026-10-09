@@ -22,7 +22,7 @@
       "command": "build-moodboard"
     },
     {
-      "name": "Publish current Homepage snapshot",
+      "name": "Publish current Homepage design reference",
       "command": "publish-current-homepage"
     },
     {

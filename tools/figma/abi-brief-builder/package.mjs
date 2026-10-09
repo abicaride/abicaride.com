@@ -11,6 +11,7 @@ const tokenPath = path.join(repositoryRoot, "src/styles/tokens.css");
 const assetPaths = {
   hero: path.join(repositoryRoot, "src/assets/images/abilene-hero-v2.png"),
   about: path.join(repositoryRoot, "src/assets/images/abilene-about-v2.png"),
+  imaginartCover: path.join(repositoryRoot, "src/assets/images/projects/imaginart-cover.png"),
 };
 const vectorPaths = {
   favicon: path.join(repositoryRoot, "public/favicon.svg"),
@@ -36,14 +37,19 @@ const parseTokenBlock = (selector) => {
 const tokens = parseTokenBlock(":root");
 const darkTokens = parseTokenBlock("html[data-theme='dark']");
 const assets = Object.fromEntries(
-  Object.entries(assetPaths).map(([name, assetPath]) => [
-    name,
-    {
+  Object.entries(assetPaths).map(([name, assetPath]) => {
+    const bytes = fs.readFileSync(assetPath);
+    if (bytes.toString("hex", 0, 8) !== "89504e470d0a1a0a") {
+      throw new Error(`Expected a PNG production image: ${assetPath}`);
+    }
+    return [name, {
       fileName: path.basename(assetPath),
       mimeType: "image/png",
-      base64: fs.readFileSync(assetPath).toString("base64"),
-    },
-  ]),
+      width: bytes.readUInt32BE(16),
+      height: bytes.readUInt32BE(20),
+      base64: bytes.toString("base64"),
+    }];
+  }),
 );
 const vectors = Object.fromEntries(
   Object.entries(vectorPaths).map(([name, vectorPath]) => [

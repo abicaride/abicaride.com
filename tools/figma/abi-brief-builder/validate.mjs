@@ -70,6 +70,10 @@ class MockNode {
     this.resize(width, height);
   }
 
+  lockAspectRatio() {
+    this.targetAspectRatio = { x: this.width, y: this.height };
+  }
+
   setPluginData(key, value) {
     this.pluginData.set(key, value);
   }
@@ -89,13 +93,51 @@ class MockNode {
     }
   }
 
-  reflow() {
+  reflow(bubble = true) {
+    if (this.layoutMode === "HORIZONTAL") {
+      let nextX = this.paddingLeft || 0;
+      let nextY = this.paddingTop || 0;
+      let rowHeight = 0;
+      let maxRight = nextX;
+      const wrapping = this.layoutWrap === "WRAP";
+      for (const child of this.children) {
+        child.reflow(false);
+        if (wrapping && nextX > (this.paddingLeft || 0) && nextX + child.width > this.width - (this.paddingRight || 0)) {
+          nextX = this.paddingLeft || 0;
+          nextY += rowHeight + (this.counterAxisSpacing ?? this.itemSpacing ?? 0);
+          rowHeight = 0;
+        }
+        child.x = nextX;
+        child.y = nextY;
+        nextX += child.width + (this.itemSpacing || 0);
+        maxRight = Math.max(maxRight, nextX - (this.itemSpacing || 0));
+        rowHeight = Math.max(rowHeight, child.height);
+      }
+      if (this.primaryAxisSizingMode === "AUTO") this.width = maxRight + (this.paddingRight || 0);
+      if (this.counterAxisSizingMode === "AUTO") this.height = nextY + rowHeight + (this.paddingBottom || 0);
+      if (bubble) this.parent?.reflow?.();
+      return;
+    }
     if (this.layoutMode !== "VERTICAL" || this.primaryAxisSizingMode !== "AUTO") return;
-    const childrenHeight = this.children.reduce((total, child) => total + child.height, 0);
-    const gaps = Math.max(0, this.children.length - 1) * (this.itemSpacing || 0);
-    this.height =
-      (this.paddingTop || 0) + childrenHeight + gaps + (this.paddingBottom || 0);
-    this.parent?.reflow?.();
+    let nextY = this.paddingTop || 0;
+    for (const child of this.children) {
+      if (child.layoutSizingHorizontal === "FILL") {
+        child.width = this.width - (this.paddingLeft || 0) - (this.paddingRight || 0);
+        if (child.targetAspectRatio) {
+          child.height = child.width * child.targetAspectRatio.y / child.targetAspectRatio.x;
+        }
+        if (child.type === "TEXT" && child.textAutoResize === "HEIGHT") {
+          child.height = estimateTextHeight(child);
+        } else if (child.layoutMode === "VERTICAL" || child.layoutMode === "HORIZONTAL") {
+          child.reflow(false);
+        }
+      }
+      child.x = this.paddingLeft || 0;
+      child.y = nextY;
+      nextY += child.height + (this.itemSpacing || 0);
+    }
+    this.height = nextY - (this.children.length ? this.itemSpacing || 0 : 0) + (this.paddingBottom || 0);
+    if (bubble) this.parent?.reflow?.();
   }
 
   get absoluteRenderBounds() {
@@ -151,6 +193,10 @@ class MockTextNode extends MockNode {
   updateHeight() {
     if (this._textAutoResize === "HEIGHT") {
       this.height = estimateTextHeight(this);
+      this.parent?.reflow?.();
+    } else if (this._textAutoResize === "WIDTH_AND_HEIGHT") {
+      this.width = Math.ceil(this.characters.length * this.fontSize * 0.54);
+      this.height = this.lineHeight?.value || this.fontSize * 1.45;
       this.parent?.reflow?.();
     }
   }
@@ -265,6 +311,7 @@ async function execute(figma) {
   const script = new vm.Script(pluginSource, { filename: "code.js" });
   script.runInContext(context);
   await new Promise((resolve) => setImmediate(resolve));
+  figma.scriptContext = context;
 }
 
 function allNodes(node, output = []) {
@@ -1309,35 +1356,47 @@ await execute(currentHomepage);
 assert.equal(currentHomepage.notifications.at(-1).error, false);
 assert.equal(generatedSections(currentHomepage).length, 1);
 const currentHomepageSection = generatedSections(currentHomepage)[0];
-assert.equal(currentHomepageSection.name, "[CURRENT] Homepage — production snapshot");
+assert.equal(currentHomepageSection.name, "[CURRENT] Homepage — design reference");
 const currentHomepageNodes = allNodes(currentHomepageSection);
 const currentHomepageText = currentHomepageNodes
   .filter((node) => node.type === "TEXT")
   .map((node) => node.characters)
   .join("\n");
 for (const expected of [
-  "Homepage — current production snapshot",
+  "Homepage — design reference",
+  "Production implementation is the source of truth.",
   "I turn complex information and business needs into clear and persuasive content.",
   "I don’t write for the sake of sounding good. I use research, audience insight and performance data to decide what to say and how to say it.",
   "Convierto información compleja y necesidades de negocio en contenidos claros y persuasivos.",
   "No escribo solo para que algo suene bien. Utilizo investigación, conocimiento de la audiencia y datos de rendimiento para decidir qué decir y cómo decirlo.",
   "MARKETING, B2B CONTENT & COMMUNICATIONS · IMAGINART",
-  "What I work across",
+  "LEAD PROFESSIONAL WORK",
+  "Read project",
+  "Content, communications and UX thinking",
   "Content strategy",
   "Communications",
   "UX thinking",
   "See all work",
-  "Clear thinking, honest communication and a practical way forward.",
-  "I’m Galician and live in Barcelona.",
+  "My route into content wasn’t a straight line.",
+  "I’m Galician and based in Barcelona.",
+  "Sveltia CMS",
   "Have a role, project or idea",
   "worth talking about?",
 ]) {
   assert.ok(currentHomepageText.includes(expected), `Missing current Homepage content: ${expected}`);
 }
 assert.equal(currentHomepageSection.width, 2730);
+assert.ok(currentHomepageText.includes("HERO CLAMP(768 PX, 65VW, 928 PX) = 928 PX"));
+assert.ok(!currentHomepageText.includes("Marketing & Communications Specialist"));
+assert.ok(!currentHomepageText.includes("Jan 2023–Jul 2026"));
+assert.equal(currentHomepageNodes.filter((node) => node.type === "TEXT" && node.characters === "Making specialist B2B communication clearer").length, 1);
 assert.ok(!currentHomepageText.includes("Cognitive biases in ecommerce"));
 assert.ok(!currentHomepageText.includes("Error Messages"));
 assert.ok(!currentHomepageText.includes("Have a project, an idea,"));
+assert.ok(!currentHomepageText.includes("Newsletter"));
+assert.ok(!currentHomepageText.includes("~24% → ~34%"));
+assert.ok(!currentHomepageText.includes("Production snapshot notes"));
+assert.ok(!currentHomepageText.includes("honest communication"));
 assert.ok(
   currentHomepageNodes.some((node) => node.name === "Capabilities — editorial rows"),
   "The current Homepage must represent the editorial capabilities section",
@@ -1363,6 +1422,8 @@ assert.equal(currentSecondaryHeroCta.fills[0].color.b, 234 / 255);
 const currentHero = currentHomepageNodes.find((node) => node.name.includes("Hero — full-bleed"));
 assert.equal(currentHero.fills[0].type, "IMAGE");
 assert.equal(currentHero.fills[0].imageHash, "packaged-production-image");
+assert.equal(currentHero.width, 1440);
+assert.equal(currentHero.height, 928);
 const currentHeroFade = currentHomepageNodes.find(
   (node) => node.name === "Hero — canvas fade · current production",
 );
@@ -1372,7 +1433,7 @@ assert.equal(
   JSON.stringify([[0, 0.9], [0.2, 0.86], [0.36, 0.7], [0.5, 0.34], [0.64, 0], [1, 0]]),
 );
 assert.equal(currentHeroFade.width, 1440);
-assert.equal(currentHeroFade.height, 860);
+assert.equal(currentHeroFade.height, 928);
 assert.ok(!currentHomepageNodes.some((node) => node.name === "Hero — warm readability gradient"));
 const currentDesktopRole = currentHomepageNodes.find(
   (node) => node.type === "TEXT" && node.characters === "CONTENT, COMMUNICATIONS & MARKETING SPECIALIST" && node.x === 32,
@@ -1411,10 +1472,10 @@ assert.ok(currentDesktopRole.y < currentDesktopHeading.y);
 assert.ok(currentDesktopHeading.y < currentDesktopSupporting.y);
 assert.ok(currentDesktopSupporting.y < currentPrimaryHeroCta.y);
 const currentMobileEn = currentHomepageNodes.find(
-  (node) => node.name === "Homepage hero — mobile image-first · EN · Light",
+  (node) => node.name === "Mobile — EN — Light — 390px",
 );
 const currentMobileEs = currentHomepageNodes.find(
-  (node) => node.name === "Homepage hero — mobile image-first · ES · Dark",
+  (node) => node.name === "Mobile — ES — Dark — 390px",
 );
 assert.equal(currentMobileEn.width, 390);
 assert.equal(currentMobileEs.width, 390);
@@ -1425,14 +1486,76 @@ for (const mobile of [currentMobileEn, currentMobileEs]) {
   assert.equal(mobileHeader.y, 0);
   assert.equal(mobileHeader.height, 76);
   assert.equal(mobileImage.y, 76);
-  assert.equal(mobileImage.height, 260);
+  assert.equal(mobileImage.height, mobile.width * 2 / 3);
+  assert.ok(mobileImage.targetAspectRatio, "The mobile image must preserve the production 3:2 ratio");
   assert.equal(mobileImage.fills[0].type, "IMAGE");
   assert.equal(mobileImage.fills[0].imageHash, "packaged-production-image");
+  const mobileContent = mobileNodes.find((node) => node.name === "Hero content — vertical Auto Layout");
+  assert.equal(mobile.layoutMode, "VERTICAL");
+  assert.equal(mobile.primaryAxisSizingMode, "AUTO");
+  assert.equal(mobileContent.layoutMode, "VERTICAL");
+  assert.equal(mobileContent.primaryAxisSizingMode, "AUTO");
+  assert.equal(mobileContent.children.length, 4);
+  for (const text of mobileContent.children.filter((child) => child.type === "TEXT")) {
+    assert.equal(text.textAutoResize, "HEIGHT");
+    assert.notEqual(text.layoutSizingHorizontal, "FILL", "Wrapped mobile text needs a fixed width in Figma");
+    assert.equal(text.width, mobile.width - 48);
+  }
+  assert.ok(mobileContent.children[1].height > 43, "The H1 must grow beyond one line");
+  assert.ok(mobileContent.children[2].height > 28, "The supporting paragraph must grow beyond one line");
+  const actions = mobileContent.children[3];
+  assert.equal(actions.layoutMode, "HORIZONTAL");
+  assert.equal(actions.layoutWrap, "WRAP");
+  assert.equal(actions.children.length, 2);
+  assert.ok(actions.children.every((button) => button.layoutSizingHorizontal === "HUG" && button.width < actions.width));
+  assert.ok(actions.children.every((button) => button.height === 64));
+  for (let index = 1; index < mobileContent.children.length; index += 1) {
+    const previous = mobileContent.children[index - 1];
+    const current = mobileContent.children[index];
+    assert.ok(current.y >= previous.y + previous.height, `Mobile content overlap between ${previous.name} and ${current.name}`);
+  }
+  assert.ok(mobile.height >= mobileContent.y + mobileContent.height);
+  assert.ok(mobile.height > 900, "The mobile frame must include wrapped copy and actions");
   const mobileSupporting = mobileNodes.find(
     (node) => node.type === "TEXT" && (node.characters.startsWith("I don’t write for the sake") || node.characters.startsWith("No escribo solo")),
   );
   assert.equal(mobileSupporting.fontName.family, "Montserrat");
   assert.equal(mobileSupporting.fontName.style, "Medium");
+}
+const imaginartCover = currentHomepageNodes.find((node) => node.name === "imaginArt project cover — production asset");
+assert.equal(imaginartCover.fills[0].type, "IMAGE");
+assert.equal(imaginartCover.fills[0].imageHash, "packaged-production-image");
+for (const width of [320, 375, 390, 430]) {
+  for (const [locale, dark] of [["en", false], ["es", true]]) {
+    const mobile = vm.runInContext(
+      `createCurrentHomepageMobileHero(figma.currentPage, 0, 0, "packaged-production-image", { locale: "${locale}", dark: ${dark}, width: ${width} })`,
+      currentHomepage.scriptContext,
+    );
+    const content = mobile.children.find((child) => child.name === "Hero content — vertical Auto Layout");
+    assert.equal(content.width, width);
+    assert.equal(content.children[1].width, width - 48);
+    assert.notEqual(content.children[1].layoutSizingHorizontal, "FILL");
+    assert.ok(content.children[1].height > 43);
+    assert.ok(content.children[2].height > 28);
+    const image = mobile.children.find((child) => child.name === "Homepage hero image — mobile · image first");
+    assert.equal(image.height, width * 2 / 3);
+    assert.ok(image.targetAspectRatio);
+    const actions = content.children[3];
+    assert.equal(actions.layoutWrap, "WRAP");
+    assert.equal(actions.width, width - 48);
+    assert.ok(actions.children.every((button) => button.layoutSizingHorizontal === "HUG" && button.width < actions.width));
+    const [firstAction, secondAction] = actions.children;
+    assert.ok(
+      secondAction.y >= firstAction.y + firstAction.height ||
+      (secondAction.y === firstAction.y && secondAction.x >= firstAction.x + firstAction.width),
+      `CTA collision at ${width}px in ${locale}`,
+    );
+    for (let index = 1; index < content.children.length; index += 1) {
+      assert.ok(content.children[index].y >= content.children[index - 1].y + content.children[index - 1].height);
+    }
+    assert.ok(mobile.height >= content.y + content.height);
+    mobile.remove();
+  }
 }
 assert.ok(
   currentHomepageNodes.some(
@@ -1440,7 +1563,9 @@ assert.ok(
   ),
 );
 await execute(currentHomepage);
-assert.equal(generatedSections(currentHomepage).length, 1);
+assert.equal(generatedSections(currentHomepage).length, 2);
+assert.ok(generatedSections(currentHomepage).some((node) => node.name.startsWith("[ARCHIVE] Homepage — previous production snapshot")));
+assert.equal(generatedSections(currentHomepage).filter((node) => node.name.startsWith("[CURRENT]")).length, 1);
 
 const currentImaginart = createFigma({
   editorType: "figma",

@@ -42,6 +42,7 @@ const GENERATED_KIND = {
   aboutPreproduction: "about-final-preproduction-editorial",
   currentComponents: "v2-current-components-reference",
   currentHomepage: "v2-current-homepage-snapshot",
+  archivedHomepage: "v2-archived-homepage-snapshot",
   currentImaginart: "v2-current-imaginart-snapshot",
   currentAbout: "v2-current-about-snapshot",
   currentContact: "v2-current-contact-snapshot",
@@ -3977,11 +3978,12 @@ function createImplementedMobileHeaderReference(parent, options) {
   const themeName = dark ? "Dark" : "Light";
   const localeName = spanish ? "ES" : "EN";
   const stateName = open ? "Open" : "Closed";
+  const headerWidth = options.width || 390;
   const header = createCanvasFrame(parent, {
     name: `Mobile header — ${themeName} · ${localeName} · ${stateName}`,
     x: options.x,
     y: options.y,
-    width: 390,
+    width: headerWidth,
     height: open ? 390 : 76,
     fill: palette.canvas,
     stroke: palette.border,
@@ -3999,7 +4001,7 @@ function createImplementedMobileHeaderReference(parent, options) {
     width: 240,
   });
   createMobileMenuIcon(header, {
-    x: 346,
+    x: headerWidth - 44,
     y: 26,
     open,
     color: palette.greenDeep,
@@ -4625,14 +4627,21 @@ async function buildApprovedFoundations() {
   );
 }
 
+function productionHeroHeightAt(width, rootFontSize = 16) {
+  return Math.min(58 * rootFontSize, Math.max(48 * rootFontSize, width * 0.65));
+}
+
 function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
   const currentProduction = Boolean(options.currentProduction);
+  const productionHeroHeight = productionHeroHeightAt(1440);
+  const heroHeight = currentProduction ? productionHeroHeight : 860;
+  const heroOffset = heroHeight - 860;
   const page = createCanvasFrame(parent, {
-    name: "Final homepage — desktop pre-production",
+    name: currentProduction ? "Desktop — EN — Light" : "Final homepage — desktop pre-production",
     x,
     y,
     width: 1440,
-    height: 4260,
+    height: currentProduction ? 3960 + heroOffset : 4260,
     fill: FINAL_COLOR.canvas,
   });
 
@@ -4641,7 +4650,7 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     x: 0,
     y: 0,
     width: 1440,
-    height: 860,
+    height: heroHeight,
     fill: FINAL_COLOR.greenTint,
     clipsContent: true,
   });
@@ -4652,7 +4661,7 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
       x: 0,
       y: 0,
       width: 1440,
-      height: 860,
+      height: heroHeight,
     });
     heroFade.fills = [
       {
@@ -4841,82 +4850,72 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
   }
 
   const lead = createCanvasFrame(page, {
-    name: "Lead work — imaginArt",
+    name: currentProduction ? "Lead project preview — imaginArt" : "Lead work — imaginArt",
     x: 0,
-    y: 860,
+    y: heroHeight,
     width: 1440,
-    height: 780,
+    height: currentProduction ? 980 : 780,
     fill: FINAL_COLOR.surface,
   });
-  addFinalLabel(lead, "01 · SELECTED WORK", 80, 72, 430);
-  addFinalLabel(lead, "MARKETING, B2B CONTENT & COMMUNICATIONS · IMAGINART", 80, 120, 650);
-  addFinalHeading(lead, {
-    characters: "Making specialist B2B communication clearer",
-    fontSize: 54,
-    lineHeight: 65,
-    width: 720,
-    x: 80,
-    y: 160,
-  });
-  addFinalBody(lead, {
-    characters: "Product content, editorial email improvements and event communication for a specialist audiovisual audience.",
-    font: FONT.montserratMedium,
-    fontSize: 18,
-    lineHeight: 30,
-    color: FINAL_COLOR.green,
-    width: 650,
-    x: 80,
-    y: 320,
-  });
-  addFinalBody(lead, {
-    characters: "A lead professional case showing how technical and business information became clearer, useful communication.",
-    fontSize: 20,
-    lineHeight: 33,
-    width: 560,
-    x: 80,
-    y: 390,
-  });
-  createRule(lead, { x: 800, y: 150, width: 520, color: FINAL_COLOR.green });
-  const leadItems = [
-    ["email", "Newsletter", "~24% → ~34% · approximate"],
-    ["transform", "Brand launch", "Technical input → usable B2B content"],
-    ["event", "Corporate event", "Campaign system · ~110–125 attendees"],
-  ];
-  leadItems.forEach(([icon, title, meta], index) => {
-    const itemY = 180 + index * 150;
-    createLineIcon(lead, { icon, x: 800, y: itemY, size: 32 });
+  if (currentProduction) {
+    addFinalLabel(lead, "LEAD PROFESSIONAL WORK", 80, 64, 500);
+    addFinalBody(lead, {
+      characters: "Product content, editorial email improvements and event communication for a specialist audiovisual audience.",
+      fontSize: 18, lineHeight: 30, color: FINAL_COLOR.inkMuted, width: 1000, x: 80, y: 112,
+    });
+    createRule(lead, { name: "Lead project upper divider", x: 80, y: 294, width: 1280, color: FINAL_COLOR.border });
+    const cover = createCanvasFrame(lead, {
+      name: "imaginArt project cover — production asset", x: 80, y: 348,
+      width: 680, height: 510, fill: FINAL_COLOR.surfaceStrong, clipsContent: true,
+    });
+    applyImageFill(cover, options.imaginartCoverHash);
+    addFinalLabel(lead, "MARKETING, B2B CONTENT & COMMUNICATIONS · IMAGINART", 820, 365, 550);
     addFinalHeading(lead, {
-      characters: title,
-      fontSize: 24,
-      lineHeight: 32,
-      width: 400,
-      x: 860,
-      y: itemY - 2,
+      characters: "Making specialist B2B communication clearer",
+      fontSize: 40, lineHeight: 50, width: 510, x: 820, y: 425,
     });
     addFinalBody(lead, {
-      characters: meta,
-      fontSize: 15,
-      lineHeight: 24,
-      color: FINAL_COLOR.inkMuted,
-      width: 430,
-      x: 860,
-      y: itemY + 42,
+      characters: "How I structured technical product content, refreshed editorial email communication and helped turn a corporate event into one coherent campaign.",
+      fontSize: 18, lineHeight: 30, color: FINAL_COLOR.inkMuted, width: 510, x: 820, y: 585,
     });
-    createRule(lead, { x: 800, y: itemY + 108, width: 520, color: FINAL_COLOR.border });
-  });
+    addFinalBody(lead, {
+      characters: "Read project  →", font: FONT.montserratMedium,
+      fontSize: 16, lineHeight: 26, color: FINAL_COLOR.greenDeep, width: 240, x: 820, y: 785,
+    });
+    createRule(lead, { name: "Lead project lower divider", x: 80, y: 922, width: 1280, color: FINAL_COLOR.border });
+  } else {
+    addFinalLabel(lead, "01 · SELECTED WORK", 80, 72, 430);
+    addFinalLabel(lead, "MARKETING, B2B CONTENT & COMMUNICATIONS · IMAGINART", 80, 120, 650);
+    addFinalHeading(lead, { characters: "Making specialist B2B communication clearer", fontSize: 54, lineHeight: 65, width: 720, x: 80, y: 160 });
+    addFinalBody(lead, { characters: "Product content, editorial email improvements and event communication for a specialist audiovisual audience.", font: FONT.montserratMedium, fontSize: 18, lineHeight: 30, color: FINAL_COLOR.green, width: 650, x: 80, y: 320 });
+    addFinalBody(lead, { characters: "A lead professional case showing how technical and business information became clearer, useful communication.", fontSize: 20, lineHeight: 33, width: 560, x: 80, y: 390 });
+    createRule(lead, { x: 800, y: 150, width: 520, color: FINAL_COLOR.green });
+    const leadItems = [
+      ["email", "Newsletter", "~24% → ~34% · approximate"],
+      ["transform", "Brand launch", "Technical input → usable B2B content"],
+      ["event", "Corporate event", "Campaign system · ~110–125 attendees"],
+    ];
+    leadItems.forEach(([icon, title, meta], index) => {
+      const itemY = 180 + index * 150;
+      createLineIcon(lead, { icon, x: 800, y: itemY, size: 32 });
+      addFinalHeading(lead, { characters: title, fontSize: 24, lineHeight: 32, width: 400, x: 860, y: itemY - 2 });
+      addFinalBody(lead, { characters: meta, fontSize: 15, lineHeight: 24, color: FINAL_COLOR.inkMuted, width: 430, x: 860, y: itemY + 42 });
+      createRule(lead, { x: 800, y: itemY + 108, width: 520, color: FINAL_COLOR.border });
+    });
+  }
 
   const secondary = createCanvasFrame(page, {
     name: currentProduction ? "Capabilities — editorial rows" : "Secondary work — equal hierarchy",
     x: 0,
-    y: 1640,
+    y: currentProduction ? 1840 + heroOffset : 1640,
     width: 1440,
     height: 620,
     fill: FINAL_COLOR.canvas,
   });
   if (currentProduction) {
-    addFinalLabel(secondary, "ACROSS THE WORK", 80, 54, 430);
+    addFinalLabel(secondary, "MY WORK", 80, 54, 430);
     addFinalHeading(secondary, {
-      characters: "What I work across",
+      characters: "Content, communications and UX thinking",
       fontSize: 34,
       lineHeight: 43,
       width: 780,
@@ -4924,9 +4923,9 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
       y: 87,
     });
     const capabilities = [
-      ["Content strategy", "I work on structure, hierarchy and messaging, turning complex information into content people can use."],
-      ["Communications", "My experience covers web, email, campaigns and events, including the coordination needed across channels."],
-      ["UX thinking", "I look at what people need to understand and do next, removing unnecessary friction so communication helps them move forward."],
+      ["Content strategy", "I structure complex information, set priorities and shape messages for web, email and product content."],
+      ["Communications", "Campaigns and events often involve several channels at once. I adapt the message to each one without losing the main idea."],
+      ["UX thinking", "When content asks someone to do something, I look at what they need to know first and where unnecessary friction gets in the way."],
     ];
     capabilities.forEach(([title, body], index) => {
       const rowY = 175 + index * 115;
@@ -5028,14 +5027,14 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
   const about = createCanvasFrame(page, {
     name: "About — neutral tonal transition",
     x: 0,
-    y: 2260,
+    y: currentProduction ? 2460 + heroOffset : 2260,
     width: 1440,
     height: 650,
     fill: FINAL_COLOR.surface,
   });
   addFinalLabel(about, "A LITTLE ABOUT ME", 80, 80, 440);
   addFinalHeading(about, {
-    characters: "Clear thinking, honest communication and a practical way forward.",
+    characters: currentProduction ? "My route into content wasn’t a straight line." : "Clear thinking, honest communication and a practical way forward.",
     fontSize: 50,
     lineHeight: 62,
     width: 760,
@@ -5043,7 +5042,9 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     y: 145,
   });
   addFinalBody(about, {
-    characters: "I’m Galician and live in Barcelona. My career began in administration, shifted into communications and digital marketing, and expanded into UX writing and B2B and B2C content. Helping people get what they need is the thread connecting it all.",
+    characters: currentProduction
+      ? "I’m Galician and based in Barcelona. I started in administration, moved into communications and digital marketing, and later trained in UX writing. That mix is why I tend to look at content from both the business side and the person reading it."
+      : "I’m Galician and live in Barcelona. My career began in administration, shifted into communications and digital marketing, and expanded into UX writing and B2B and B2C content. Helping people get what they need is the thread connecting it all.",
     fontSize: 20,
     lineHeight: 34,
     width: 500,
@@ -5060,7 +5061,7 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     y: 330,
   });
 
-  addFinalBody(about, {
+  if (!currentProduction) addFinalBody(about, {
     characters: "SCROLLED STATE · fixed 24px from viewport bottom/right · hidden while hero is visible",
     font: FONT.montserratMedium,
     fontSize: 12,
@@ -5070,7 +5071,7 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     x: 790,
     y: 548,
   });
-  const backToTop = createPill(about, {
+  if (!currentProduction) { const backToTop = createPill(about, {
     label: "↑",
     x: 1304,
     y: 525,
@@ -5083,9 +5084,11 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     lineHeight: 28,
   });
   backToTop.name = "Back to top / Volver arriba — fixed scrolled state";
+  }
 
-  createFinalContactFooter(page, 2910);
+  createFinalContactFooter(page, currentProduction ? 3110 + heroOffset : 2910);
 
+  if (!currentProduction) {
   const note = createCanvasFrame(page, {
     name: "Production snapshot notes",
     x: 0,
@@ -5124,6 +5127,7 @@ function createFinalHomepage(parent, x, y, heroImageHash, options = {}) {
     x: 80,
     y: 315,
   });
+  }
 
   return page;
 }
@@ -5133,89 +5137,119 @@ function createCurrentHomepageMobileHero(parent, x, y, heroImageHash, options) {
   const dark = Boolean(options.dark);
   const palette = dark ? DARK_COLOR : FINAL_COLOR;
   const copy = spanish ? HOMEPAGE.currentHero.es : HOMEPAGE.currentHero.en;
+  const width = options.width || 390;
+  const imageHeight = width * ABI_DESIGN_ASSETS.hero.height / ABI_DESIGN_ASSETS.hero.width;
   const page = createCanvasFrame(parent, {
-    name: `Homepage hero — mobile image-first · ${spanish ? "ES" : "EN"} · ${dark ? "Dark" : "Light"}`,
+    name: `Mobile — ${spanish ? "ES" : "EN"} — ${dark ? "Dark" : "Light"} — ${width}px`,
     x,
     y,
-    width: 390,
-    height: 1180,
+    width,
+    height: 1,
     fill: palette.canvas,
     stroke: palette.border,
-    clipsContent: true,
+    clipsContent: false,
   });
+  page.layoutMode = "VERTICAL";
+  page.primaryAxisSizingMode = "AUTO";
+  page.counterAxisSizingMode = "FIXED";
+  page.itemSpacing = 0;
 
-  createImplementedMobileHeaderReference(page, {
+  const header = createImplementedMobileHeaderReference(page, {
     x: 0,
     y: 0,
     palette,
     dark,
     open: false,
     locale: options.locale,
+    width,
   });
+  header.layoutSizingHorizontal = "FILL";
   const image = createCanvasFrame(page, {
     name: "Homepage hero image — mobile · image first",
     x: 0,
-    y: 76,
-    width: 390,
-    height: 260,
+    y: 0,
+    width,
+    height: imageHeight,
     fill: palette.surface,
     clipsContent: true,
   });
   applyImageFill(image, heroImageHash);
+  image.layoutSizingHorizontal = "FILL";
+  image.lockAspectRatio();
 
-  addFinalLabel(page, copy.role.toUpperCase(), 24, 380, 342, palette.greenDeep);
-  addFinalHeading(page, {
-    characters: copy.heading,
-    fontSize: 34,
-    lineHeight: 43,
-    color: palette.greenDeep,
-    width: 342,
-    x: 24,
-    y: 425,
+  const content = createCanvasFrame(page, {
+    name: "Hero content — vertical Auto Layout", x: 0, y: 0,
+    width, height: 1, fill: palette.canvas,
   });
-  addFinalBody(page, {
-    characters: copy.supporting,
-    font: FONT.montserratMedium,
-    fontSize: 17,
-    lineHeight: 28,
-    color: palette.inkMuted,
-    width: 342,
-    x: 24,
-    y: 690,
-  });
-  createPill(page, {
-    label: copy.primaryCta,
-    x: 24,
-    y: 920,
-    width: 342,
-    height: 56,
-    fill: palette.greenDeep,
-    stroke: palette.greenDeep,
-    color: palette.canvas,
-    fontSize: 16,
-    lineHeight: 25,
-  });
-  createPill(page, {
-    label: copy.secondaryCta,
-    x: 24,
-    y: 996,
-    width: 342,
-    height: 56,
-    fill: palette.canvas,
-    stroke: palette.greenDeep,
-    color: palette.greenDeep,
-    fontSize: 16,
-    lineHeight: 25,
-  });
-  addFinalBody(page, {
-    characters: "Responsive reference · copy remains in the hero · solid mobile header · no portrait overlay",
-    fontSize: 12,
-    lineHeight: 20,
-    color: palette.inkMuted,
-    width: 342,
-    x: 24,
-    y: 1090,
-  });
+  content.layoutMode = "VERTICAL";
+  content.primaryAxisSizingMode = "AUTO";
+  content.counterAxisSizingMode = "FIXED";
+  content.paddingTop = 40;
+  content.paddingRight = 24;
+  content.paddingBottom = 48;
+  content.paddingLeft = 24;
+  content.itemSpacing = 20;
+  content.layoutSizingHorizontal = "FILL";
+
+  const addFlowText = (characters, font, fontSize, lineHeight, color, name) => {
+    const node = figma.createText();
+    content.appendChild(node);
+    node.name = name;
+    node.fontName = font;
+    node.fontSize = fontSize;
+    node.lineHeight = { unit: "PIXELS", value: lineHeight };
+    node.fills = [solid(color)];
+    node.resize(width - 48, 10);
+    node.characters = characters;
+    // A fixed text width plus HEIGHT resizing lets Figma calculate the real
+    // wrapped height. FILL kept these text layers at the initial 10 px height.
+    node.textAutoResize = "HEIGHT";
+    return node;
+  };
+  addFlowText(copy.role.toUpperCase(), FONT.medium, 14, 22, palette.greenDeep, "Eyebrow");
+  addFlowText(copy.heading, FONT.semibold, 34, 43, palette.greenDeep, "H1");
+  addFlowText(copy.supporting, FONT.montserratMedium, 17, 28, palette.inkMuted, "Supporting paragraph");
+  const actions = figma.createFrame();
+  content.appendChild(actions);
+  actions.name = "Hero CTA group — wrapping Auto Layout";
+  actions.resize(width - 48, 1);
+  actions.fills = [];
+  actions.layoutMode = "HORIZONTAL";
+  actions.layoutWrap = "WRAP";
+  actions.primaryAxisSizingMode = "FIXED";
+  actions.counterAxisSizingMode = "AUTO";
+  actions.itemSpacing = 16;
+  actions.counterAxisSpacing = 16;
+  actions.layoutSizingHorizontal = "FILL";
+  for (const [label, primary] of [[copy.primaryCta, true], [copy.secondaryCta, false]]) {
+    const action = figma.createFrame();
+    actions.appendChild(action);
+    action.name = primary ? "Primary CTA — intrinsic width" : "Secondary CTA — intrinsic width";
+    action.resize(160, 64);
+    action.layoutMode = "HORIZONTAL";
+    action.itemSpacing = 12;
+    action.paddingLeft = 28;
+    action.paddingRight = 28;
+    action.counterAxisAlignItems = "CENTER";
+    action.fills = [solid(primary ? palette.greenDeep : palette.canvas)];
+    action.strokes = [solid(palette.greenDeep)];
+    action.strokeWeight = 1;
+    action.cornerRadius = 999;
+    for (const [partName, characters] of [["Label", label.replace(/\s*→$/, "")], ["Arrow", "→"]]) {
+      const text = figma.createText();
+      action.appendChild(text);
+      text.name = partName;
+      text.fontName = FONT.semibold;
+      text.fontSize = 16;
+      text.lineHeight = { unit: "PIXELS", value: 25 };
+      text.fills = [solid(primary ? palette.canvas : palette.greenDeep)];
+      text.characters = characters;
+      text.textAutoResize = "WIDTH_AND_HEIGHT";
+    }
+    action.layoutSizingHorizontal = "HUG";
+    action.primaryAxisSizingMode = "AUTO";
+    action.counterAxisSizingMode = "FIXED";
+  }
   return page;
 }
 
@@ -7073,17 +7107,20 @@ async function publishCurrentHomepage() {
   const placement = productionSnapshotPlacement(GENERATED_KIND.currentHomepage);
   await loadSynthesisFonts();
   const heroImageHash = bundledImageHash("hero");
+  const imaginartCoverHash = bundledImageHash("imaginartCover");
   const section = createSection(
-    "Homepage — production snapshot",
-    placement.point,
+    "Homepage — design reference",
+    placement.existing
+      ? { x: placement.existing.x, y: placement.existing.y }
+      : placement.point,
     2730,
-    5060,
+    4400,
     CASE_COLOR.surface,
     GENERATED_KIND.currentHomepage,
   );
   populateSectionSafely(section, () => {
     addFinalHeading(section, {
-      characters: "Homepage — current production snapshot",
+      characters: "Homepage — design reference",
       fontSize: 42,
       lineHeight: 52,
       width: 1160,
@@ -7091,42 +7128,53 @@ async function publishCurrentHomepage() {
       y: 70,
     });
     addFinalBody(section, {
-      characters: `CURRENT · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}\nGenerated from src/components/pages/HomePage.astro, src/components/SiteHeader.astro, localized production copy, both production theme palettes and the bundled hero source image. Desktop uses the wider site shell, aligns the hero copy with the brand mark, keeps a slightly translucent canvas-colour fade limited to the left side of the photograph and presents the About / Work / Writing / Contact navigation order. The Light overlay uses the original green brand colour without a name shadow. Mobile keeps the solid header, image-first order and non-overlay copy.`,
-      fontSize: 18,
-      lineHeight: 29,
+      characters: `Production implementation is the source of truth. · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}`,
+      fontSize: 15,
+      lineHeight: 24,
       color: FINAL_COLOR.inkMuted,
-      width: 1380,
+      width: 1800,
       x: 150,
-      y: 135,
+      y: 145,
     });
-    const page = createFinalHomepage(section, 150, 360, heroImageHash, {
+    addFinalLabel(section, `DESKTOP · 1440 PX · HERO CLAMP(768 PX, 65VW, 928 PX) = ${productionHeroHeightAt(1440)} PX`, 150, 175, 1500);
+    const page = createFinalHomepage(section, 150, 220, heroImageHash, {
       currentProduction: true,
+      imaginartCoverHash,
     });
-    page.name = "Homepage — desktop · current production snapshot";
-    addFinalLabel(section, "MOBILE · EN · LIGHT · 390 PX", 1740, 315, 390);
-    addFinalLabel(section, "MOBILE · ES · DARK · 390 PX", 2190, 315, 390);
-    createCurrentHomepageMobileHero(section, 1740, 360, heroImageHash, {
+    addFinalLabel(section, "MOBILE · EN · LIGHT · 390 PX", 1740, 175, 390);
+    addFinalLabel(section, "MOBILE · ES · DARK · 390 PX", 2190, 175, 390);
+    createCurrentHomepageMobileHero(section, 1740, 220, heroImageHash, {
       locale: "en",
       dark: false,
     });
-    createCurrentHomepageMobileHero(section, 2190, 360, heroImageHash, {
+    createCurrentHomepageMobileHero(section, 2190, 220, heroImageHash, {
       locale: "es",
       dark: true,
     });
-    addFinalBody(section, {
-      characters: "The implementation keeps the same semantic sequence at 320, 375, 390 and 430 px while allowing natural wrapping and stacked tap targets.",
-      fontSize: 14,
-      lineHeight: 23,
-      color: FINAL_COLOR.inkMuted,
-      width: 840,
-      x: 1740,
-      y: 1580,
-    });
   });
-  placement.existing?.remove();
+  if (placement.existing) {
+    const archived = placement.existing;
+    const archivePosition = pageEdgeInsertionPoint(section);
+    let previousRelease = "earlier release";
+    let releaseData = null;
+    try {
+      releaseData = JSON.parse(archived.getPluginData(RELEASE_DATA_KEY));
+      previousRelease = releaseData.release || previousRelease;
+    } catch {
+      // The previous managed section remains archivable without release metadata.
+    }
+    archived.name = `[ARCHIVE] Homepage — previous production snapshot · ${previousRelease}`;
+    archived.x = archivePosition.x;
+    archived.y = archivePosition.y;
+    archived.setPluginData(PLUGIN_DATA_KEY, generatedValue(GENERATED_KIND.archivedHomepage));
+    archived.setPluginData(
+      RELEASE_DATA_KEY,
+      JSON.stringify({ ...releaseData, status: "ARCHIVE" }),
+    );
+  }
   figma.currentPage.selection = [section];
   figma.viewport.scrollAndZoomIntoView([section]);
-  closeWithMessage(`Published the editable Homepage snapshot from design release ${ABI_DESIGN_RELEASE.version}.`);
+  closeWithMessage(`Published the editable Homepage design reference from design release ${ABI_DESIGN_RELEASE.version}.`);
 }
 
 async function publishCurrentImaginart() {
