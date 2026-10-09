@@ -71,7 +71,7 @@ export const ui = {
         'This website uses Google Analytics 4 only when you explicitly accept analytics. Rejecting it does not affect the website.',
       analyticsTitle: 'Google Analytics',
       analyticsText:
-        'If you accept, the Google tag loads and sends standard page-view information and any standard enhanced measurements enabled for this GA4 data stream. This may include the page visited, referrer, browser and device information, and approximate location derived from the IP address. This website defines no custom events and sends no user IDs.',
+        'If you accept, the Google tag loads and sends standard page-view information, any standard enhanced measurements enabled for this GA4 data stream, and events when a project is opened, a CV download link is clicked or a valid contact form submission is attempted. This may include the page visited, referrer, browser and device information, and approximate location derived from the IP address. The custom events do not include contact form fields or user IDs.',
       consentTitle: 'Consent settings',
       consentText:
         'Before consent—and after rejection—the Google tag is not downloaded, Google Analytics cookies are not created, and this website sends no analytics requests to Google. Analytics storage is granted only after acceptance. Advertising storage, advertising user data and advertising personalization are always denied.',
@@ -293,7 +293,7 @@ export const ui = {
         'Esta web utiliza Google Analytics 4 únicamente cuando aceptas expresamente la analítica. Rechazarla no afecta al funcionamiento de la web.',
       analyticsTitle: 'Google Analytics',
       analyticsText:
-        'Si aceptas, la etiqueta de Google se carga y envía a Google Analytics información estándar sobre las páginas vistas y las mediciones mejoradas estándar que estén activadas para este flujo de datos de GA4. Puede incluir la página visitada, la procedencia, información del navegador y del dispositivo, y una ubicación aproximada derivada de la dirección IP. Esta web no define eventos personalizados ni envía identificadores de usuario.',
+        'Si aceptas, la etiqueta de Google se carga y envía a Google Analytics información estándar sobre las páginas vistas, las mediciones mejoradas estándar que estén activadas para este flujo de datos de GA4 y eventos al abrir un proyecto, pulsar un enlace de descarga del CV o intentar enviar un formulario de contacto válido. Puede incluir la página visitada, la procedencia, información del navegador y del dispositivo, y una ubicación aproximada derivada de la dirección IP. Los eventos personalizados no incluyen los campos del formulario ni identificadores de usuario.',
       consentTitle: 'Configuración del consentimiento',
       consentText:
         'Antes del consentimiento —y después de rechazarlo— no se descarga la etiqueta de Google, no se crean cookies de Google Analytics y esta web no envía solicitudes de analítica a Google. El almacenamiento de analítica solo se concede después de aceptar. El almacenamiento publicitario, los datos de usuario para publicidad y la personalización publicitaria están siempre denegados.',

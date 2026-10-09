@@ -25,7 +25,7 @@ const additionalLanguages = profile.languages.slice(4);
         <p>{copy.about.introduction}</p>
         <p>{copy.about.story}</p>
         <div class="cv-action-row">
-          <a class="button button-secondary" href={getCvPath(locale)} download>
+          <a class="button button-secondary" href={getCvPath(locale)} download data-analytics-cv-location="about">
             {copy.about.cvLabel}
           </a>
           {copy.about.cvNote && <span>{copy.about.cvNote}</span>}

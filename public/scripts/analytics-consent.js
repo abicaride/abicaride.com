@@ -137,6 +137,7 @@
     googleTag.dataset.googleAnalytics = 'true';
     googleTag.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
     document.head.append(googleTag);
+    document.dispatchEvent(new Event('abicaride:analytics-active'));
   };
 
   const grantAnalytics = () => {
@@ -148,6 +149,8 @@
 
   const denyAnalytics = () => {
     const wasActive = Boolean(window.__abicarideAnalyticsActive);
+
+    window.__abicarideAnalyticsActive = false;
 
     savePreference('denied');
     setChoiceState('denied');

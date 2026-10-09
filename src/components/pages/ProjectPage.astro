@@ -36,6 +36,13 @@ const selectedDetails = project.data.translationKey === 'cognitive-biases' || pr
   socialImage={isImaginart ? project.data.image.src : undefined}
   socialImageAlt={isImaginart ? project.data.image.alt : undefined}
 >
+  <template
+    data-analytics-project-view
+    data-project-key={project.data.translationKey}
+    data-project-slug={project.data.routeSlug}
+    data-project-title={project.data.title}
+    data-project-category={project.data.category}
+  ></template>
   {isImaginart ? (
     <ImaginartCaseStudy locale={locale} />
   ) : (

@@ -119,7 +119,7 @@ Astro is the only production dependency in `package.json`.
 - Google Analytics 4 through the Google tag;
 - Basic Consent Mode v2 semantics;
 - no Google Tag Manager or third-party consent platform;
-- no custom analytics events or advertising features.
+- three consent-gated portfolio events; no advertising features.
 
 ### Design and development — Implemented
 
@@ -387,7 +387,9 @@ The implementation uses Basic Consent Mode v2 semantics:
 - `ad_storage`, `ad_user_data` and `ad_personalization` remain denied;
 - the local preference expires after 180 days;
 - the footer can reopen settings and withdrawal clears accessible GA cookies;
-- there are no custom events, Google Tag Manager or advertising features.
+- three consent-gated custom events (`project_view`, `cv_download` and
+  `contact_submit`) are dispatched by `public/scripts/analytics-events.js`;
+  there is no Google Tag Manager or advertising feature.
 
 Analytics remains the only enhancement that can make an optional third-party
 request. The theme control stores only the functional `abi-theme` visual

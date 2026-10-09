@@ -45,7 +45,7 @@ const privacyPath = getLocalizedPath(locale, locale === 'en' ? 'privacy' : 'priv
           <div>
             <dt><LineIcon name="download" size={28} /><span>{copy.contact.cvLabel}</span></dt>
             <dd class="cv-detail">
-              <a href={getCvPath(locale)} download>{copy.contact.cvAction}</a>
+              <a href={getCvPath(locale)} download data-analytics-cv-location="contact">{copy.contact.cvAction}</a>
               {'cvNote' in copy.contact && <span>{copy.contact.cvNote}</span>}
             </dd>
           </div>
@@ -62,6 +62,8 @@ const privacyPath = getLocalizedPath(locale, locale === 'en' ? 'privacy' : 'priv
         action="https://formspree.io/f/mgaewvdw"
         method="POST"
         data-contact-form
+        data-analytics-contact-form
+        data-analytics-form-id="contact"
         data-submitting-label={copy.contact.submitting}
       >
         <div class="form-field">
