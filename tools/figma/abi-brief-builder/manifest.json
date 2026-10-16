@@ -38,6 +38,10 @@
       "command": "publish-current-contact"
     },
     {
+      "name": "Publish current 404 reference",
+      "command": "publish-current-404"
+    },
+    {
       "name": "Prepare this Foundations page for public viewing",
       "command": "prepare-public-foundations-page"
     },

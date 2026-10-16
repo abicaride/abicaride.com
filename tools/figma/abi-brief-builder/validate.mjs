@@ -15,6 +15,8 @@ const designRelease = JSON.parse(
 assert.match(pluginSource, /case "organize-status-labels"/);
 assert.match(pluginSource, /case "prepare-public-foundations-page"/);
 assert.match(pluginSource, /case "publish-current-contact"/);
+assert.match(pluginSource, /case "publish-current-404"/);
+assert.match(pluginSource, /ABI_DESIGN_COPY/);
 assert.match(pluginSource, /abilene-caride-cv-en\.pdf/);
 assert.match(pluginSource, /abilene-caride-cv-es\.pdf/);
 assert.match(pluginSource, /\[ARCHIVE\] V1 — Current Baseline/);
@@ -1732,6 +1734,47 @@ assert.ok(
 );
 await execute(currentContact);
 assert.equal(generatedSections(currentContact).length, 1, "A Contact rerun must not duplicate content");
+
+const currentNotFound = createFigma({
+  editorType: "figma",
+  fileName: "Abi Personal Website",
+  pageName: "03 — About + Archive",
+  command: "publish-current-404",
+});
+const untouched = new MockNode("FRAME", currentNotFound.currentPage);
+untouched.name = "Manual exploration — preserve";
+untouched.x = 2000;
+untouched.resize(1000, 1500);
+currentNotFound.currentPage.children.push(untouched);
+await execute(currentNotFound);
+assert.equal(currentNotFound.notifications.at(-1).error, false);
+assert.equal(generatedSections(currentNotFound).length, 1);
+const notFoundSection = generatedSections(currentNotFound)[0];
+assert.equal(notFoundSection.name, "[CURRENT] 404 — production reference");
+assert.ok(notFoundSection.x >= 3400, "404 reference must clear existing manual work");
+assert.ok(currentNotFound.currentPage.children.includes(untouched));
+const notFoundNodes = allNodes(notFoundSection);
+assert.equal(notFoundNodes.find((node) => node.name.startsWith("404 — desktop"))?.width, 1440);
+assert.equal(notFoundNodes.find((node) => node.name.startsWith("404 — mobile"))?.width, 390);
+const notFoundText = notFoundNodes.filter((node) => node.type === "TEXT").map((node) => node.characters).join("\n");
+for (const expected of [
+  "Production implementation is the source of truth.",
+  "This page seems to have wandered off.",
+  "Parece que esta página se ha perdido.",
+  "Continue in English",
+  "Continuar en español",
+  "The address may be incorrect",
+  "Puede que la dirección no sea correcta",
+  "Abilene Caride",
+  "Privacy & cookies",
+]) {
+  assert.ok(notFoundText.includes(expected), `Missing 404 reference content: ${expected}`);
+}
+assert.equal(notFoundNodes.filter((node) => node.name === "EN homepage link — Continue in English").length, 2);
+assert.equal(notFoundNodes.filter((node) => node.name === "ES homepage link — Continuar en español").length, 2);
+await execute(currentNotFound);
+assert.equal(generatedSections(currentNotFound).length, 1, "A 404 rerun must not duplicate content");
+assert.ok(currentNotFound.currentPage.children.includes(untouched));
 
 const wrongFile = createFigma({
   editorType: "figjam",

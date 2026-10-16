@@ -46,6 +46,7 @@ const GENERATED_KIND = {
   currentImaginart: "v2-current-imaginart-snapshot",
   currentAbout: "v2-current-about-snapshot",
   currentContact: "v2-current-contact-snapshot",
+  currentNotFound: "v2-current-404-reference",
 };
 
 const PUBLIC_FOUNDATIONS_LAYOUT = {
@@ -427,6 +428,7 @@ function releaseStatusForKind(kind) {
       GENERATED_KIND.currentImaginart,
       GENERATED_KIND.currentAbout,
       GENERATED_KIND.currentContact,
+      GENERATED_KIND.currentNotFound,
       GENERATED_KIND.moodboard,
     ].includes(kind)
   ) {
@@ -7340,6 +7342,313 @@ async function publishCurrentContact() {
   closeWithMessage(`Published the editable Contact snapshot from design release ${ABI_DESIGN_RELEASE.version}.`);
 }
 
+function createNotFoundHeader(parent, mobile) {
+  const width = mobile ? 390 : 1440;
+  const height = mobile ? 76 : 96;
+  const header = createCanvasFrame(parent, {
+    name: `Site header — ${mobile ? "mobile · closed" : "desktop"} · EN · Light`,
+    x: 0, y: 0, width, height, fill: FINAL_COLOR.canvas,
+  });
+  const edge = mobile ? 20 : 32;
+  const brand = createHeaderBrand(header, {
+    x: edge,
+    markY: mobile ? 24 : 31,
+    textY: mobile ? 22 : 29,
+    size: mobile ? 28 : 34,
+    fontSize: mobile ? 25 : 31,
+    lineHeight: mobile ? 31 : 37,
+    markColor: FINAL_COLOR.greenDeep,
+    labelColor: FINAL_COLOR.greenDeep,
+    width: mobile ? 270 : 350,
+  });
+  brand.label.hyperlink = { type: "URL", value: "https://abicaride.com/en/" };
+  if (mobile) {
+    const menu = createCanvasFrame(header, {
+      name: "Mobile navigation toggle — closed hamburger",
+      x: 346, y: 26, width: 24, height: 24,
+    });
+    for (const lineY of [4, 11, 18]) {
+      createRule(menu, { name: "Menu stroke", x: 0, y: lineY, width: 24, height: 2, color: FINAL_COLOR.greenDeep });
+    }
+  } else {
+    const navigation = [
+      [ABI_DESIGN_COPY.en.nav.about, "/en/about/", 742],
+      [ABI_DESIGN_COPY.en.nav.projects, "/en/projects/", 834],
+      [ABI_DESIGN_COPY.en.nav.writing, "/en/writing/", 918],
+      [ABI_DESIGN_COPY.en.nav.contact, "/en/contact/", 1020],
+    ];
+    for (const [label, path, x] of navigation) {
+      const link = appendText(header, {
+        name: `Primary navigation — ${label}`,
+        characters: label, font: FONT.medium, fontSize: 14, lineHeight: 22,
+        color: FINAL_COLOR.greenDeep, width: 100, x, y: 37,
+      });
+      link.hyperlink = { type: "URL", value: `https://abicaride.com${path}` };
+    }
+    const en = appendText(header, { name: "Language — EN · active", characters: "EN", font: FONT.medium, fontSize: 12, lineHeight: 19, color: FINAL_COLOR.greenDeep, width: 32, x: 1160, y: 39 });
+    en.hyperlink = { type: "URL", value: "https://abicaride.com/en/" };
+    appendText(header, { name: "Language separator", characters: "/", font: FONT.medium, fontSize: 12, lineHeight: 19, color: FINAL_COLOR.inkMuted, width: 12, x: 1207, y: 39 });
+    const es = appendText(header, { name: "Language — ES", characters: "ES", font: FONT.medium, fontSize: 12, lineHeight: 19, color: FINAL_COLOR.greenDeep, width: 32, x: 1233, y: 39 });
+    es.hyperlink = { type: "URL", value: "https://abicaride.com/es/" };
+    createRule(header, { name: "Active language underline — EN", x: 1160, y: 66, width: 19, height: 2, color: FINAL_COLOR.greenDeep });
+    createThemeSwitch(header, { x: 1335, y: 32, dark: false, palette: FINAL_COLOR });
+  }
+  createRule(header, { name: "Header bottom border", x: 0, y: height - 1, width, height: 1, color: FINAL_COLOR.border });
+  return header;
+}
+
+function createNotFoundText(parent, options) {
+  const node = appendText(parent, options);
+  if (options.tight) node.letterSpacing = { unit: "PIXELS", value: -options.fontSize * 0.035 };
+  return node;
+}
+
+function createNotFoundLanguageOption(parent, locale, x, y, width, mobile) {
+  const copy = ABI_DESIGN_COPY[locale].notFound;
+  createRule(parent, { name: `Language option — ${locale.toUpperCase()} · top border`, x, y, width, height: 1, color: FINAL_COLOR.border });
+  const body = createNotFoundText(parent, {
+    name: `${locale.toUpperCase()} explanatory text`, characters: copy.text,
+    font: FONT.montserrat, fontSize: mobile ? 19.2 : 23.8,
+    lineHeight: mobile ? 30.3 : 37.6, color: FINAL_COLOR.inkMuted,
+    width, x, y: y + 25,
+  });
+  const linkY = body.y + body.height + 16;
+  const link = createNotFoundText(parent, {
+    name: `${locale.toUpperCase()} homepage link — ${copy.action}`,
+    characters: `${copy.action}  →`, font: FONT.semibold,
+    fontSize: 16, lineHeight: 26, color: FINAL_COLOR.greenDeep,
+    width, x, y: linkY,
+  });
+  link.hyperlink = { type: "URL", value: `https://abicaride.com/${locale}/` };
+  return Math.max(linkY + 44, link.y + link.height);
+}
+
+function createNotFoundFooter(parent, y, mobile) {
+  const copy = ABI_DESIGN_COPY.en.footer;
+  const width = mobile ? 390 : 1440;
+  const edge = mobile ? 20 : 58;
+  const footer = createCanvasFrame(parent, {
+    name: `Site footer — ${mobile ? "mobile" : "desktop"} · production copy`,
+    x: 0, y, width, height: mobile ? 1200 : 850, fill: FINAL_COLOR.burgundy,
+  });
+  createTransparentBrandMark(footer, {
+    name: "Footer brand-mark watermark", x: mobile ? 250 : 950,
+    y: mobile ? 304 : 72, size: mobile ? 216 : 490,
+  });
+  const eyebrow = createNotFoundText(footer, {
+    name: "Footer eyebrow", characters: copy.eyebrow.toUpperCase(),
+    font: FONT.semibold, fontSize: 12, lineHeight: 19,
+    color: FINAL_COLOR.canvas, width: 300, x: edge, y: mobile ? 80 : 144,
+  });
+  eyebrow.letterSpacing = { unit: "PIXELS", value: 1.2 };
+  const heading = createNotFoundText(footer, {
+    name: "Footer H2", characters: copy.heading,
+    font: FONT.semibold, fontSize: mobile ? 44 : 75,
+    lineHeight: mobile ? 47.5 : 81,
+    color: FINAL_COLOR.canvas, width: mobile ? 350 : 928,
+    x: edge, y: eyebrow.y + eyebrow.height + 24, tight: true,
+  });
+  const email = createNotFoundText(footer, {
+    name: "Footer email link", characters: "abicaride@gmail.com  →",
+    font: FONT.semibold, fontSize: mobile ? 18.4 : 24,
+    lineHeight: mobile ? 28 : 34, color: FINAL_COLOR.canvas,
+    width: mobile ? 350 : 520, x: edge, y: heading.y + heading.height + 24,
+  });
+  email.hyperlink = { type: "URL", value: "mailto:abicaride@gmail.com" };
+  const utilityY = email.y + Math.max(44, email.height) + (mobile ? 80 : 128) + 40;
+  const label = (name, text, x, top, width) => {
+    const node = createNotFoundText(footer, {
+      name, characters: text.toUpperCase(), font: FONT.semibold,
+      fontSize: 12, lineHeight: 19, color: FINAL_COLOR.canvas,
+      width, x, y: top,
+    });
+    node.letterSpacing = { unit: "PIXELS", value: 1.2 };
+    return node;
+  };
+  const body = (name, text, x, top, width, href) => {
+    const node = createNotFoundText(footer, {
+      name, characters: text, font: FONT.montserrat,
+      fontSize: 14, lineHeight: 22, color: FINAL_COLOR.canvas,
+      width, x, y: top,
+    });
+    if (href) node.hyperlink = { type: "URL", value: href };
+    return node;
+  };
+  const identityX = edge;
+  createTransparentBrandMark(footer, {
+    name: "Footer identity mark", x: identityX, y: utilityY,
+    size: 48, opacity: 1,
+  });
+  createNotFoundText(footer, {
+    name: "Footer identity", characters: ABI_DESIGN_COPY.en.siteName,
+    font: FONT.semibold, fontSize: 14, lineHeight: 22,
+    color: FINAL_COLOR.canvas, width: mobile ? 270 : 300,
+    x: identityX + 60, y: utilityY,
+  });
+  const profession = body("Footer profession", copy.profession,
+    identityX + 60, utilityY + 26, mobile ? 270 : 300);
+  let utilityEnd = Math.max(utilityY + 48, profession.y + profession.height);
+  if (mobile) {
+    const privacyY = utilityEnd + 48;
+    label("Privacy label", copy.privacyLabel, edge, privacyY, 250);
+    const privacy = body("Privacy link", copy.privacy, edge, privacyY + 31, 350,
+      "https://abicaride.com/en/privacy/");
+    const cookie = body("Cookie settings link", copy.cookieSettings, edge,
+      privacy.y + Math.max(44, privacy.height), 350,
+      "https://abicaride.com/en/privacy/");
+    utilityEnd = cookie.y + Math.max(44, cookie.height);
+    const languageY = utilityEnd + 48;
+    label("Language label", copy.languageLabel, edge, languageY, 250);
+    body("Language links — EN active", "EN   /   ES", edge, languageY + 31, 150);
+    createRule(footer, { name: "Active language underline — EN", x: edge, y: languageY + 60, width: 20, height: 2, color: FINAL_COLOR.canvas });
+    const buildY = languageY + 31 + 44 + 48;
+    label("Build label", copy.buildLabel, edge, buildY, 350);
+    const build = body("Build note", `${copy.buildNote}  →`, edge, buildY + 31, 350,
+      "https://abicaride.com/en/architecture/");
+    utilityEnd = build.y + build.height;
+  } else {
+    const privacyX = 480;
+    label("Privacy label", copy.privacyLabel, privacyX, utilityY, 240);
+    body("Privacy link", copy.privacy, privacyX, utilityY + 31, 240,
+      "https://abicaride.com/en/privacy/");
+    body("Cookie settings link", copy.cookieSettings, privacyX, utilityY + 75, 240,
+      "https://abicaride.com/en/privacy/");
+    const languageX = 740;
+    label("Language label", copy.languageLabel, languageX, utilityY, 140);
+    body("Language links — EN active", "EN   /   ES", languageX, utilityY + 31, 140);
+    createRule(footer, { name: "Active language underline — EN", x: languageX, y: utilityY + 60, width: 20, height: 2, color: FINAL_COLOR.canvas });
+    const buildX = 910;
+    label("Build label", copy.buildLabel, buildX, utilityY, 450);
+    const build = body("Build note", `${copy.buildNote}  →`, buildX, utilityY + 31, 440,
+      "https://abicaride.com/en/architecture/");
+    utilityEnd = Math.max(utilityEnd, utilityY + 120, build.y + build.height);
+  }
+  const rightsY = utilityEnd + 64;
+  const rights = body("Footer copyright", `© ${new Date().getFullYear()} ${ABI_DESIGN_COPY.en.siteName}. ${copy.rights}`,
+    edge, rightsY, mobile ? 350 : 600);
+  const footerHeight = rights.y + rights.height + 48;
+  footer.resize(width, footerHeight);
+  return footer;
+}
+
+function createNotFoundDesktop(parent, x, y) {
+  const page = createCanvasFrame(parent, {
+    name: "404 — desktop · EN/ES · Light · 1440px", x, y,
+    width: 1440, height: 1900, fill: FINAL_COLOR.canvas,
+  });
+  createNotFoundHeader(page, false);
+  const introTop = 241;
+  const headingX = 558;
+  const eyebrow = createNotFoundText(page, {
+    name: "Error eyebrow", characters: ABI_DESIGN_COPY.en.notFound.eyebrow.toUpperCase(),
+    font: FONT.semibold, fontSize: 12, lineHeight: 19, color: FINAL_COLOR.green,
+    width: 600, x: headingX, y: introTop,
+  });
+  eyebrow.letterSpacing = { unit: "PIXELS", value: 1.2 };
+  const enHeading = createNotFoundText(page, {
+    name: "H1 — English", characters: ABI_DESIGN_COPY.en.notFound.heading,
+    font: FONT.semibold, fontSize: 70, lineHeight: 75.6,
+    color: FINAL_COLOR.ink, width: 744, x: headingX, y: eyebrow.y + eyebrow.height + 16,
+    tight: true,
+  });
+  const esHeading = createNotFoundText(page, {
+    name: "H1 — Spanish", characters: ABI_DESIGN_COPY.es.notFound.heading,
+    font: FONT.semibold, fontSize: 70, lineHeight: 75.6,
+    color: FINAL_COLOR.inkMuted, width: 744, x: headingX,
+    y: enHeading.y + enHeading.height + 12, tight: true,
+  });
+  const introBottom = Math.max(introTop + 112, esHeading.y + esHeading.height);
+  createNotFoundText(page, {
+    name: "404 — display number", characters: "404", font: FONT.semibold,
+    fontSize: 104, lineHeight: 112.3, color: FINAL_COLOR.surfaceStrong,
+    width: 372, x: 138, y: introBottom - 112, tight: true,
+  });
+  const optionsY = introBottom + 64;
+  const enEnd = createNotFoundLanguageOption(page, "en", 138, optionsY, 558, false);
+  const esEnd = createNotFoundLanguageOption(page, "es", 744, optionsY, 558, false);
+  const footerY = Math.max(900, Math.max(enEnd, esEnd) + 96);
+  const footer = createNotFoundFooter(page, footerY, false);
+  page.resize(1440, footerY + footer.height);
+  return page;
+}
+
+function createNotFoundMobile(parent, x, y) {
+  const page = createCanvasFrame(parent, {
+    name: "404 — mobile · EN/ES · Light · 390px", x, y,
+    width: 390, height: 2450, fill: FINAL_COLOR.canvas,
+  });
+  createNotFoundHeader(page, true);
+  let cursor = 148;
+  const code = createNotFoundText(page, {
+    name: "404 — display number", characters: "404", font: FONT.semibold,
+    fontSize: 51.5, lineHeight: 55.6, color: FINAL_COLOR.surfaceStrong,
+    width: 350, x: 20, y: cursor, tight: true,
+  });
+  cursor = code.y + code.height + 32;
+  const eyebrow = createNotFoundText(page, {
+    name: "Error eyebrow", characters: ABI_DESIGN_COPY.en.notFound.eyebrow.toUpperCase(),
+    font: FONT.semibold, fontSize: 12, lineHeight: 19, color: FINAL_COLOR.green,
+    width: 350, x: 20, y: cursor,
+  });
+  eyebrow.letterSpacing = { unit: "PIXELS", value: 1.2 };
+  cursor = eyebrow.y + eyebrow.height + 16;
+  const enHeading = createNotFoundText(page, {
+    name: "H1 — English", characters: ABI_DESIGN_COPY.en.notFound.heading,
+    font: FONT.semibold, fontSize: 40.5, lineHeight: 43.7,
+    color: FINAL_COLOR.ink, width: 350, x: 20, y: cursor, tight: true,
+  });
+  cursor = enHeading.y + enHeading.height + 12;
+  const esHeading = createNotFoundText(page, {
+    name: "H1 — Spanish", characters: ABI_DESIGN_COPY.es.notFound.heading,
+    font: FONT.semibold, fontSize: 40.5, lineHeight: 43.7,
+    color: FINAL_COLOR.inkMuted, width: 350, x: 20, y: cursor, tight: true,
+  });
+  cursor = esHeading.y + esHeading.height + 64;
+  cursor = createNotFoundLanguageOption(page, "en", 20, cursor, 350, true) + 32;
+  cursor = createNotFoundLanguageOption(page, "es", 20, cursor, 350, true);
+  const footerY = cursor + 96;
+  const footer = createNotFoundFooter(page, footerY, true);
+  page.resize(390, footerY + footer.height);
+  return page;
+}
+
+async function publishCurrentNotFound() {
+  if (figma.editorType !== "figma") {
+    throw new Error("The 404 reference can only be published in Figma Design.");
+  }
+  requireExpectedFile(EXPECTED_FILES.personal);
+  const pageName = normalizeName(figma.currentPage.name);
+  if (!pageName.includes("about") && !pageName.includes("archive")) {
+    throw new Error(`Open the About + Archive page before publishing 404. Current page: “${figma.currentPage.name}”.`);
+  }
+  const placement = productionSnapshotPlacement(GENERATED_KIND.currentNotFound);
+  await loadSynthesisFonts();
+  const section = createSection(
+    "404 — production reference", placement.point, 2380, 2850,
+    CASE_COLOR.surface, GENERATED_KIND.currentNotFound,
+  );
+  populateSectionSafely(section, () => {
+    addFinalHeading(section, {
+      characters: "404 — current production reference", fontSize: 42, lineHeight: 52,
+      width: 1300, x: 150, y: 60,
+    });
+    addFinalBody(section, {
+      characters: `Production implementation is the source of truth. · Design release ${ABI_DESIGN_RELEASE.version} · Source ${ABI_DESIGN_RELEASE.commit}`,
+      fontSize: 15, lineHeight: 24, color: FINAL_COLOR.inkMuted,
+      width: 1900, x: 150, y: 130,
+    });
+    addFinalLabel(section, "DESKTOP · EN/ES · LIGHT · 1440 PX", 150, 185, 1440);
+    addFinalLabel(section, "MOBILE · EN/ES · LIGHT · 390 PX", 1740, 185, 390);
+    const desktop = createNotFoundDesktop(section, 150, 240);
+    const mobile = createNotFoundMobile(section, 1740, 240);
+    section.resizeWithoutConstraints(2380, Math.max(desktop.height, mobile.height) + 300);
+  });
+  placement.existing?.remove();
+  figma.currentPage.selection = [section];
+  figma.viewport.scrollAndZoomIntoView([section]);
+  closeWithMessage(`Published the editable 404 reference from design release ${ABI_DESIGN_RELEASE.version}.`);
+}
+
 async function buildMoodboard() {
   if (figma.editorType !== "figjam") {
     throw new Error(
@@ -7784,6 +8093,9 @@ async function run() {
         break;
       case "publish-current-contact":
         await publishCurrentContact();
+        break;
+      case "publish-current-404":
+        await publishCurrentNotFound();
         break;
       case "build-imaginart-wireframe":
         await buildImaginartWireframe();

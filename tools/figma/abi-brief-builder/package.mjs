@@ -2,12 +2,25 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import vm from "node:vm";
 
 const toolDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(toolDirectory, "../../..");
 const releasePath = path.join(toolDirectory, "design-release.json");
 const sourcePath = path.join(toolDirectory, "code.js");
 const tokenPath = path.join(repositoryRoot, "src/styles/tokens.css");
+const i18nSource = fs.readFileSync(path.join(repositoryRoot, "src/i18n/config.ts"), "utf8");
+const uiSource = i18nSource.match(/^export const ui = (\{[\s\S]*?\}) as const;$/m)?.[1];
+if (!uiSource) throw new Error("Could not extract the localized UI copy from src/i18n/config.ts.");
+const ui = vm.runInNewContext(`(${uiSource})`, Object.create(null), { timeout: 1000 });
+const copy = Object.fromEntries(
+  ["en", "es"].map((locale) => [locale, {
+    siteName: ui[locale].siteName,
+    nav: ui[locale].nav,
+    footer: ui[locale].footer,
+    notFound: ui[locale].notFound,
+  }]),
+);
 const assetPaths = {
   hero: path.join(repositoryRoot, "src/assets/images/abilene-hero-v2.png"),
   about: path.join(repositoryRoot, "src/assets/images/abilene-about-v2.png"),
@@ -107,6 +120,7 @@ const header = [
   `const ABI_DESIGN_RELEASE = Object.freeze(${JSON.stringify(packagedRelease)});`,
   `const ABI_DESIGN_TOKENS = Object.freeze(${JSON.stringify(tokens)});`,
   `const ABI_DARK_DESIGN_TOKENS = Object.freeze(${JSON.stringify(darkTokens)});`,
+  `const ABI_DESIGN_COPY = Object.freeze(${JSON.stringify(copy)});`,
   `const ABI_DESIGN_ASSETS = Object.freeze(${JSON.stringify(assets)});`,
   `const ABI_DESIGN_VECTORS = Object.freeze(${JSON.stringify(vectors)});`,
   "",
